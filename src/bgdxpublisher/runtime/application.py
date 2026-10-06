@@ -83,7 +83,8 @@ class PublisherApplication:
                     self._logging.close()
                 except Exception as cleanup_error:
                     error.add_note(
-                        f"Failed to close logging during initialization: {cleanup_error}"
+                        "Failed to close logging during initialization: "
+                        f"{cleanup_error}"
                     )
             if isinstance(error, RuntimeFoundationError):
                 raise
