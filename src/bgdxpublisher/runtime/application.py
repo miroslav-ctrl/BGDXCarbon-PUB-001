@@ -67,16 +67,24 @@ class PublisherApplication:
                 environment=self._environment, environ=self._environ
             )
             self.context.metadata = replace(
-                self.context.metadata, environment=settings.runtime.environment
+                self.context.metadata,
+                name=settings.app.name,
+                version=settings.app.version,
+                environment=settings.runtime.environment,
             )
             self.context.services.register(PublisherSettings, settings)
             self._logging = LoggerFactory.create("bgdxpublisher", settings.logging)
             self.context.services.register(LoggingService, self._logging)
-            self.context.lifecycle.transition(RuntimeState.INITIALIZED)
+            self.context.lifecycle.transition(RuntimeState.CONFIGURED)
         except Exception as error:
             self.context.lifecycle.transition(RuntimeState.FAILED)
             if self._logging is not None:
-                self._logging.close()
+                try:
+                    self._logging.close()
+                except Exception as cleanup_error:
+                    error.add_note(
+                        f"Failed to close logging during initialization: {cleanup_error}"
+                    )
             if isinstance(error, RuntimeFoundationError):
                 raise
             raise ApplicationInitializationError(
@@ -84,7 +92,7 @@ class PublisherApplication:
             ) from error
 
     def start(self) -> None:
-        """Start the initialized application."""
+        """Start the configured application."""
         self.context.lifecycle.transition(RuntimeState.RUNNING)
 
     def stop(self) -> None:

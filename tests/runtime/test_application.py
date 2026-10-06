@@ -36,7 +36,9 @@ def test_application_initializes_starts_and_stops(tmp_path: Path) -> None:
         config_path=_write_config(tmp_path / "config.yaml")
     )
     application.initialize()
-    assert application.state is RuntimeState.INITIALIZED
+    assert application.state is RuntimeState.CONFIGURED
+    assert application.context.metadata.name == "Test Publisher"
+    assert application.context.metadata.version == "1.2"
     assert application.context.metadata.environment == "test"
     application.start()
     assert application.state is RuntimeState.RUNNING

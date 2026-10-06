@@ -8,9 +8,9 @@ from .exceptions import InvalidLifecycleTransitionError
 class RuntimeState(Enum):
     """Finite states of the application runtime."""
 
-    NEW = auto()
+    CREATED = auto()
     INITIALIZING = auto()
-    INITIALIZED = auto()
+    CONFIGURED = auto()
     RUNNING = auto()
     STOPPING = auto()
     STOPPED = auto()
@@ -21,11 +21,10 @@ class ApplicationLifecycle:
     """Enforce deterministic runtime state transitions."""
 
     _TRANSITIONS = {
-        RuntimeState.NEW: {RuntimeState.INITIALIZING},
-        RuntimeState.INITIALIZING: {RuntimeState.INITIALIZED, RuntimeState.FAILED},
-        RuntimeState.INITIALIZED: {
+        RuntimeState.CREATED: {RuntimeState.INITIALIZING, RuntimeState.FAILED},
+        RuntimeState.INITIALIZING: {RuntimeState.CONFIGURED, RuntimeState.FAILED},
+        RuntimeState.CONFIGURED: {
             RuntimeState.RUNNING,
-            RuntimeState.STOPPING,
             RuntimeState.FAILED,
         },
         RuntimeState.RUNNING: {RuntimeState.STOPPING, RuntimeState.FAILED},
@@ -35,8 +34,8 @@ class ApplicationLifecycle:
     }
 
     def __init__(self) -> None:
-        """Initialize the lifecycle in the new state."""
-        self._state = RuntimeState.NEW
+        """Initialize the lifecycle in the created state."""
+        self._state = RuntimeState.CREATED
 
     @property
     def state(self) -> RuntimeState:
