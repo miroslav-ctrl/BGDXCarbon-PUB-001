@@ -18,7 +18,7 @@ def test_lifecycle_transitions_in_order() -> None:
     lifecycle = ApplicationLifecycle()
     for state in (
         RuntimeState.INITIALIZING,
-        RuntimeState.INITIALIZED,
+        RuntimeState.CONFIGURED,
         RuntimeState.RUNNING,
         RuntimeState.STOPPING,
         RuntimeState.STOPPED,
@@ -34,6 +34,18 @@ def test_lifecycle_allows_failure_during_initialization() -> None:
     assert lifecycle.state is RuntimeState.FAILED
 
 
+def test_lifecycle_allows_failure_from_running() -> None:
+    lifecycle = ApplicationLifecycle()
+    for state in (
+        RuntimeState.INITIALIZING,
+        RuntimeState.CONFIGURED,
+        RuntimeState.RUNNING,
+        RuntimeState.FAILED,
+    ):
+        lifecycle.transition(state)
+    assert lifecycle.state is RuntimeState.FAILED
+
+
 def test_lifecycle_rejects_invalid_transition() -> None:
     lifecycle = ApplicationLifecycle()
     with pytest.raises(InvalidLifecycleTransitionError):
@@ -43,6 +55,6 @@ def test_lifecycle_rejects_invalid_transition() -> None:
 def test_metadata_is_immutable_and_context_exposes_state() -> None:
     metadata = ApplicationMetadata(name="Publisher", version="1.0")
     context = RuntimeContext(metadata, ApplicationLifecycle(), ServiceRegistry())
-    assert context.state is RuntimeState.NEW
+    assert context.state is RuntimeState.CREATED
     with pytest.raises(FrozenInstanceError):
         metadata.name = "Changed"  # type: ignore[misc]

@@ -9,7 +9,13 @@ from .lifecycle import ApplicationLifecycle, RuntimeState
 
 @dataclass(frozen=True, slots=True)
 class ApplicationMetadata:
-    """Immutable identifying metadata for the running application."""
+    """Immutable application identity and environment metadata.
+
+    Attributes:
+        name: Application name from validated configuration.
+        version: Application version from validated configuration.
+        environment: Selected runtime environment.
+    """
 
     name: str
     version: str

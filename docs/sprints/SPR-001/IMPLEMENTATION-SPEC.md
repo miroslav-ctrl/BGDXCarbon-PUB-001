@@ -9,12 +9,19 @@ The work does not add functionality outside the SPR-001 scope.
 
 ## Runtime contract
 
-`ApplicationLifecycle` permits only explicit transitions among `NEW`,
-`INITIALIZING`, `INITIALIZED`, `RUNNING`, `STOPPING`, `STOPPED`, and `FAILED`.
+The normal `ApplicationLifecycle` path is `CREATED` → `INITIALIZING` →
+`CONFIGURED` → `RUNNING` → `STOPPING` → `STOPPED`. Failures from active
+preterminal states transition to terminal `FAILED`.
 `PublisherApplication.initialize()` loads validated settings and registers
-settings and logging services before entering `INITIALIZED`. `start()` and
+settings and logging services before entering `CONFIGURED`. `start()` and
 `stop()` advance the lifecycle deterministically. Domain exceptions are rooted
 at `RuntimeFoundationError`.
+
+`ApplicationMetadata` is immutable and contains the configured application
+`name` and `version` plus the selected runtime `environment`. Build identifiers,
+release descriptions, vendor/author/contact, and licensing metadata are deferred
+beyond SPR-001 because no approved source contract or configuration fields for
+them are present in this repository.
 
 ## Configuration contract
 
@@ -36,3 +43,9 @@ console output by default and optionally creates a UTF-8 file handler.
 Runtime dependencies are Pydantic v2 and PyYAML. Python 3.13 or newer is
 required. Development quality tools and test dependencies are in the `dev`
 optional dependency group in `pyproject.toml`.
+
+## Pull request base
+
+At review-correction time, the repository has `main` and the feature branch but
+no `develop` branch. PR #2 therefore temporarily targets `main`; retarget it to
+`develop` once that branch is established.
