@@ -55,6 +55,16 @@ class PublisherApplication:
         """Return the current application state."""
         return self.context.state
 
+    def validate_configuration(self) -> PublisherSettings:
+        """Load and validate configuration through the application service.
+
+        Returns:
+            The immutable validated publisher settings.
+        """
+        return self.configuration.load(
+            environment=self._environment, environ=self._environ
+        )
+
     def initialize(self) -> None:
         """Load configuration and initialize runtime services.
 
@@ -63,9 +73,7 @@ class PublisherApplication:
         """
         self.context.lifecycle.transition(RuntimeState.INITIALIZING)
         try:
-            settings = self.configuration.load(
-                environment=self._environment, environ=self._environ
-            )
+            settings = self.validate_configuration()
             self.context.metadata = replace(
                 self.context.metadata,
                 name=settings.app.name,

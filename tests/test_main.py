@@ -1,10 +1,18 @@
 """Tests for the executable package entry point."""
 
-import json
 import runpy
+import sys
+
+import pytest
 
 
-def test_module_entry_point_runs_and_uses_structured_logging(capsys: object) -> None:
-    runpy.run_module("bgdxpublisher.__main__", run_name="__main__")
-    captured = capsys.readouterr()  # type: ignore[attr-defined]
-    assert json.loads(captured.err)["message"].endswith("started.")
+def test_module_entry_point_displays_cli_help(
+    capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(sys, "argv", ["bgdxpublisher", "--help"])
+
+    with pytest.raises(SystemExit) as error:
+        runpy.run_module("bgdxpublisher.__main__", run_name="__main__")
+
+    assert error.value.code == 0
+    assert "usage: bgdxpublisher" in capsys.readouterr().out

@@ -5,3 +5,5 @@
 - Implemented the SPR-001 runtime foundation: configuration, logging, typed
   service registry, runtime lifecycle, and publisher application orchestration.
 - Added subsystem tests and sprint implementation documentation.
+- Added the `bgdxpublisher` CLI, typed diagnostics, doctor checks, configuration
+  validation, runtime status, and SPR-002 documentation.
