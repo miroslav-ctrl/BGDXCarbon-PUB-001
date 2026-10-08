@@ -1,5 +1,7 @@
 """Tests for CLI parsing and top-level commands."""
 
+import json
+import platform
 from pathlib import Path
 
 import pytest
@@ -22,14 +24,21 @@ def test_help_lists_supported_commands(capsys: pytest.CaptureFixture[str]) -> No
 
 def test_version_command(capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["version"]) == 0
-    assert "0.1.0" in capsys.readouterr().out
+    assert capsys.readouterr().out.splitlines() == [
+        "Application: BGDXCarbon Publisher Suite",
+        "Version: 0.1.0",
+        f"Python: {platform.python_version()}",
+        "Environment: development",
+    ]
 
 
 def test_no_arguments_preserves_application_startup(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     assert main([]) == 0
-    assert "started." in capsys.readouterr().err
+    assert json.loads(capsys.readouterr().err)["message"] == (
+        "BGDXCarbon Publisher Suite 0.1.0 started."
+    )
 
 
 def test_nested_command_help_is_available(

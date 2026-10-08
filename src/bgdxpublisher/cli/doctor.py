@@ -6,11 +6,11 @@ from pathlib import Path
 from bgdxpublisher.diagnostics import DiagnosticService, default_diagnostic_checks
 
 
-def run_doctor(config_path: Path) -> int:
+def run_doctor(config_path: Path | None) -> int:
     """Run runtime diagnostics and print their results.
 
     Args:
-        config_path: Path to the YAML configuration file.
+        config_path: YAML file, or None for the packaged default.
 
     Returns:
         One if a mandatory diagnostic failed, otherwise zero.
@@ -18,4 +18,6 @@ def run_doctor(config_path: Path) -> int:
     report = DiagnosticService(default_diagnostic_checks(config_path=config_path)).run()
     for result in report.results:
         sys.stdout.write(f"{result.status.value}: {result.name}: {result.message}\n")
+    overall = "FAILED" if report.exit_code else "READY"
+    sys.stdout.write(f"Overall .............. {overall}\n")
     return report.exit_code

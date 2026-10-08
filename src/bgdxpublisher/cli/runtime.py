@@ -6,11 +6,14 @@ from pathlib import Path
 from bgdxpublisher.runtime import PublisherApplication, RuntimeFoundationError
 
 
-def run_runtime_status(config_path: Path) -> int:
+def run_runtime_status(config_path: Path | None) -> int:
     """Initialize the application and report its runtime metadata and state.
 
+    Report the initialized CONFIGURED state captured before temporary start/stop
+    cleanup, rather than the final STOPPED state.
+
     Args:
-        config_path: Path to the YAML configuration file.
+        config_path: YAML file, or None for the packaged default.
 
     Returns:
         Zero when runtime status is available, otherwise one.

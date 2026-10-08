@@ -6,11 +6,11 @@ from pathlib import Path
 from bgdxpublisher.runtime import PublisherApplication, RuntimeFoundationError
 
 
-def run_config_validate(config_path: Path) -> int:
+def run_config_validate(config_path: Path | None) -> int:
     """Validate application configuration using the runtime's service contract.
 
     Args:
-        config_path: Path to the YAML configuration file.
+        config_path: YAML file, or None for the packaged default.
 
     Returns:
         Zero when configuration is valid, otherwise one.

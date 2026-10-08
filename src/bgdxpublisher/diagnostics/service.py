@@ -32,6 +32,8 @@ class DiagnosticService:
 
         Unexpected check exceptions are converted into mandatory failures so
         that one broken check does not prevent the remaining diagnostics.
+        Broad Exception handling is intentional at this diagnostic boundary
+        only; it must not be propagated into command or configuration handling.
         """
         results: list[DiagnosticResult] = []
         for check in self._checks:

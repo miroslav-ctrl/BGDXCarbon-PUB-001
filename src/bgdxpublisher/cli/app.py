@@ -33,9 +33,7 @@ def build_parser() -> argparse.ArgumentParser:
     doctor_parser = commands.add_parser(
         "doctor", help="Run runtime and workspace diagnostics."
     )
-    doctor_parser.add_argument(
-        "--config", type=Path, default=Path("configs/default.yaml")
-    )
+    doctor_parser.add_argument("--config", type=Path, default=None)
     doctor_parser.set_defaults(handler=lambda args: run_doctor(args.config))
 
     config_parser = commands.add_parser("config", help="Inspect configuration.")
@@ -43,9 +41,7 @@ def build_parser() -> argparse.ArgumentParser:
     validate_parser = config_commands.add_parser(
         "validate", help="Validate the application configuration."
     )
-    validate_parser.add_argument(
-        "--config", type=Path, default=Path("configs/default.yaml")
-    )
+    validate_parser.add_argument("--config", type=Path, default=None)
     validate_parser.set_defaults(handler=lambda args: run_config_validate(args.config))
 
     runtime_parser = commands.add_parser("runtime", help="Inspect the runtime.")
@@ -53,9 +49,7 @@ def build_parser() -> argparse.ArgumentParser:
     status_parser = runtime_commands.add_parser(
         "status", help="Show initialized runtime status."
     )
-    status_parser.add_argument(
-        "--config", type=Path, default=Path("configs/default.yaml")
-    )
+    status_parser.add_argument("--config", type=Path, default=None)
     status_parser.set_defaults(handler=lambda args: run_runtime_status(args.config))
     return parser
 
@@ -67,7 +61,8 @@ def _start_default_application() -> int:
         application.initialize()
         application.start()
         application.context.services.resolve(LoggingService).logger.info(
-            "BGDXCarbon Publisher Suite started."
+            "BGDXCarbon Publisher Suite %s started.",
+            application.context.metadata.version,
         )
         application.stop()
     except RuntimeFoundationError as error:

@@ -67,6 +67,7 @@ def test_doctor_all_pass_and_exit_code(
     output = capsys.readouterr().out
     assert output.count("PASS:") == 6
     assert "FAIL:" not in output
+    assert output.endswith("Overall .............. READY\n")
 
 
 def test_doctor_mandatory_failure_returns_one(
@@ -76,7 +77,9 @@ def test_doctor_mandatory_failure_returns_one(
 ) -> None:
     monkeypatch.setattr("bgdxpublisher.diagnostics.checks.sys.version_info", (3, 13, 0))
     assert run_doctor(tmp_path / "missing.yaml") == 1
-    assert "FAIL: configuration:" in capsys.readouterr().out
+    output = capsys.readouterr().out
+    assert "FAIL: configuration:" in output
+    assert output.endswith("Overall .............. FAILED\n")
 
 
 def test_doctor_warning_only_returns_zero(
@@ -94,4 +97,6 @@ def test_doctor_warning_only_returns_zero(
     )
 
     assert run_doctor(Path("unused.yaml")) == 0
-    assert "WARNING: workspace: Workspace cannot be read." in capsys.readouterr().out
+    output = capsys.readouterr().out
+    assert "WARNING: workspace: Workspace cannot be read." in output
+    assert output.endswith("Overall .............. READY\n")

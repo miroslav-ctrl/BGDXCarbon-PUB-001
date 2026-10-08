@@ -1,4 +1,10 @@
-"""Individual runtime and environment diagnostic checks."""
+"""Individual runtime and environment diagnostic checks.
+
+Broad Exception handling is intentional only at the diagnostic boundary in
+SPR-002: unexpected check failures become structured DiagnosticResult failures.
+Best-effort cleanup preserves the original failure if cleanup also raises.
+This policy does not extend broad handling into other application code.
+"""
 
 import sys
 from collections.abc import Callable
@@ -38,11 +44,11 @@ def check_python_version() -> DiagnosticResult:
     )
 
 
-def check_configuration(config_path: Path) -> DiagnosticResult:
+def check_configuration(config_path: Path | None) -> DiagnosticResult:
     """Validate configuration through the PublisherApplication contract.
 
     Args:
-        config_path: Path to the YAML configuration file.
+        config_path: YAML file, or None for the packaged default.
     """
     application = PublisherApplication(config_path=config_path)
     try:
@@ -54,7 +60,7 @@ def check_configuration(config_path: Path) -> DiagnosticResult:
 
 def _run_application_check(
     name: str,
-    config_path: Path,
+    config_path: Path | None,
     verify: Callable[[PublisherApplication], str],
 ) -> DiagnosticResult:
     """Initialize an application, run a check, and close its runtime."""
@@ -76,11 +82,11 @@ def _run_application_check(
     return _result(name, DiagnosticStatus.PASS, message)
 
 
-def check_logging_initialization(config_path: Path) -> DiagnosticResult:
+def check_logging_initialization(config_path: Path | None) -> DiagnosticResult:
     """Check that application initialization registers a usable logger.
 
     Args:
-        config_path: Path to the YAML configuration file.
+        config_path: YAML file, or None for the packaged default.
     """
 
     def verify(application: PublisherApplication) -> str:
@@ -92,11 +98,11 @@ def check_logging_initialization(config_path: Path) -> DiagnosticResult:
     return _run_application_check("logging", config_path, verify)
 
 
-def check_service_registry(config_path: Path) -> DiagnosticResult:
+def check_service_registry(config_path: Path | None) -> DiagnosticResult:
     """Check that runtime services can be resolved from the application registry.
 
     Args:
-        config_path: Path to the YAML configuration file.
+        config_path: YAML file, or None for the packaged default.
     """
 
     def verify(application: PublisherApplication) -> str:
@@ -107,11 +113,11 @@ def check_service_registry(config_path: Path) -> DiagnosticResult:
     return _run_application_check("service_registry", config_path, verify)
 
 
-def check_runtime_initialization(config_path: Path) -> DiagnosticResult:
+def check_runtime_initialization(config_path: Path | None) -> DiagnosticResult:
     """Check runtime metadata and lifecycle initialization.
 
     Args:
-        config_path: Path to the YAML configuration file.
+        config_path: YAML file, or None for the packaged default.
     """
 
     def verify(application: PublisherApplication) -> str:
@@ -150,12 +156,12 @@ def check_workspace_accessibility(workspace: Path) -> DiagnosticResult:
 
 
 def default_diagnostic_checks(
-    config_path: Path, workspace: Path | None = None
+    config_path: Path | None, workspace: Path | None = None
 ) -> tuple[DiagnosticCheck, ...]:
     """Build the standard ordered diagnostic suite.
 
     Args:
-        config_path: Path to the YAML configuration file.
+        config_path: YAML file, or None for the packaged default.
         workspace: Optional workspace directory; defaults to the current directory.
     """
     selected_workspace = Path.cwd() if workspace is None else workspace

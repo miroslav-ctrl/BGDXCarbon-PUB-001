@@ -23,7 +23,7 @@ class PublisherApplication:
 
     def __init__(
         self,
-        config_path: Path = Path("configs/default.yaml"),
+        config_path: Path | None = None,
         environment: str | None = None,
         environ: Mapping[str, str] | None = None,
         configuration: ConfigurationService | None = None,
@@ -32,7 +32,7 @@ class PublisherApplication:
         """Create an application without starting its runtime.
 
         Args:
-            config_path: YAML configuration file to load.
+            config_path: YAML file to load, or None for the packaged default.
             environment: Optional environment configuration override.
             environ: Optional environment-variable mapping.
             configuration: Optional configuration service.
