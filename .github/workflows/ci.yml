@@ -1,0 +1,74 @@
+name: SPR-002 CI
+
+on:
+  pull_request:
+    branches: [develop]
+  push:
+    branches: [feature/spr-002-clean]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Quality (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.13', '3.14']
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install development dependencies
+        run: python -m pip install ".[dev]"
+      - name: Ruff
+        run: python -m ruff check .
+      - name: Black
+        run: python -m black --check .
+      - name: MyPy
+        run: python -m mypy src
+      - name: Tests
+        run: python -m pytest
+      - name: Coverage
+        run: python -m pytest --cov=bgdxpublisher --cov-report=term-missing
+      - name: Build wheel
+        run: python -m pip wheel . --no-deps --wheel-dir dist-review
+      - name: Test installed wheel outside repository
+        shell: python
+        run: |
+          import os
+          import pathlib
+          import subprocess
+          import tempfile
+          import venv
+
+          wheel = next(pathlib.Path("dist-review").glob("bgdxpublisher-*.whl")).resolve()
+          with tempfile.TemporaryDirectory() as directory:
+              root = pathlib.Path(directory)
+              venv.EnvBuilder(with_pip=True).create(root / "venv")
+              scripts = root / "venv" / ("Scripts" if os.name == "nt" else "bin")
+              python = scripts / ("python.exe" if os.name == "nt" else "python")
+              cli = scripts / ("bgdxpublisher.exe" if os.name == "nt" else "bgdxpublisher")
+              subprocess.run([str(python), "-m", "pip", "install", str(wheel)], check=True)
+              cases = [
+                  (["version"], ["Application: BGDXCarbon Publisher Suite", "Version: 0.1.0", "Python:", "Environment: development"]),
+                  (["doctor"], ["Overall .............. READY"]),
+                  (["config", "validate"], ["Configuration is valid."]),
+                  (["runtime", "status"], ["State: CONFIGURED"]),
+                  ([], ["BGDXCarbon Publisher Suite 0.1.0 started."]),
+              ]
+              for arguments, expected in cases:
+                  result = subprocess.run([str(cli), *arguments], cwd=root, capture_output=True, text=True, check=True)
+                  output = result.stdout + result.stderr
+                  print(output)
+                  for value in expected:
+                      assert value in output, (arguments, value, output)
+
