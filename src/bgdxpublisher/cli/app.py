@@ -19,6 +19,18 @@ from .version import run_version
 CommandHandler = Callable[[argparse.Namespace], int]
 
 
+def _metadata_argument(validator: Callable[[str], str]) -> Callable[[str], str]:
+    """Preserve domain validation diagnostics at the argument parser boundary."""
+
+    def parse(value: str) -> str:
+        try:
+            return validator(value)
+        except ValueError as error:
+            raise argparse.ArgumentTypeError(str(error)) from error
+
+    return parse
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Create the command-line parser and all supported subcommands."""
     parser = argparse.ArgumentParser(
@@ -34,13 +46,13 @@ def build_parser() -> argparse.ArgumentParser:
     publish_parser.add_argument("--config", type=Path, default=None)
     publish_parser.add_argument(
         "--title",
-        type=validate_title,
+        type=_metadata_argument(validate_title),
         default=None,
         help="HTML document title (default: source filename stem).",
     )
     publish_parser.add_argument(
         "--lang",
-        type=validate_language,
+        type=_metadata_argument(validate_language),
         default="und",
         help="Document language, e.g. sr-Latn or en (default: und).",
     )

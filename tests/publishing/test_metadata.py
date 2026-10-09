@@ -39,6 +39,8 @@ def test_language_and_escaped_title(language: str) -> None:
         ("Title", "en-x"),
         ("Title", "123"),
         ("Title", " en "),
+        ("Title", "de-CH-1901-1901"),
+        ("Title", "sl-rozaj-ROZAJ"),
     ],
 )
 def test_invalid_metadata_preserves_existing_output(
@@ -94,13 +96,25 @@ def test_cli_metadata_and_defaults(tmp_path: Path) -> None:
         ("--title", "a\nb"),
         ("--lang", "en_US"),
         ("--lang", "<script>"),
+        ("--lang", "de-CH-1901-1901"),
+        ("--lang", "sl-rozaj-ROZAJ"),
     ],
 )
 def test_cli_rejects_invalid_metadata_before_publication(
-    tmp_path: Path, option: str, value: str
+    tmp_path: Path, option: str, value: str, capsys: pytest.CaptureFixture[str]
 ) -> None:
     output = tmp_path / "out.html"
     with pytest.raises(SystemExit) as error:
         main(["publish", "missing.md", "--output", str(output), option, value])
     assert error.value.code == 2
+    diagnostic = capsys.readouterr().err
+    if option == "--title":
+        assert "Title must be non-empty text without control characters." in diagnostic
+    elif value in ("de-CH-1901-1901", "sl-rozaj-ROZAJ"):
+        assert "Language variants must not repeat (case-insensitive)." in diagnostic
+    else:
+        assert (
+            "Language must use language[-Script][-REGION][-variant] syntax."
+            in diagnostic
+        )
     assert not output.exists()
