@@ -19,6 +19,7 @@ TOC_CSS = (
 def build_toc(tokens: list[Token], plain_text: Callable[[list[Token]], str]) -> str:
     """Assign unique h1–h6 IDs and return an index in document order."""
     used: set[str] = set()
+    next_suffix: dict[str, int] = {}
     entries = []
     for index, token in enumerate(tokens):
         if token.type != "heading_open":
@@ -30,11 +31,12 @@ def build_toc(tokens: list[Token], plain_text: Callable[[list[Token]], str]) -> 
         slug = "-".join(words)
         base = "section-" + (slug or "heading")
         identifier = base
-        suffix = 2
+        suffix = next_suffix.get(base, 2)
         while identifier in used:
             identifier = f"{base}-{suffix}"
             suffix += 1
         used.add(identifier)
+        next_suffix[base] = suffix
         token.attrSet("id", identifier)
         destination = quote(identifier, safe="")
         entries.append(

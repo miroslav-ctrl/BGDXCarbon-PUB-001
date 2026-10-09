@@ -89,3 +89,27 @@ def test_cli_toc_preserves_input_and_overwrite_contract(tmp_path: Path) -> None:
     assert main(args) == 1
     assert output.read_text(encoding="utf-8") == html
     assert main([*args, "--overwrite"]) == 0
+
+
+def test_large_duplicate_heading_index_has_linear_lookup_budget(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import bgdxpublisher.publishing.toc as module
+
+    class CountingSet(set[str]):
+        lookups = 0
+
+        def __contains__(self, value: object) -> bool:
+            type(self).lookups += 1
+            return super().__contains__(value)
+
+    monkeypatch.setattr(module, "set", CountingSet, raising=False)
+    count = 5000
+    html = HtmlRenderer().render("## Repeat\n\n" * count, "Title", toc=True)
+    ids = re.findall(r'<h2 id="(section-[^"]+)"', html)
+    links = re.findall(r'href="#(section-[^"]+)"', html)
+    assert len(ids) == len(set(ids)) == count
+    assert links == ids
+    assert ids[0] == "section-repeat"
+    assert ids[-1] == f"section-repeat-{count}"
+    assert CountingSet.lookups <= 3 * count
