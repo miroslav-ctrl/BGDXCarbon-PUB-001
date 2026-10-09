@@ -92,4 +92,14 @@ jobs:
               invalid = subprocess.run([*command, "--overwrite", "--lang", "en_US"], cwd=root, capture_output=True, text=True)
               assert invalid.returncode == 2
               assert output.read_bytes() == before
+              for theme in ("light", "dark"):
+                  subprocess.run([*command, "--overwrite", "--theme", theme, "--title", "Report", "--lang", "en"], cwd=root, check=True)
+                  html = output.read_text(encoding="utf-8")
+                  assert f"color-scheme:{theme}" in html
+                  assert "<title>Report</title>" in html
+                  assert '<html lang="en">' in html
+              before = output.read_bytes()
+              invalid = subprocess.run([*command, "--overwrite", "--theme", "blue"], cwd=root, capture_output=True, text=True)
+              assert invalid.returncode == 2
+              assert output.read_bytes() == before
 
