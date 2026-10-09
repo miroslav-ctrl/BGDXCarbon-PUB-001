@@ -8,6 +8,8 @@ from markdown_it.rules_inline.image import image
 from markdown_it.rules_inline.state_inline import StateInline
 from markdown_it.token import Token
 
+from .metadata import validate_language, validate_title
+
 
 class _SafeMarkdown(MarkdownIt):
     """Also reject data URLs, including the parser's default image exceptions."""
@@ -66,15 +68,17 @@ def _remove_images(tokens: list[Token]) -> None:
 class HtmlRenderer:
     """Render supported Markdown without raw HTML or external images."""
 
-    def render(self, source: str, title: str) -> str:
+    def render(self, source: str, title: str, language: str = "und") -> str:
         """Return UTF-8-ready HTML; unsafe link destinations remain plain text."""
+        validate_title(title)
+        validate_language(language)
         parser = _SafeMarkdown("commonmark", {"html": False})
         parser.inline.ruler.at("image", _image_as_text)
         tokens = parser.parse(source)
         _remove_images(tokens)
         body = parser.renderer.render(tokens, parser.options, {})
         return (
-            '<!doctype html>\n<html lang="und">\n<head>\n'
+            f'<!doctype html>\n<html lang="{escape(language, quote=True)}">\n<head>\n'
             '<meta charset="utf-8">\n'
             '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
             '<meta http-equiv="Content-Security-Policy" '

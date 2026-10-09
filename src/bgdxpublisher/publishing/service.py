@@ -23,6 +23,8 @@ class PublishRequest:
     source: Path
     output: Path
     overwrite: bool = False
+    title: str | None = None
+    language: str = "und"
 
 
 @dataclass(frozen=True, slots=True)
@@ -71,7 +73,8 @@ class PublishingService:
             if not request.overwrite:
                 raise PublishingError("Output exists; use --overwrite to replace it.")
         text = source.read_text(encoding="utf-8-sig")
-        html = self._renderer.render(text, source.stem)
+        title = source.stem if request.title is None else request.title
+        html = self._renderer.render(text, title, request.language)
         self._write(output, html, request.overwrite)
         return PublishResult(output, len(html.encode("utf-8")))
 

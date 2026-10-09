@@ -12,7 +12,12 @@ from bgdxpublisher.runtime import (
 
 
 def run_publish(
-    source: Path, output: Path, overwrite: bool, config_path: Path | None
+    source: Path,
+    output: Path,
+    overwrite: bool,
+    config_path: Path | None,
+    title: str | None = None,
+    language: str = "und",
 ) -> int:
     """Delegate to the registered publisher and close runtime on failure too."""
     application = PublisherApplication(config_path=config_path)
@@ -22,7 +27,9 @@ def run_publish(
         application.initialize()
         application.start()
         service = application.context.services.resolve(PublishingService)
-        result = service.publish(PublishRequest(source, output, overwrite))
+        result = service.publish(
+            PublishRequest(source, output, overwrite, title, language)
+        )
     except RuntimeFoundationError as error:
         failure = error
     finally:

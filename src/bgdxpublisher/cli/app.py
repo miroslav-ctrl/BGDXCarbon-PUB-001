@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Callable, cast
 
 from bgdxpublisher.logging import LoggingService
+from bgdxpublisher.publishing.metadata import validate_language, validate_title
 from bgdxpublisher.runtime import PublisherApplication, RuntimeFoundationError
 
 from .config import run_config_validate
@@ -31,9 +32,21 @@ def build_parser() -> argparse.ArgumentParser:
     publish_parser.add_argument("--output", type=Path, required=True)
     publish_parser.add_argument("--overwrite", action="store_true")
     publish_parser.add_argument("--config", type=Path, default=None)
+    publish_parser.add_argument(
+        "--title",
+        type=validate_title,
+        default=None,
+        help="HTML document title (default: source filename stem).",
+    )
+    publish_parser.add_argument(
+        "--lang",
+        type=validate_language,
+        default="und",
+        help="Document language, e.g. sr-Latn or en (default: und).",
+    )
     publish_parser.set_defaults(
         handler=lambda args: run_publish(
-            args.source, args.output, args.overwrite, args.config
+            args.source, args.output, args.overwrite, args.config, args.title, args.lang
         )
     )
 
