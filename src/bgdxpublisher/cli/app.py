@@ -11,6 +11,7 @@ from bgdxpublisher.publishing.metadata import validate_language, validate_title
 from bgdxpublisher.publishing.themes import THEMES
 from bgdxpublisher.runtime import PublisherApplication, RuntimeFoundationError
 
+from .batch import run_batch
 from .config import run_config_validate
 from .doctor import run_doctor
 from .publish import run_publish
@@ -81,6 +82,30 @@ def build_parser() -> argparse.ArgumentParser:
         "--toc",
         action="store_true",
         help="Include a table of contents with heading links.",
+    )
+
+    batch_parser = commands.add_parser(
+        "publish-batch", help="Publish a directory of Markdown files."
+    )
+    batch_parser.add_argument("source", type=Path)
+    batch_parser.add_argument("--output-dir", type=Path, required=True)
+    batch_parser.add_argument("--overwrite", action="store_true")
+    batch_parser.add_argument("--config", type=Path, default=None)
+    batch_parser.add_argument(
+        "--lang", type=_metadata_argument(validate_language), default="und"
+    )
+    batch_parser.add_argument("--theme", choices=THEMES, default="light")
+    batch_parser.add_argument("--toc", action="store_true")
+    batch_parser.set_defaults(
+        handler=lambda args: run_batch(
+            args.source,
+            args.output_dir,
+            args.overwrite,
+            args.config,
+            args.lang,
+            args.theme,
+            args.toc,
+        )
     )
 
     version_parser = commands.add_parser(

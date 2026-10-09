@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added SPR-007 non-recursive batch Markdown publishing with per-file results.
+
 - Added SPR-006 optional heading table of contents with unique Unicode targets.
 
 - Added SPR-005 embedded light/dark HTML themes with validated CLI selection.
