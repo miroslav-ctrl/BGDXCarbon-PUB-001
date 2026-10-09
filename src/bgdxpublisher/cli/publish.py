@@ -18,6 +18,7 @@ def run_publish(
     config_path: Path | None,
     title: str | None = None,
     language: str = "und",
+    theme: str = "light",
 ) -> int:
     """Delegate to the registered publisher and close runtime on failure too."""
     application = PublisherApplication(config_path=config_path)
@@ -28,7 +29,7 @@ def run_publish(
         application.start()
         service = application.context.services.resolve(PublishingService)
         result = service.publish(
-            PublishRequest(source, output, overwrite, title, language)
+            PublishRequest(source, output, overwrite, title, language, theme)
         )
     except RuntimeFoundationError as error:
         failure = error

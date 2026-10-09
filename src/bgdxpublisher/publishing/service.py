@@ -25,6 +25,7 @@ class PublishRequest:
     overwrite: bool = False
     title: str | None = None
     language: str = "und"
+    theme: str = "light"
 
 
 @dataclass(frozen=True, slots=True)
@@ -74,7 +75,7 @@ class PublishingService:
                 raise PublishingError("Output exists; use --overwrite to replace it.")
         text = source.read_text(encoding="utf-8-sig")
         title = source.stem if request.title is None else request.title
-        html = self._renderer.render(text, title, request.language)
+        html = self._renderer.render(text, title, request.language, request.theme)
         self._write(output, html, request.overwrite)
         return PublishResult(output, len(html.encode("utf-8")))
 

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added SPR-005 embedded light/dark HTML themes with validated CLI selection.
+
 - Added SPR-004 HTML title and language CLI options with metadata validation.
 
 - Implemented the SPR-001 runtime foundation: configuration, logging, typed

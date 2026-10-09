@@ -9,6 +9,7 @@ from markdown_it.rules_inline.state_inline import StateInline
 from markdown_it.token import Token
 
 from .metadata import validate_language, validate_title
+from .themes import theme_css
 
 
 class _SafeMarkdown(MarkdownIt):
@@ -68,10 +69,13 @@ def _remove_images(tokens: list[Token]) -> None:
 class HtmlRenderer:
     """Render supported Markdown without raw HTML or external images."""
 
-    def render(self, source: str, title: str, language: str = "und") -> str:
+    def render(
+        self, source: str, title: str, language: str = "und", theme: str = "light"
+    ) -> str:
         """Return UTF-8-ready HTML; unsafe link destinations remain plain text."""
         validate_title(title)
         validate_language(language)
+        styles = theme_css(theme)
         parser = _SafeMarkdown("commonmark", {"html": False})
         parser.inline.ruler.at("image", _image_as_text)
         tokens = parser.parse(source)
@@ -85,11 +89,6 @@ class HtmlRenderer:
             "content=\"default-src 'none'; style-src 'unsafe-inline'; "
             "base-uri 'none'; form-action 'none'\">\n"
             f"<title>{escape(title)}</title>\n"
-            "<style>body{font:18px/1.65 system-ui,sans-serif;max-width:"
-            "760px;margin:48px auto;padding:0 24px;color:#202630}"
-            "h1,h2,h3{line-height:1.2}a{color:#1659a5}pre{overflow:auto;"
-            "padding:18px;background:#f1f3f5;border-radius:6px}"
-            "code{font-family:monospace}blockquote{border-left:3px solid "
-            "#aab4c0;margin-left:0;padding-left:20px}</style>\n"
+            f"<style>{styles}</style>\n"
             f"</head>\n<body>\n<main>\n{body}</main>\n</body>\n</html>\n"
         )

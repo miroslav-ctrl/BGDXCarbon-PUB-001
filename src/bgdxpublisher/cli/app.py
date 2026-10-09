@@ -8,6 +8,7 @@ from typing import Callable, cast
 
 from bgdxpublisher.logging import LoggingService
 from bgdxpublisher.publishing.metadata import validate_language, validate_title
+from bgdxpublisher.publishing.themes import THEMES
 from bgdxpublisher.runtime import PublisherApplication, RuntimeFoundationError
 
 from .config import run_config_validate
@@ -58,8 +59,21 @@ def build_parser() -> argparse.ArgumentParser:
     )
     publish_parser.set_defaults(
         handler=lambda args: run_publish(
-            args.source, args.output, args.overwrite, args.config, args.title, args.lang
+            args.source,
+            args.output,
+            args.overwrite,
+            args.config,
+            args.title,
+            args.lang,
+            args.theme,
         )
+    )
+
+    publish_parser.add_argument(
+        "--theme",
+        choices=THEMES,
+        default="light",
+        help="Built-in HTML theme (default: light).",
     )
 
     version_parser = commands.add_parser(
