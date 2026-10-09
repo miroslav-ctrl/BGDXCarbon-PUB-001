@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Callable, cast
 
 from bgdxpublisher.logging import LoggingService
+from bgdxpublisher.publishing.metadata import validate_language, validate_title
 from bgdxpublisher.runtime import PublisherApplication, RuntimeFoundationError
 
 from .config import run_config_validate
@@ -16,6 +17,18 @@ from .runtime import run_runtime_status
 from .version import run_version
 
 CommandHandler = Callable[[argparse.Namespace], int]
+
+
+def _metadata_argument(validator: Callable[[str], str]) -> Callable[[str], str]:
+    """Preserve domain validation diagnostics at the argument parser boundary."""
+
+    def parse(value: str) -> str:
+        try:
+            return validator(value)
+        except ValueError as error:
+            raise argparse.ArgumentTypeError(str(error)) from error
+
+    return parse
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -31,9 +44,21 @@ def build_parser() -> argparse.ArgumentParser:
     publish_parser.add_argument("--output", type=Path, required=True)
     publish_parser.add_argument("--overwrite", action="store_true")
     publish_parser.add_argument("--config", type=Path, default=None)
+    publish_parser.add_argument(
+        "--title",
+        type=_metadata_argument(validate_title),
+        default=None,
+        help="HTML document title (default: source filename stem).",
+    )
+    publish_parser.add_argument(
+        "--lang",
+        type=_metadata_argument(validate_language),
+        default="und",
+        help="Document language, e.g. sr-Latn or en (default: und).",
+    )
     publish_parser.set_defaults(
         handler=lambda args: run_publish(
-            args.source, args.output, args.overwrite, args.config
+            args.source, args.output, args.overwrite, args.config, args.title, args.lang
         )
     )
 
