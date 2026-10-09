@@ -24,6 +24,7 @@ class ApplicationLifecycle:
         RuntimeState.CREATED: {RuntimeState.INITIALIZING, RuntimeState.FAILED},
         RuntimeState.INITIALIZING: {RuntimeState.CONFIGURED, RuntimeState.FAILED},
         RuntimeState.CONFIGURED: {
+            RuntimeState.STOPPING,
             RuntimeState.RUNNING,
             RuntimeState.FAILED,
         },

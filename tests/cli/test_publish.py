@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 
 from bgdxpublisher.cli.app import main
+from bgdxpublisher.logging import LoggingService
 from bgdxpublisher.runtime import (
     PublisherApplication,
     RuntimeFoundationError,
@@ -116,9 +117,7 @@ def test_start_failure_still_closes_configured_runtime(
 
         def start(self) -> None:
             self.attempts += 1
-            if self.attempts == 1:
-                raise RuntimeFoundationError("start failed")
-            super().start()
+            raise RuntimeFoundationError("start failed")
 
     application = FailingFirstStart()
     monkeypatch.setattr(
@@ -127,5 +126,7 @@ def test_start_failure_still_closes_configured_runtime(
     output = tmp_path / "out.html"
     assert main(["publish", "missing.md", "--output", str(output)]) == 1
     assert application.state is RuntimeState.STOPPED
+    assert application.attempts == 1
+    assert not application.context.services.resolve(LoggingService).logger.handlers
     assert "start failed" in capsys.readouterr().err
     assert not output.exists()

@@ -28,8 +28,6 @@ def run_publish(
     finally:
         if application.state in (RuntimeState.CONFIGURED, RuntimeState.RUNNING):
             try:
-                if application.state is RuntimeState.CONFIGURED:
-                    application.start()
                 application.stop()
             except RuntimeFoundationError as error:
                 sys.stderr.write(f"Runtime cleanup failed: {error}\n")

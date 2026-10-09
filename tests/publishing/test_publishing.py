@@ -40,6 +40,7 @@ def test_render_unicode_and_markdown() -> None:
     for expected in [
         "<h1>Zdravo / Здраво</h1>",
         "<strong>bold</strong>",
+        '<a href="https://example.com">link</a>',
         "<em>italic</em>",
         "<ul>",
         "<ol>",
@@ -70,6 +71,13 @@ def test_unsafe_html_links_and_images_are_inert(text: str) -> None:
     assert "<img" not in html
     assert "href=" not in html
     assert "default-src 'none'" in html
+    body = html.partition("<main>\n")[2].partition("</main>")[0]
+    if text.startswith("<script>"):
+        assert "&lt;script&gt;alert(1)&lt;/script&gt;" in body
+    elif text.startswith("![x](https:"):
+        assert "<p>x</p>" in body
+    else:
+        assert text in body
 
 
 def test_publish_and_overwrite(
