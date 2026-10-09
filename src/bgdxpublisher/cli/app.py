@@ -66,6 +66,7 @@ def build_parser() -> argparse.ArgumentParser:
             args.title,
             args.lang,
             args.theme,
+            args.toc,
         )
     )
 
@@ -74,6 +75,12 @@ def build_parser() -> argparse.ArgumentParser:
         choices=THEMES,
         default="light",
         help="Built-in HTML theme (default: light).",
+    )
+
+    publish_parser.add_argument(
+        "--toc",
+        action="store_true",
+        help="Include a table of contents with heading links.",
     )
 
     version_parser = commands.add_parser(

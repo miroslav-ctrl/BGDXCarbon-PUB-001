@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added SPR-006 optional heading table of contents with unique Unicode targets.
+
 - Added SPR-005 embedded light/dark HTML themes with validated CLI selection.
 
 - Added SPR-004 HTML title and language CLI options with metadata validation.

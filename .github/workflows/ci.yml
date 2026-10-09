@@ -83,6 +83,14 @@ jobs:
               refused = subprocess.run(command, cwd=root, capture_output=True, text=True)
               assert refused.returncode == 1
               assert output.read_bytes() == before
+              source.write_text("# First\n\n## Ћирилица\n\n## First", encoding="utf-8-sig")
+              for theme in ("light", "dark"):
+                  subprocess.run([*command, "--overwrite", "--theme", theme, "--toc"], cwd=root, check=True)
+                  html = output.read_text(encoding="utf-8")
+                  assert '<nav class="toc"' in html
+                  assert 'href="#section-first-2"' in html
+                  assert '<h2 id="section-first-2">First</h2>' in html
+                  assert '<h2 id="section-ћирилица">Ћирилица</h2>' in html
               subprocess.run([*command, "--overwrite"], cwd=root, check=True)
               subprocess.run([*command, "--overwrite", "--title", "Report & review", "--lang", "sr-Latn"], cwd=root, check=True)
               html = output.read_text(encoding="utf-8")

@@ -10,6 +10,7 @@ from markdown_it.token import Token
 
 from .metadata import validate_language, validate_title
 from .themes import theme_css
+from .toc import TOC_CSS, build_toc
 
 
 class _SafeMarkdown(MarkdownIt):
@@ -70,7 +71,12 @@ class HtmlRenderer:
     """Render supported Markdown without raw HTML or external images."""
 
     def render(
-        self, source: str, title: str, language: str = "und", theme: str = "light"
+        self,
+        source: str,
+        title: str,
+        language: str = "und",
+        theme: str = "light",
+        toc: bool = False,
     ) -> str:
         """Return UTF-8-ready HTML; unsafe link destinations remain plain text."""
         validate_title(title)
@@ -80,6 +86,9 @@ class HtmlRenderer:
         parser.inline.ruler.at("image", _image_as_text)
         tokens = parser.parse(source)
         _remove_images(tokens)
+        contents = build_toc(tokens, _plain_label) if toc else ""
+        if contents:
+            styles += TOC_CSS
         body = parser.renderer.render(tokens, parser.options, {})
         return (
             f'<!doctype html>\n<html lang="{escape(language, quote=True)}">\n<head>\n'
@@ -90,5 +99,5 @@ class HtmlRenderer:
             "base-uri 'none'; form-action 'none'\">\n"
             f"<title>{escape(title)}</title>\n"
             f"<style>{styles}</style>\n"
-            f"</head>\n<body>\n<main>\n{body}</main>\n</body>\n</html>\n"
+            f"</head>\n<body>\n<main>\n{contents}{body}</main>\n</body>\n</html>\n"
         )
