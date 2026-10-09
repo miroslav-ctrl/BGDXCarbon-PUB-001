@@ -244,3 +244,21 @@ def test_rejected_image_destinations_keep_only_alt_text(destination: str) -> Non
     assert body == "<p>Čć &lt;script&gt;</p>\n"
     assert destination not in body
     assert "<img" not in body
+
+
+@pytest.mark.parametrize(
+    "label,expected",
+    [
+        ("**bold** *italic*", "bold italic"),
+        ("`code` &amp; <script>", "code &amp; &lt;script&gt;"),
+        ("[link](https://example.com)", "link"),
+        ("![nested](https://example.com/image)", "nested"),
+        ("first\nsecond", "first\nsecond"),
+        ("first  \nsecond", "first\nsecond"),
+        ("", ""),
+    ],
+)
+def test_formatted_image_labels_are_plain_text(label: str, expected: str) -> None:
+    html = HtmlRenderer().render(f"![{label}](https://example.com/image)", "test")
+    body = html.partition("<main>\n")[2].partition("</main>")[0]
+    assert body == f"<p>{expected}</p>\n"

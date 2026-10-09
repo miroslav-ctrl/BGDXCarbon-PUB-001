@@ -37,10 +37,24 @@ def _image_as_text(state: StateInline, silent: bool) -> bool:
         parser.parsing_image = previous
 
 
+def _plain_label(tokens: list[Token]) -> str:
+    """Keep label content while discarding formatting and link destinations."""
+    parts = []
+    for token in tokens:
+        if token.type in ("text", "text_special", "code_inline"):
+            parts.append(token.content)
+        elif token.type in ("softbreak", "hardbreak"):
+            parts.append("\n")
+        elif token.children:
+            parts.append(_plain_label(token.children))
+    return "".join(parts)
+
+
 def _remove_images(tokens: list[Token]) -> None:
     """Replace images with escaped alternative text, without network requests."""
     for token in tokens:
         if token.type == "image":
+            token.content = _plain_label(token.children or [])
             token.type = "text"
             token.tag = ""
             token.attrs = {}
