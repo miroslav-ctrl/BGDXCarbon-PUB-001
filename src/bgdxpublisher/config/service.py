@@ -3,6 +3,7 @@
 import json
 import os
 from collections.abc import Mapping
+from importlib.resources import files
 from pathlib import Path
 from typing import Any
 
@@ -21,13 +22,17 @@ from .models import PublisherSettings
 class ConfigurationService:
     """Load and retain immutable validated application configuration."""
 
-    def __init__(self, path: Path) -> None:
+    def __init__(self, path: Path | None = None) -> None:
         """Create a configuration service for a YAML file.
 
         Args:
-            path: Path to the configuration file.
+            path: Configuration file, or None to use the packaged default.
         """
-        self._path = path
+        self._path = (
+            files("bgdxpublisher.config").joinpath("default.yaml")
+            if path is None
+            else path
+        )
         self._settings: PublisherSettings | None = None
 
     @property

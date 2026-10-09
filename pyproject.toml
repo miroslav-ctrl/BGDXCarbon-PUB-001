@@ -12,6 +12,9 @@ dependencies = [
     "PyYAML>=6.0.3,<7",
 ]
 
+[project.scripts]
+bgdxpublisher = "bgdxpublisher.cli:main"
+
 [project.optional-dependencies]
 dev = [
     "black>=26.10.0",
@@ -23,6 +26,9 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+"bgdxpublisher.config" = ["default.yaml"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
