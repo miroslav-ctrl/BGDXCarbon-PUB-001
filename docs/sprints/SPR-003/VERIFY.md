@@ -19,3 +19,8 @@ supported OS/Python combinations.
 
 Test input/read/render/write failures, same paths and hard-link aliases, invalid
 UTF-8, concurrent destination creation, raw HTML, unsafe links and image input.
+
+UTF-8 input with or without a leading BOM must render the first Markdown heading
+identically, preserve Serbian characters and leave the source bytes unchanged.
+HTML output remains UTF-8 without a BOM. Manual Windows verification confirmed
+the sample heading, Latin and Cyrillic text, list, bold text and inline code.

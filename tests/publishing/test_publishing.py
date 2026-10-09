@@ -14,6 +14,23 @@ def service() -> PublishingService:
     return PublishingService(logging.getLogger("test.publisher"))
 
 
+@pytest.mark.parametrize("encoding", ["utf-8", "utf-8-sig"])
+def test_publish_utf8_heading_with_optional_bom(tmp_path: Path, encoding: str) -> None:
+    source = tmp_path / "document.md"
+    source.write_text("# SPR-003 provera\n\nČćšžđ — Ћирилица.", encoding=encoding)
+    original = source.read_bytes()
+    output = tmp_path / "document.html"
+
+    service().publish(PublishRequest(source, output))
+
+    html = output.read_text(encoding="utf-8")
+    assert "<h1>SPR-003 provera</h1>" in html
+    assert "Čćšžđ — Ћирилица." in html
+    assert "\ufeff" not in html
+    assert not output.read_bytes().startswith(b"\xef\xbb\xbf")
+    assert source.read_bytes() == original
+
+
 def test_render_unicode_and_markdown() -> None:
     html = HtmlRenderer().render(
         "# Zdravo / Здраво\n\n**bold** *italic* [link](https://example.com)\n"

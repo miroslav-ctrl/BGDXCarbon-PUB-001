@@ -69,7 +69,7 @@ class PublishingService:
                 raise PublishingError("Output must be a regular file.")
             if not request.overwrite:
                 raise PublishingError("Output exists; use --overwrite to replace it.")
-        text = source.read_text(encoding="utf-8")
+        text = source.read_text(encoding="utf-8-sig")
         html = self._renderer.render(text, source.stem)
         self._write(output, html, request.overwrite)
         return PublishResult(output, len(html.encode("utf-8")))
