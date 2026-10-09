@@ -11,6 +11,7 @@ from bgdxpublisher.runtime import PublisherApplication, RuntimeFoundationError
 
 from .config import run_config_validate
 from .doctor import run_doctor
+from .publish import run_publish
 from .runtime import run_runtime_status
 from .version import run_version
 
@@ -24,6 +25,17 @@ def build_parser() -> argparse.ArgumentParser:
         description="Enterprise Publisher Suite command-line interface.",
     )
     commands = parser.add_subparsers(dest="command")
+
+    publish_parser = commands.add_parser("publish", help="Publish Markdown as HTML.")
+    publish_parser.add_argument("source", type=Path)
+    publish_parser.add_argument("--output", type=Path, required=True)
+    publish_parser.add_argument("--overwrite", action="store_true")
+    publish_parser.add_argument("--config", type=Path, default=None)
+    publish_parser.set_defaults(
+        handler=lambda args: run_publish(
+            args.source, args.output, args.overwrite, args.config
+        )
+    )
 
     version_parser = commands.add_parser(
         "version", help="Show the application version."

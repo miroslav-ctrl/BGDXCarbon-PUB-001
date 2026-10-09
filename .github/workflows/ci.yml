@@ -1,10 +1,10 @@
-name: SPR-002 CI
+name: Publisher CI
 
 on:
   pull_request:
     branches: [develop]
   push:
-    branches: [feature/spr-002-clean]
+    branches: [develop, 'feature/**']
   workflow_dispatch:
 
 permissions:
@@ -71,4 +71,17 @@ jobs:
                   print(output)
                   for value in expected:
                       assert value in output, (arguments, value, output)
+              source = root / "sample.md"
+              source.write_text("# Zdravo / Здраво\n\n**Publisher**", encoding="utf-8")
+              output = root / "sample.html"
+              command = [str(cli), "publish", str(source), "--output", str(output)]
+              subprocess.run(command, cwd=root, check=True)
+              html = output.read_text(encoding="utf-8")
+              assert "<h1>Zdravo / Здраво</h1>" in html
+              assert "<strong>Publisher</strong>" in html
+              before = output.read_bytes()
+              refused = subprocess.run(command, cwd=root, capture_output=True, text=True)
+              assert refused.returncode == 1
+              assert output.read_bytes() == before
+              subprocess.run([*command, "--overwrite"], cwd=root, check=True)
 
