@@ -34,3 +34,10 @@ The transaction covers rendering and output commit. It does not roll back an
 already committed output if subsequent runtime cleanup fails. Atomic replacement
 does not provide a power-loss durability guarantee. Directory permissions and
 concurrent changes to user-controlled directory trees remain OS responsibilities.
+
+## Review corrections
+
+Image labels render as escaped text even when inline destinations use rejected
+schemes. Ordinary links retain the scheme allowlist. Unknown document language
+is tagged `und` rather than assuming Serbian. On POSIX, new HTML is explicitly
+created with mode 0644; overwrite preserves the existing destination mode.

@@ -4,19 +4,37 @@ from html import escape
 from urllib.parse import urlsplit
 
 from markdown_it import MarkdownIt
+from markdown_it.rules_inline.image import image
+from markdown_it.rules_inline.state_inline import StateInline
 from markdown_it.token import Token
 
 
 class _SafeMarkdown(MarkdownIt):
     """Also reject data URLs, including the parser's default image exceptions."""
 
+    parsing_image = False
+
     def validateLink(self, url: str) -> bool:
+        if self.parsing_image:
+            return True
         return urlsplit(url).scheme.lower() in (
             "",
             "http",
             "https",
             "mailto",
         ) and super().validateLink(url)
+
+
+def _image_as_text(state: StateInline, silent: bool) -> bool:
+    """Parse image labels even for rejected destinations; images are removed."""
+    parser = state.md
+    assert isinstance(parser, _SafeMarkdown)
+    previous = parser.parsing_image
+    parser.parsing_image = True
+    try:
+        return image(state, silent)
+    finally:
+        parser.parsing_image = previous
 
 
 def _remove_images(tokens: list[Token]) -> None:
@@ -37,11 +55,12 @@ class HtmlRenderer:
     def render(self, source: str, title: str) -> str:
         """Return UTF-8-ready HTML; unsafe link destinations remain plain text."""
         parser = _SafeMarkdown("commonmark", {"html": False})
+        parser.inline.ruler.at("image", _image_as_text)
         tokens = parser.parse(source)
         _remove_images(tokens)
         body = parser.renderer.render(tokens, parser.options, {})
         return (
-            '<!doctype html>\n<html lang="sr">\n<head>\n'
+            '<!doctype html>\n<html lang="und">\n<head>\n'
             '<meta charset="utf-8">\n'
             '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
             '<meta http-equiv="Content-Security-Policy" '

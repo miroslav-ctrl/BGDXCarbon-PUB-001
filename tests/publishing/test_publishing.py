@@ -47,6 +47,7 @@ def test_render_unicode_and_markdown() -> None:
         "<pre><code",
         "&lt;Title&gt;",
         'charset="utf-8"',
+        '<html lang="und">',
         "<p>",
     ]:
         assert expected in html
@@ -74,7 +75,7 @@ def test_unsafe_html_links_and_images_are_inert(text: str) -> None:
     body = html.partition("<main>\n")[2].partition("</main>")[0]
     if text.startswith("<script>"):
         assert "&lt;script&gt;alert(1)&lt;/script&gt;" in body
-    elif text.startswith("![x](https:"):
+    elif text.startswith("![x]"):
         assert "<p>x</p>" in body
     else:
         assert text in body
@@ -199,3 +200,47 @@ def test_symbolic_output_is_rejected(
     monkeypatch.setattr(Path, "is_symlink", lambda self: self == output)
     with pytest.raises(PublishingError, match="symbolic"):
         service().publish(PublishRequest(source, output, True))
+
+
+@pytest.mark.parametrize(
+    "overwrite,exists", [(False, False), (True, False), (True, True)]
+)
+def test_posix_output_permission_policy(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, overwrite: bool, exists: bool
+) -> None:
+    import stat
+    from types import SimpleNamespace
+
+    import bgdxpublisher.publishing.service as module
+
+    output = tmp_path / "out.html"
+    if exists:
+        output.write_text("old", encoding="utf-8")
+    expected = stat.S_IMODE(output.stat().st_mode) if exists else 0o644
+    modes = []
+    monkeypatch.setattr(Path, "chmod", lambda self, mode: modes.append(mode))
+    monkeypatch.setattr(
+        module,
+        "os",
+        SimpleNamespace(name="posix", fsync=os.fsync, replace=os.replace, link=os.link),
+    )
+    PublishingService._write(output, "new", overwrite)
+    assert modes == [expected]
+    assert output.read_text(encoding="utf-8") == "new"
+
+
+@pytest.mark.parametrize(
+    "destination",
+    [
+        "javascript:alert%281%29",
+        "file:///secret",
+        "custom:payload",
+        "data:image/png;base64,a",
+    ],
+)
+def test_rejected_image_destinations_keep_only_alt_text(destination: str) -> None:
+    html = HtmlRenderer().render(f"![Čć <script>]({destination})", "test")
+    body = html.partition("<main>\n")[2].partition("</main>")[0]
+    assert body == "<p>Čć &lt;script&gt;</p>\n"
+    assert destination not in body
+    assert "<img" not in body

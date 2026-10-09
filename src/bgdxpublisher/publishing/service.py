@@ -2,6 +2,7 @@
 
 import logging
 import os
+import stat
 from dataclasses import dataclass
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -93,8 +94,17 @@ class PublishingService:
                 stream.flush()
                 os.fsync(stream.fileno())
             if overwrite:
+                if os.name == "posix":
+                    mode = (
+                        stat.S_IMODE(output.stat().st_mode)
+                        if output.exists()
+                        else 0o644
+                    )
+                    temporary.chmod(mode)
                 os.replace(temporary, output)
             else:
+                if os.name == "posix":
+                    temporary.chmod(0o644)
                 os.link(temporary, output)
         finally:
             if temporary is not None:
