@@ -7,6 +7,7 @@ from pathlib import Path
 from bgdxpublisher.config import ConfigurationService, PublisherSettings
 from bgdxpublisher.container import ServiceRegistry
 from bgdxpublisher.logging import LoggerFactory, LoggingService
+from bgdxpublisher.publishing import PublishingService
 from bgdxpublisher.version import __version__
 
 from .context import ApplicationMetadata, RuntimeContext
@@ -75,6 +76,9 @@ class PublisherApplication:
             self.context.services.register(PublisherSettings, settings)
             self._logging = LoggerFactory.create("bgdxpublisher", settings.logging)
             self.context.services.register(LoggingService, self._logging)
+            self.context.services.register(
+                PublishingService, PublishingService(self._logging.logger)
+            )
             self.context.lifecycle.transition(RuntimeState.CONFIGURED)
         except Exception as error:
             self.context.lifecycle.transition(RuntimeState.FAILED)
