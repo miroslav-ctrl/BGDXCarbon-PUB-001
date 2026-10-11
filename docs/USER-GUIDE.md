@@ -55,6 +55,28 @@ The application cannot guarantee isolation from concurrently changed directories
 or machine power loss. Keep source files separately backed up. Existing files
 are replaced only when overwrite is explicitly requested.
 
+## Word output on the development branch
+
+Install the updated checkout with `python -m pip install -e ".[dev]"` to include
+the new DOCX dependency. The v1.0.0 release package contains only HTML commands.
+
+```powershell
+bgdxpublisher publish-docx .\examples\docx-sample.md --output .\sample.docx --title "Izveštaj" --lang sr-Latn
+```
+
+The output parent must exist; choose a `.docx` filename. Repeat with `--overwrite`
+to replace it. Open the resulting document in Word or a compatible reader.
+Heading text comes from Markdown; `--title` sets document properties. Word
+heading styles remain editable. Lists preserve starting numbers and nesting.
+The parser treats consecutive ordered items as one list even when source numbers
+restart; separate them with a paragraph or another block to create a new list.
+
+HTTP(S) and mailto links are active. Relative and fragment links are visible
+labels without a destination. Images become text; raw HTML stays literal.
+DOCX has a fixed print layout without `--theme`, `--toc` or batch/index options.
+Code retains indentation and uses a monospace font, without syntax highlighting.
+The command uses the same configuration and exit codes as HTML publishing.
+
 ## Configuration
 
 Default configuration is packaged. `configs/default.yaml` is a sample equivalent.

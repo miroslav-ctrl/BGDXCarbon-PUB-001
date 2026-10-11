@@ -105,6 +105,11 @@ def test_independent_lists_and_first_block_markers() -> None:
     ids = [p._p.pPr.numPr.numId.val for p in paragraphs]
     assert ids[0] == ids[1] and ids[2] == ids[3] and ids[0] != ids[2]
     assert paragraphs[4].style.name == "Heading 1"
+    root = doc.part.numbering_part.element
+    kinds = [element.tag.rsplit("}", 1)[-1] for element in root]
+    assert max(i for i, kind in enumerate(kinds) if kind == "abstractNum") < min(
+        i for i, kind in enumerate(kinds) if kind == "num"
+    )
 
 
 @pytest.mark.parametrize(

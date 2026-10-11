@@ -94,7 +94,7 @@ def _numbering(document: WordDocument, ordered: bool, start: int) -> int:
         child.set(qn("w:val"), value)
         level.append(child)
     abstract.append(level)
-    root.append(abstract)
+    root.insert_element_before(abstract, "w:num", "w:numIdMacAtCleanup")
     number = root.add_num(abstract_id)
     return int(number.numId)
 
