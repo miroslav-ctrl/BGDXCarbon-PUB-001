@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add `publish-docx` for editable Word output with metadata, Unicode, headings,
+  inline formatting, lists, quotations, code and safe external links.
+- Share atomic binary output writing with HTML; preserve overwrite and permissions.
+
 ## 1.0.0 — 2026-10-11
 
 - First stable HTML CLI release: documentation, examples, synchronized version
