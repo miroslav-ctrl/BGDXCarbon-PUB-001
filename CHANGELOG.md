@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 1.0.0 — 2026-10-11
+
+- First stable HTML CLI release: documentation, examples, synchronized version
+  metadata, and verified GitHub release assets with SHA-256 checksums.
+
 - Added SPR-008 optional batch HTML index with safe relative links to successful outputs.
 
 - Added SPR-007 non-recursive batch Markdown publishing with per-file results.

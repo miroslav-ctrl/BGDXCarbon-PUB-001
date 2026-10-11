@@ -4,8 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bgdxpublisher"
-version = "0.1.0"
-description = "Enterprise Publisher Suite runtime foundation"
+version = "1.0.0"
+description = "Standalone HTML publishing from Markdown with batch indexes and themes"
+readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "pydantic>=2.13.5,<3",
