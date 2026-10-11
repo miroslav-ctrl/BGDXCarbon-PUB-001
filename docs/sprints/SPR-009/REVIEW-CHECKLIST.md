@@ -6,4 +6,4 @@
 - [x] Unsafe/unsupported targets remain text and images are not fetched.
 - [x] Source and previous output survive expected failures.
 - [x] Atomic binary output reuses the HTML filesystem policy.
-- [ ] CI and rendered page acceptance recorded in VERIFY.md.
+- [x] CI and rendered page acceptance recorded in VERIFY.md.

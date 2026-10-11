@@ -7,8 +7,11 @@
 - [x] CLI success, overwrite refusal/explicit overwrite, invalid arguments,
   source aliases, missing inputs, bad UTF-8, commit failure and runtime cleanup.
 - [x] Shared writer's existing HTML race/permission/failure tests remain passing.
-- [ ] Exact PR head: Windows/Linux Python 3.13/3.14 and installed-wheel CI.
-- [ ] Rendered acceptance sample: every page visually inspected.
+- [x] Code revision `5320535`: Windows/Linux Python 3.13/3.14 and installed-wheel
+  CI pass (run 38153752030). Subsequent changes record evidence only.
+- [x] Rendered acceptance sample: its single page visually inspected, including
+  Unicode, heading hierarchy, inline formatting, links, nested bullets,
+  independent ordered-list restart, quotations and code; no clipping or overlap.
 
 The bundled local runtime has python-docx, but no LibreOffice executable on
 Windows. Linux CI generates a DOCX/PDF/page PNG verification artifact; PDF here
