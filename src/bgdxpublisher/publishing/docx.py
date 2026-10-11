@@ -99,6 +99,26 @@ def _numbering(document: WordDocument, ordered: bool, start: int) -> int:
     return int(number.numId)
 
 
+def _paragraph(
+    document: WordDocument,
+    lists: list[tuple[int, bool]],
+    quotes: int,
+    style: str = "Normal",
+) -> Paragraph:
+    """Apply indentation and the first-block marker for each list item."""
+    paragraph = document.add_paragraph(style=style)
+    paragraph.paragraph_format.left_indent = Cm(0.7 * (len(lists) + quotes))
+    if quotes:
+        paragraph.paragraph_format.right_indent = Cm(0.7)
+    if lists and lists[-1][1]:
+        num = paragraph._p.get_or_add_pPr().get_or_add_numPr()
+        num.get_or_add_ilvl().val = 0
+        num.get_or_add_numId().val = lists[-1][0]
+        paragraph.paragraph_format.first_line_indent = Cm(-0.4)
+        lists[-1] = (lists[-1][0], False)
+    return paragraph
+
+
 class DocxRenderer:
     """Render paragraphs, headings, lists, quotations, code and inline markup."""
 
@@ -127,6 +147,12 @@ class DocxRenderer:
         normal.font.size = Pt(11)
         normal.paragraph_format.space_after = Pt(8)
         normal.paragraph_format.line_spacing = 1.15
+        for level, size in enumerate((22, 17, 14, 12, 11, 11), 1):
+            heading_style = document.styles[f"Heading {level}"]
+            heading_style.font.size = Pt(size)
+            heading_style.font.bold = True
+            heading_style.paragraph_format.space_before = Pt(12)
+            heading_style.paragraph_format.space_after = Pt(6)
         defaults = document.styles.element.find(qn("w:docDefaults"))
         assert defaults is not None
         properties = defaults.find(qn("w:rPrDefault")).find(qn("w:rPr"))
@@ -135,7 +161,6 @@ class DocxRenderer:
         lang.set(qn("w:val"), language)
         lists: list[tuple[int, bool]] = []
         quotes = 0
-        paragraph = None
         heading = 0
         for token in tokens:
             if token.type == "heading_open":
@@ -161,30 +186,21 @@ class DocxRenderer:
                 lists.pop()
             elif token.type == "list_item_open":
                 lists[-1] = (lists[-1][0], True)
-            elif token.type == "paragraph_open":
-                paragraph = None
             elif token.type == "inline":
-                paragraph = document.add_paragraph(
-                    style=f"Heading {heading}" if heading else "Normal"
+                paragraph = _paragraph(
+                    document,
+                    lists,
+                    quotes,
+                    style=f"Heading {heading}" if heading else "Normal",
                 )
-                paragraph.paragraph_format.left_indent = Cm(0.7 * (len(lists) + quotes))
-                if quotes:
-                    paragraph.paragraph_format.right_indent = Cm(0.7)
-                if lists and lists[-1][1]:
-                    num = paragraph._p.get_or_add_pPr().get_or_add_numPr()
-                    num.get_or_add_ilvl().val = 0
-                    num.get_or_add_numId().val = lists[-1][0]
-                    paragraph.paragraph_format.first_line_indent = Cm(-0.4)
-                    lists[-1] = (lists[-1][0], False)
                 _inline(paragraph, token.children or [])
             elif token.type in ("fence", "code_block"):
-                paragraph = document.add_paragraph()
-                paragraph.paragraph_format.left_indent = Cm(0.7 * (len(lists) + quotes))
+                paragraph = _paragraph(document, lists, quotes)
                 run = paragraph.add_run(token.content.rstrip("\n"))
                 run.font.name = "Consolas"
                 run.font.size = Pt(10)
             elif token.type == "hr":
-                document.add_paragraph("—")
+                _paragraph(document, lists, quotes).add_run("—")
         stream = BytesIO()
         document.save(stream)
         return stream.getvalue()

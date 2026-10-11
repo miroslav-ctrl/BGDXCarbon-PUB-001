@@ -1,6 +1,6 @@
 # SPR-009 verification
 
-- [x] Windows Python 3.14.8: 220 tests; total coverage 99.81%.
+- [x] Windows Python 3.14.8: 221 tests; total coverage 99.81%.
 - [x] Ruff, Black and MyPy pass.
 - [x] OOXML reopened with python-docx: headings, Unicode, formatting, numbering,
   metadata, language, links, alternative text and absence of embedded images.

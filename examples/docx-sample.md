@@ -19,6 +19,8 @@ Bezbedan [link ka dokumentaciji](https://example.com) ostaje aktivan.
 3. Treći korak
 4. Četvrti korak
 
+Zasebna lista:
+
 1. Nova lista počinje od jedan
 2. Sledeći korak
 

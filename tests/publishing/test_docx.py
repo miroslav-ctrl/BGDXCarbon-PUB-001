@@ -83,6 +83,30 @@ def test_links_and_images_are_safe_and_visible() -> None:
         assert b"javascript:" not in package.read("word/_rels/document.xml.rels")
 
 
+def test_independent_lists_and_first_block_markers() -> None:
+    doc = Document(
+        BytesIO(
+            DocxRenderer().render(
+                "3. Third\n4. Fourth\n\nSeparate lists\n\n1. First\n2. Second\n\n"
+                "- # Heading item\n- ```\n  code item\n  ```\n",
+                "Lists",
+            )
+        )
+    )
+    paragraphs = [p for p in doc.paragraphs if p._p.xpath("./w:pPr/w:numPr")]
+    assert [p.text for p in paragraphs] == [
+        "Third",
+        "Fourth",
+        "First",
+        "Second",
+        "Heading item",
+        "code item",
+    ]
+    ids = [p._p.pPr.numPr.numId.val for p in paragraphs]
+    assert ids[0] == ids[1] and ids[2] == ids[3] and ids[0] != ids[2]
+    assert paragraphs[4].style.name == "Heading 1"
+
+
 @pytest.mark.parametrize(
     "text",
     ["", "# Empty\n\n- \n", "- First\n\n  continuation\n\n- Second\n", "> > Nested\n"],
