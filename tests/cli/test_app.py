@@ -26,7 +26,7 @@ def test_version_command(capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["version"]) == 0
     assert capsys.readouterr().out.splitlines() == [
         "Application: BGDXCarbon Publisher Suite",
-        "Version: 0.1.0",
+        "Version: 1.0.0",
         f"Python: {platform.python_version()}",
         "Environment: development",
     ]
@@ -37,7 +37,7 @@ def test_no_arguments_preserves_application_startup(
 ) -> None:
     assert main([]) == 0
     assert json.loads(capsys.readouterr().err)["message"] == (
-        "BGDXCarbon Publisher Suite 0.1.0 started."
+        "BGDXCarbon Publisher Suite 1.0.0 started."
     )
 
 
