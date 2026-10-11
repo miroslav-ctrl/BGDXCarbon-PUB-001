@@ -20,6 +20,7 @@ def run_batch(
     language: str,
     theme: str,
     toc: bool,
+    index: bool = False,
 ) -> int:
     """Use one runtime and report every completed attempt."""
     application = PublisherApplication(config_path=config)
@@ -29,18 +30,23 @@ def run_batch(
         application.start()
         results = publish_batch(
             application.context.services.resolve(PublishingService),
-            BatchRequest(source, output, overwrite, language, theme, toc),
+            BatchRequest(source, output, overwrite, language, theme, toc, index),
         )
-        for item in results:
+        for item in results.items:
             if item.error is not None:
                 sys.stderr.write(f"Failed: {item.source}: {item.error}\n")
             else:
                 sys.stdout.write(f"Published: {item.output}\n")
-        failures = sum(item.error is not None for item in results)
+        failures = sum(item.error is not None for item in results.items)
         sys.stdout.write(
-            f"Batch complete: {len(results) - failures} published, {failures} failed.\n"
+            f"Batch complete: {len(results.items) - failures} published, "
+            f"{failures} failed.\n"
         )
-        failed = failures > 0
+        if results.index is not None:
+            sys.stdout.write(f"Index published: {results.index.output}\n")
+        if results.index_error is not None:
+            sys.stderr.write(f"Index publication failed: {results.index_error}\n")
+        failed = failures > 0 or results.index_error is not None
     except RuntimeFoundationError as error:
         sys.stderr.write(f"Batch publication failed: {error}\n")
         failed = True

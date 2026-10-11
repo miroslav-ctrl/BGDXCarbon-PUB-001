@@ -96,6 +96,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     batch_parser.add_argument("--theme", choices=THEMES, default="light")
     batch_parser.add_argument("--toc", action="store_true")
+    batch_parser.add_argument(
+        "--index",
+        action="store_true",
+        help="Create index.html linking successful publications.",
+    )
     batch_parser.set_defaults(
         handler=lambda args: run_batch(
             args.source,
@@ -105,6 +110,7 @@ def build_parser() -> argparse.ArgumentParser:
             args.lang,
             args.theme,
             args.toc,
+            args.index,
         )
     )
 

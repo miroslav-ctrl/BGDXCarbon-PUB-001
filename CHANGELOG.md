@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added SPR-008 optional batch HTML index with safe relative links to successful outputs.
+
 - Added SPR-007 non-recursive batch Markdown publishing with per-file results.
 
 - Added SPR-006 optional heading table of contents with unique Unicode targets.
