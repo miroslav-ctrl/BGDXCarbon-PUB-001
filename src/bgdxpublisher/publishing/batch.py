@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .metadata import validate_language
-from .service import PublishingError, PublishingService, PublishRequest
+from .service import PublishingError, PublishingService, PublishRequest, PublishResult
 from .themes import theme_css
 
 
@@ -18,6 +18,7 @@ class BatchRequest:
     language: str = "und"
     theme: str = "light"
     toc: bool = False
+    index: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -29,9 +30,16 @@ class BatchItem:
     error: str | None = None
 
 
-def publish_batch(
-    service: PublishingService, request: BatchRequest
-) -> tuple[BatchItem, ...]:
+@dataclass(frozen=True, slots=True)
+class BatchResult:
+    """Document outcomes and a separately reported generated index."""
+
+    items: tuple[BatchItem, ...]
+    index: PublishResult | None = None
+    index_error: str | None = None
+
+
+def publish_batch(service: PublishingService, request: BatchRequest) -> BatchResult:
     """Publish independently; reject ambiguous destinations before writing."""
     try:
         validate_language(request.language)
@@ -57,6 +65,20 @@ def publish_batch(
         output_dir = request.output_dir.absolute()
         if output_dir.is_symlink():
             raise PublishingError("Output directory must not be a symbolic link.")
+        if request.index:
+            if "index" in names:
+                raise PublishingError(
+                    "index.md conflicts with the generated index.html."
+                )
+            index_output = output_dir / "index.html"
+            service.validate_output(index_output, request.overwrite)
+            protected = sources + [output_dir / (p.stem + ".html") for p in sources]
+            if index_output.exists() and any(
+                p.exists() and index_output.samefile(p) for p in protected
+            ):
+                raise PublishingError(
+                    "Index must not alias an input or document output."
+                )
         output_dir.mkdir(parents=True, exist_ok=True)
     except (OSError, ValueError) as error:
         raise PublishingError(str(error)) from error
@@ -79,4 +101,18 @@ def publish_batch(
             results.append(BatchItem(source, output, str(error)))
         else:
             results.append(BatchItem(source, output))
-    return tuple(results)
+    index_result = None
+    index_error = None
+    if request.index:
+        entries = [(p.source.stem, p.output.name) for p in results if p.error is None]
+        try:
+            index_result = service.publish_index(
+                output_dir / "index.html",
+                entries,
+                request.language,
+                request.theme,
+                request.overwrite,
+            )
+        except PublishingError as error:
+            index_error = str(error)
+    return BatchResult(tuple(results), index_result, index_error)

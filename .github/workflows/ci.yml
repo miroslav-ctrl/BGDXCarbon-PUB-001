@@ -101,6 +101,19 @@ jobs:
               assert result.returncode == 1 and "0 published, 2 failed" in result.stdout
               assert (batch_output / "first.html").read_bytes() == before_batch
               subprocess.run([*batch_command, "--overwrite"], cwd=root, check=True)
+              for theme in ("light", "dark"):
+                  subprocess.run([*batch_command, "--overwrite", "--index", "--theme", theme], cwd=root, check=True)
+                  index = (batch_output / "index.html").read_text(encoding="utf-8")
+                  assert 'href="./first.html"' in index and 'href="./second.html"' in index
+                  assert '<html lang="sr-Latn">' in index and f"color-scheme:{theme}" in index
+              before_index = (batch_output / "index.html").read_bytes()
+              refused_index = subprocess.run([*batch_command, "--index"], cwd=root, capture_output=True, text=True)
+              assert refused_index.returncode == 1
+              assert (batch_output / "index.html").read_bytes() == before_index
+              (batch_source / "bad.md").write_bytes(b"\xff")
+              partial = subprocess.run([*batch_command, "--overwrite", "--index"], cwd=root, capture_output=True, text=True)
+              assert partial.returncode == 1 and "2 published, 1 failed" in partial.stdout
+              assert 'href="./bad.html"' not in (batch_output / "index.html").read_text(encoding="utf-8")
               source.write_text("# First\n\n## Ћирилица\n\n## First", encoding="utf-8-sig")
               for theme in ("light", "dark"):
                   subprocess.run([*command, "--overwrite", "--theme", theme, "--toc"], cwd=root, check=True)

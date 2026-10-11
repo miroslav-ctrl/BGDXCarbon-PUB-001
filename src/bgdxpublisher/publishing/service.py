@@ -63,23 +63,45 @@ class PublishingService:
         """Validate paths before reading and commit a fully rendered output."""
         source = request.source.resolve(strict=True)
         output = request.output.absolute()
-        if output.is_symlink():
-            raise PublishingError("Output must not be a symbolic link.")
         if source == output.resolve() or (output.exists() and source.samefile(output)):
             raise PublishingError("Input and output must be different files.")
         if not source.is_file():
             raise PublishingError("Input must be a regular file.")
-        if output.exists():
-            if not output.is_file():
-                raise PublishingError("Output must be a regular file.")
-            if not request.overwrite:
-                raise PublishingError("Output exists; use --overwrite to replace it.")
+        self.validate_output(output, request.overwrite)
         text = source.read_text(encoding="utf-8-sig")
         title = source.stem if request.title is None else request.title
         html = self._renderer.render(
             text, title, request.language, request.theme, request.toc
         )
         self._write(output, html, request.overwrite)
+        return PublishResult(output, len(html.encode("utf-8")))
+
+    @staticmethod
+    def validate_output(output: Path, overwrite: bool) -> None:
+        """Check the shared output policy before rendering or batch execution."""
+        if output.is_symlink():
+            raise PublishingError("Output must not be a symbolic link.")
+        if output.exists():
+            if not output.is_file():
+                raise PublishingError("Output must be a regular file.")
+            if not overwrite:
+                raise PublishingError("Output exists; use --overwrite to replace it.")
+
+    def publish_index(
+        self,
+        output: Path,
+        entries: list[tuple[str, str]],
+        language: str,
+        theme: str,
+        overwrite: bool,
+    ) -> PublishResult:
+        """Commit the generated index with the same atomic output writer."""
+        try:
+            self.validate_output(output, overwrite)
+            html = self._renderer.render_index(entries, language, theme)
+            self._write(output, html, overwrite)
+        except (OSError, ValueError) as error:
+            raise PublishingError(f"Unable to publish index: {error}") from error
         return PublishResult(output, len(html.encode("utf-8")))
 
     @staticmethod

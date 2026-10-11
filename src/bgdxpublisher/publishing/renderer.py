@@ -1,7 +1,7 @@
 """Render Markdown as a self-contained HTML document."""
 
 from html import escape
-from urllib.parse import urlsplit
+from urllib.parse import quote, urlsplit
 
 from markdown_it import MarkdownIt
 from markdown_it.rules_inline.image import image
@@ -90,6 +90,32 @@ class HtmlRenderer:
         if contents:
             styles += TOC_CSS
         body = parser.renderer.render(tokens, parser.options, {})
+        return self._document(contents + body, title, language, styles)
+
+    def render_index(
+        self, entries: list[tuple[str, str]], language: str, theme: str
+    ) -> str:
+        """Render plain labels and encoded relative filenames without Markdown."""
+        validate_language(language)
+        styles = theme_css(theme)
+        body = '<h1 lang="en">Documents</h1>\n'
+        if entries:
+            body += (
+                "<ul>\n"
+                + "".join(
+                    f'<li><a href="./{quote(filename, safe="")}">'
+                    f"{escape(label)}</a></li>\n"
+                    for label, filename in entries
+                )
+                + "</ul>\n"
+            )
+        else:
+            body += '<p lang="en">No documents were published successfully.</p>\n'
+        return self._document(body, "Documents", language, styles)
+
+    @staticmethod
+    def _document(body: str, title: str, language: str, styles: str) -> str:
+        """Wrap renderer-generated HTML in the shared standalone shell."""
         return (
             f'<!doctype html>\n<html lang="{escape(language, quote=True)}">\n<head>\n'
             '<meta charset="utf-8">\n'
@@ -99,5 +125,5 @@ class HtmlRenderer:
             "base-uri 'none'; form-action 'none'\">\n"
             f"<title>{escape(title)}</title>\n"
             f"<style>{styles}</style>\n"
-            f"</head>\n<body>\n<main>\n{contents}{body}</main>\n</body>\n</html>\n"
+            f"</head>\n<body>\n<main>\n{body}</main>\n</body>\n</html>\n"
         )
