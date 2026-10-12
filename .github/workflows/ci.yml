@@ -63,6 +63,19 @@ jobs:
               subprocess.run([str(python), "-m", "pip", "install", str(wheel)], check=True)
               package_version = subprocess.check_output([str(python), "-c", "from importlib.metadata import version; print(version('bgdxpublisher'))"], cwd=root, text=True).strip()
               assert package_version == "1.0.0"
+              docx_source = root / "docx-sample.md"
+              shutil.copyfile(repository / "examples" / "docx-sample.md", docx_source)
+              docx_output = root / "sample.docx"
+              docx_command = [str(cli), "publish-docx", str(docx_source), "--output", str(docx_output), "--title", "Izveštaj", "--lang", "sr-Latn"]
+              subprocess.run(docx_command, cwd=root, check=True)
+              import zipfile
+              with zipfile.ZipFile(docx_output) as archive:
+                  assert "Ћирилица" in archive.read("word/document.xml").decode("utf-8")
+                  assert "Izveštaj" in archive.read("docProps/core.xml").decode("utf-8")
+              docx_before = docx_output.read_bytes()
+              assert subprocess.run(docx_command, cwd=root, capture_output=True).returncode == 1
+              assert docx_output.read_bytes() == docx_before
+              subprocess.run([*docx_command, "--overwrite"], cwd=root, check=True)
               cases = [
                   (["version"], ["Application: BGDXCarbon Publisher Suite", "Version: 1.0.0", "Python:", "Environment: development"]),
                   (["doctor"], ["Overall .............. READY"]),
@@ -88,6 +101,7 @@ jobs:
               refused = subprocess.run(command, cwd=root, capture_output=True, text=True)
               assert refused.returncode == 1
               assert output.read_bytes() == before
+
               example_source = root / "examples"
               shutil.copytree(repository / "examples" / "documents", example_source)
               example_output = root / "example-output"
@@ -152,4 +166,21 @@ jobs:
               invalid = subprocess.run([*command, "--overwrite", "--theme", "blue"], cwd=root, capture_output=True, text=True)
               assert invalid.returncode == 2
               assert output.read_bytes() == before
+
+      - name: Render DOCX acceptance sample
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libreoffice-writer poppler-utils fonts-liberation
+          mkdir -p docx-preview
+          bgdxpublisher publish-docx examples/docx-sample.md --output docx-preview/sample.docx --lang sr-Latn
+          libreoffice -env:UserInstallation=file:///tmp/bgdx-docx-profile --headless --convert-to pdf --outdir docx-preview docx-preview/sample.docx
+          pdftoppm -r 140 -png docx-preview/sample.pdf docx-preview/page
+      - name: Upload DOCX visual verification
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
+        uses: actions/upload-artifact@v4
+        with:
+          name: docx-preview
+          path: docx-preview/
+          if-no-files-found: error
 

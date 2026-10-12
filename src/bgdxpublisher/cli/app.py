@@ -41,6 +41,29 @@ def build_parser() -> argparse.ArgumentParser:
     )
     commands = parser.add_subparsers(dest="command")
 
+    docx_parser = commands.add_parser("publish-docx", help="Publish Markdown as DOCX.")
+    docx_parser.add_argument("source", type=Path)
+    docx_parser.add_argument("--output", type=Path, required=True)
+    docx_parser.add_argument("--overwrite", action="store_true")
+    docx_parser.add_argument("--config", type=Path, default=None)
+    docx_parser.add_argument(
+        "--title", type=_metadata_argument(validate_title), default=None
+    )
+    docx_parser.add_argument(
+        "--lang", type=_metadata_argument(validate_language), default="und"
+    )
+    docx_parser.set_defaults(
+        handler=lambda args: run_publish(
+            args.source,
+            args.output,
+            args.overwrite,
+            args.config,
+            args.title,
+            args.lang,
+            docx=True,
+        )
+    )
+
     publish_parser = commands.add_parser("publish", help="Publish Markdown as HTML.")
     publish_parser.add_argument("source", type=Path)
     publish_parser.add_argument("--output", type=Path, required=True)

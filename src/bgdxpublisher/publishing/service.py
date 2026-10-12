@@ -106,20 +106,23 @@ class PublishingService:
 
     @staticmethod
     def _write(output: Path, html: str, overwrite: bool) -> None:
+        """Encode HTML and use the shared atomic binary writer."""
+        PublishingService.write_bytes(output, html.encode("utf-8"), overwrite)
+
+    @staticmethod
+    def write_bytes(output: Path, content: bytes, overwrite: bool) -> None:
         """Commit in the output directory; hard-link creation refuses races."""
         temporary: Path | None = None
         try:
             with NamedTemporaryFile(
-                mode="w",
-                encoding="utf-8",
-                newline="\n",
+                mode="wb",
                 dir=output.parent,
                 prefix=".bgdx-",
                 suffix=".tmp",
                 delete=False,
             ) as stream:
                 temporary = Path(stream.name)
-                stream.write(html)
+                stream.write(content)
                 stream.flush()
                 os.fsync(stream.fileno())
             if overwrite:

@@ -52,6 +52,23 @@ documents. Successful outputs remain on a partial failure; the command is not
 a batch transaction. Index errors are reported separately from document counts.
 Repeating a batch against existing output requires `--overwrite`.
 
+## DOCX development
+
+On the development branch, publish an editable Word document:
+
+```powershell
+bgdxpublisher publish-docx .\document.md --output .\document.docx --title "Izveštaj" --lang sr-Latn
+```
+
+DOCX supports CommonMark headings, paragraphs, emphasis, lists, quotations, code,
+and HTTP/HTTPS/mailto hyperlinks. Images become plain alternative text; relative
+and fragment links remain visible labels. Raw HTML remains visible text.
+The title is metadata, while visible headings come from Markdown. Output uses
+A4 portrait pages with 2.5 cm margins. Existing output requires `--overwrite`;
+the parent directory must exist. HTML commands are unchanged.
+DOCX batch export, templates and PDF are future work. DOCX is not part of the
+published v1.0.0 package; install the development checkout for this command.
+
 ## Commands and diagnostics
 
 - `publish`, `publish-batch`: Markdown publishing; use `--help` for arguments.

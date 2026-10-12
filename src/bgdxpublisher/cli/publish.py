@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 from bgdxpublisher.publishing import PublishingService, PublishRequest
+from bgdxpublisher.publishing.docx import DocxPublishingService, DocxRequest
 from bgdxpublisher.runtime import (
     PublisherApplication,
     RuntimeFoundationError,
@@ -20,6 +21,7 @@ def run_publish(
     language: str = "und",
     theme: str = "light",
     toc: bool = False,
+    docx: bool = False,
 ) -> int:
     """Delegate to the registered publisher and close runtime on failure too."""
     application = PublisherApplication(config_path=config_path)
@@ -28,10 +30,16 @@ def run_publish(
     try:
         application.initialize()
         application.start()
-        service = application.context.services.resolve(PublishingService)
-        result = service.publish(
-            PublishRequest(source, output, overwrite, title, language, theme, toc)
-        )
+        if docx:
+            word_service = application.context.services.resolve(DocxPublishingService)
+            result = word_service.publish(
+                DocxRequest(source, output, overwrite, title, language)
+            )
+        else:
+            service = application.context.services.resolve(PublishingService)
+            result = service.publish(
+                PublishRequest(source, output, overwrite, title, language, theme, toc)
+            )
     except RuntimeFoundationError as error:
         failure = error
     finally:
