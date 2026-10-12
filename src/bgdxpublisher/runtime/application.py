@@ -9,6 +9,7 @@ from bgdxpublisher.container import ServiceRegistry
 from bgdxpublisher.logging import LoggerFactory, LoggingService
 from bgdxpublisher.publishing import PublishingService
 from bgdxpublisher.publishing.docx import DocxPublishingService
+from bgdxpublisher.publishing.pdf import PdfPublishingService
 from bgdxpublisher.version import __version__
 
 from .context import ApplicationMetadata, RuntimeContext
@@ -82,6 +83,9 @@ class PublisherApplication:
             )
             self.context.services.register(
                 DocxPublishingService, DocxPublishingService(self._logging.logger)
+            )
+            self.context.services.register(
+                PdfPublishingService, PdfPublishingService(self._logging.logger)
             )
             self.context.lifecycle.transition(RuntimeState.CONFIGURED)
         except Exception as error:

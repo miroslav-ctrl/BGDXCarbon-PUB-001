@@ -77,6 +77,37 @@ DOCX has a fixed print layout without `--theme`, `--toc` or batch/index options.
 Code retains indentation and uses a monospace font, without syntax highlighting.
 The command uses the same configuration and exit codes as HTML publishing.
 
+## PDF output on the development branch
+
+After installing the updated checkout with `python -m pip install -e ".[dev]"`:
+
+```powershell
+bgdxpublisher publish-pdf .\examples\pdf-sample.md --output .\sample.pdf --title "Izveštaj" --lang sr-Latn
+```
+
+This command renders Markdown directly, without converting the DOCX or HTML
+outputs. ReportLab and licensed DejaVu fonts are packaged with the application;
+publication does not install applications, fetch images or use machine fonts.
+The PDF contains selectable text with embedded font subsets and Unicode maps.
+Supported glyphs include Serbian Latin and Cyrillic. An unsupported character
+reports its Unicode code point and leaves the previous output intact.
+
+PDF supports CommonMark headings, paragraphs, emphasis, ordered and bullet lists,
+quotes, inline/fenced/indented code and HTTP(S)/mailto links. Relative/fragment
+links remain labels; images become text and raw HTML remains visible text.
+PDF paragraphs collapse ordinary source whitespace; hard breaks are preserved.
+Code expands tabs to four spaces, preserves line breaks, and wraps long lines.
+Pagination is automatic; headings stay with following content when space allows.
+
+Use a `.pdf` output path with an existing parent directory; repeat with
+`--overwrite` to replace it. Title and language are PDF metadata. The layout is
+A4 portrait with 2.5 cm margins, without dark themes, contents or batch/index
+options. Metadata language and selectable Unicode are not a PDF/UA conformance
+claim. Invalid CLI arguments return 2; publication or runtime failure returns 1.
+
+The published v1.0.0 assets remain unchanged. PDF is currently a development
+feature based on the DOCX sprint; follow the PR dependency before merging.
+
 ## Configuration
 
 Default configuration is packaged. `configs/default.yaml` is a sample equivalent.

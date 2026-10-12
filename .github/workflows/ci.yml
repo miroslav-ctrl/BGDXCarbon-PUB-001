@@ -3,7 +3,7 @@ name: Publisher CI
 on:
   workflow_call:
   pull_request:
-    branches: [develop]
+    branches: [develop, 'feature/spr-009-docx']
   push:
     branches: [develop, 'feature/**']
   workflow_dispatch:
@@ -76,6 +76,24 @@ jobs:
               assert subprocess.run(docx_command, cwd=root, capture_output=True).returncode == 1
               assert docx_output.read_bytes() == docx_before
               subprocess.run([*docx_command, "--overwrite"], cwd=root, check=True)
+              pdf_source = root / "pdf-sample.md"
+              shutil.copyfile(repository / "examples" / "pdf-sample.md", pdf_source)
+              pdf_output = root / "sample.pdf"
+              pdf_command = [str(cli), "publish-pdf", str(pdf_source), "--output", str(pdf_output), "--title", "Izveštaj", "--lang", "sr-Latn"]
+              subprocess.run(pdf_command, cwd=root, check=True)
+              assert pdf_output.read_bytes().startswith(b"%PDF-")
+              # Validate with pypdf in the host test environment, not the runtime wheel.
+              from pypdf import PdfReader
+              pdf_document = PdfReader(pdf_output)
+              assert pdf_document.metadata.title == "Izveštaj"
+              assert pdf_document.trailer["/Root"]["/Lang"] == "sr-Latn"
+              assert "Ћирилица" in "".join(page.extract_text() for page in pdf_document.pages)
+              pdf_before = pdf_output.read_bytes()
+              assert subprocess.run(pdf_command, cwd=root, capture_output=True).returncode == 1
+              assert pdf_output.read_bytes() == pdf_before
+              subprocess.run([*pdf_command, "--overwrite"], cwd=root, check=True)
+              invalid_pdf = subprocess.run([*pdf_command, "--overwrite", "--lang", "en_US"], cwd=root, capture_output=True)
+              assert invalid_pdf.returncode == 2
               cases = [
                   (["version"], ["Application: BGDXCarbon Publisher Suite", "Version: 1.0.0", "Python:", "Environment: development"]),
                   (["doctor"], ["Overall .............. READY"]),
@@ -176,11 +194,21 @@ jobs:
           bgdxpublisher publish-docx examples/docx-sample.md --output docx-preview/sample.docx --lang sr-Latn
           libreoffice -env:UserInstallation=file:///tmp/bgdx-docx-profile --headless --convert-to pdf --outdir docx-preview docx-preview/sample.docx
           pdftoppm -r 140 -png docx-preview/sample.pdf docx-preview/page
+          mkdir -p pdf-preview
+          bgdxpublisher publish-pdf examples/pdf-sample.md --output pdf-preview/sample.pdf --lang sr-Latn
+          pdftoppm -r 140 -png pdf-preview/sample.pdf pdf-preview/page
       - name: Upload DOCX visual verification
         if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
         uses: actions/upload-artifact@v4
         with:
           name: docx-preview
           path: docx-preview/
+          if-no-files-found: error
+      - name: Upload PDF visual verification
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-preview
+          path: pdf-preview/
           if-no-files-found: error
 
