@@ -66,8 +66,28 @@ and fragment links remain visible labels. Raw HTML remains visible text.
 The title is metadata, while visible headings come from Markdown. Output uses
 A4 portrait pages with 2.5 cm margins. Existing output requires `--overwrite`;
 the parent directory must exist. HTML commands are unchanged.
-DOCX batch export, templates and PDF are future work. DOCX is not part of the
+DOCX batch export and templates are future work. DOCX is not part of the
 published v1.0.0 package; install the development checkout for this command.
+
+## PDF development
+
+The PDF development branch adds direct publication without Word, LibreOffice,
+browser installation or operating-system fonts:
+
+```powershell
+bgdxpublisher publish-pdf .\document.md --output .\document.pdf --title "Izveštaj" --lang sr-Latn
+```
+
+CommonMark text, headings, emphasis, lists, quotes, code and safe HTTP(S)/mailto
+links become selectable PDF text on A4 pages with automatic pagination. Licensed
+DejaVu fonts are included in the package and embedded in output, with Latin and
+Cyrillic support. Unsupported glyphs fail with their Unicode code point instead
+of being silently replaced. Images become alternative text; raw HTML is literal
+text, and relative/fragment links remain plain labels. Existing output requires
+`--overwrite`, and the parent directory must exist. The title is metadata only.
+HTML and DOCX commands retain their existing behavior. PDF batch export, custom
+templates, embedded images, contents navigation and PDF/UA tagging are outside
+this foundation sprint. This command is not in the published v1.0.0 package.
 
 ## Commands and diagnostics
 

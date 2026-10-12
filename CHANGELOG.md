@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add `publish-pdf` with selectable Unicode text, embedded licensed fonts,
+  safe links, print layout, automatic pagination and atomic output writing.
+
 - Add `publish-docx` for editable Word output with metadata, Unicode, headings,
   inline formatting, lists, quotations, code and safe external links.
 - Share atomic binary output writing with HTML; preserve overwrite and permissions.
