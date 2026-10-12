@@ -66,7 +66,7 @@ and fragment links remain visible labels. Raw HTML remains visible text.
 The title is metadata, while visible headings come from Markdown. Output uses
 A4 portrait pages with 2.5 cm margins. Existing output requires `--overwrite`;
 the parent directory must exist. HTML commands are unchanged.
-DOCX batch export, templates and PDF are future work. DOCX is not part of the
+DOCX batch export and templates are future work. DOCX is not part of the
 published v1.0.0 package; install the development checkout for this command.
 
 ## PDF development

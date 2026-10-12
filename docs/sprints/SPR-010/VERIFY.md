@@ -13,8 +13,10 @@
   their 1 + 3 pages. Every page inspected: Unicode, links, formatting, nesting,
   list restart, code, pagination; no clipping/overlap. pdfplumber verifies every
   character bounding box stays inside the page margins.
-- [ ] Exact PR head: Windows/Linux Python 3.13/3.14 quality and installed-wheel CI.
-- [ ] Linux-generated PDF acceptance sample visually inspected.
+- [x] Windows/Linux Python 3.13/3.14 quality and installed-wheel CI pass on
+  implementation commit 4a3528e; PR #17 run 38210146547 (all four jobs).
+- [x] Linux-generated PDF acceptance sample visually inspected: artifact
+  pdf-preview from run 38210146547, one page, all text/styles clean and readable.
 
 ReportLab 4.5.1 used by repository tests; lower-bound 4.4.9 used by bundled
 artifact runtime. Fonts are packaged with full attribution/license and checksum
