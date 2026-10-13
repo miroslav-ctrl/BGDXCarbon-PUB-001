@@ -31,6 +31,10 @@ class PipelineEngine:
         self._logger = logger
         names: set[str] = set()
         for stage in self._stages:
+            if not callable(getattr(stage, "execute", None)):
+                raise PipelineDefinitionError(
+                    "Pipeline stages must provide a callable execute method."
+                )
             if not isinstance(stage.name, str) or not stage.name.strip():
                 raise PipelineDefinitionError("Pipeline stage names must be non-empty.")
             if stage.name in names:

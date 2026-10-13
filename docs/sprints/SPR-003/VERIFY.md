@@ -8,9 +8,9 @@ python -m black --check .
 python -m mypy src
 python -m pytest
 python -m pytest --cov=bgdxpublisher --cov-report=term-missing --cov-fail-under=99
-python -m pytest tests/domain tests/jobs tests/pipeline \
-  --cov=bgdxpublisher.domain --cov=bgdxpublisher.jobs --cov=bgdxpublisher.pipeline \
-  --cov-report=term-missing --cov-fail-under=95
+python -m pytest tests/domain --cov=bgdxpublisher.domain --cov-report=term-missing --cov-fail-under=95
+python -m pytest tests/jobs --cov=bgdxpublisher.jobs --cov-report=term-missing --cov-fail-under=95
+python -m pytest tests/pipeline --cov=bgdxpublisher.pipeline --cov-report=term-missing --cov-fail-under=95
 python -m pip wheel . --no-deps --wheel-dir dist-review
 ```
 
@@ -33,3 +33,4 @@ UTF-8 input with or without a leading BOM must render the first Markdown heading
 identically, preserve Serbian characters and leave the source bytes unchanged.
 HTML output remains UTF-8 without a BOM. Manual Windows verification confirmed
 the sample heading, Latin and Cyrillic text, list, bold text and inline code.
+

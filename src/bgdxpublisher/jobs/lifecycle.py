@@ -1,6 +1,9 @@
 """Controlled publisher job status transitions."""
 
+from collections.abc import Mapping
 from dataclasses import replace
+from types import MappingProxyType
+from typing import ClassVar
 
 from .exceptions import InvalidJobTransitionError
 from .models import JobStatus, PublisherJob
@@ -9,14 +12,16 @@ from .models import JobStatus, PublisherJob
 class JobLifecycle:
     """Apply only the documented transitions to immutable jobs."""
 
-    _TRANSITIONS = {
-        JobStatus.CREATED: {JobStatus.VALIDATED, JobStatus.FAILED},
-        JobStatus.VALIDATED: {JobStatus.QUEUED, JobStatus.FAILED},
-        JobStatus.QUEUED: {JobStatus.RUNNING, JobStatus.FAILED},
-        JobStatus.RUNNING: {JobStatus.COMPLETED, JobStatus.FAILED},
-        JobStatus.COMPLETED: set(),
-        JobStatus.FAILED: set(),
-    }
+    _TRANSITIONS: ClassVar[Mapping[JobStatus, frozenset[JobStatus]]] = MappingProxyType(
+        {
+            JobStatus.CREATED: frozenset({JobStatus.VALIDATED, JobStatus.FAILED}),
+            JobStatus.VALIDATED: frozenset({JobStatus.QUEUED, JobStatus.FAILED}),
+            JobStatus.QUEUED: frozenset({JobStatus.RUNNING, JobStatus.FAILED}),
+            JobStatus.RUNNING: frozenset({JobStatus.COMPLETED, JobStatus.FAILED}),
+            JobStatus.COMPLETED: frozenset(),
+            JobStatus.FAILED: frozenset(),
+        }
+    )
 
     def transition(self, job: PublisherJob, status: JobStatus) -> PublisherJob:
         """Return a new job in the requested permitted state.

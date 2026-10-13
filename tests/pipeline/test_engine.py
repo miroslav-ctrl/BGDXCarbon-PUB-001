@@ -241,3 +241,26 @@ def test_pipeline_stage_protocol_has_documented_contract() -> None:
     stage: PipelineStage = AddStage("protocol", 1)
 
     assert stage.input_type is int
+
+
+@pytest.mark.parametrize("execute", [None, 42, "not-callable"])
+def test_pipeline_definition_rejects_non_callable_execute(execute: object) -> None:
+    class NonCallableStage:
+        name = "non-callable"
+        input_type = int
+        output_type = int
+
+    stage = NonCallableStage()
+    stage.execute = execute  # type: ignore[attr-defined]
+    with pytest.raises(PipelineDefinitionError, match="callable execute"):
+        PipelineEngine((stage,))  # type: ignore[arg-type]
+
+
+def test_pipeline_definition_rejects_missing_execute() -> None:
+    class MissingExecuteStage:
+        name = "missing-execute"
+        input_type = int
+        output_type = int
+
+    with pytest.raises(PipelineDefinitionError, match="callable execute"):
+        PipelineEngine((MissingExecuteStage(),))  # type: ignore[arg-type]

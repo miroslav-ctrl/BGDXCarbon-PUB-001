@@ -10,6 +10,7 @@ import pytest
 from bgdxpublisher.domain import Document, DocumentType
 from bgdxpublisher.jobs import (
     InvalidJobTransitionError,
+    JobLifecycle,
     JobRequest,
     JobService,
     JobStatus,
@@ -35,6 +36,28 @@ def test_job_service_creates_immutable_created_job() -> None:
     assert job.status is JobStatus.CREATED
     with pytest.raises(FrozenInstanceError):
         job.status = JobStatus.RUNNING  # type: ignore[misc]
+
+
+@pytest.mark.parametrize("state", list(JobStatus))
+def test_lifecycle_transition_mapping_and_values_are_immutable(
+    state: JobStatus,
+) -> None:
+    transitions = JobLifecycle._TRANSITIONS
+    original = dict(transitions)
+
+    with pytest.raises(TypeError):
+        transitions[state] = frozenset({JobStatus.COMPLETED})  # type: ignore[index]
+    with pytest.raises(TypeError):
+        del transitions[state]  # type: ignore[attr-defined]
+    with pytest.raises(AttributeError):
+        transitions[state].add(JobStatus.COMPLETED)  # type: ignore[attr-defined]
+    with pytest.raises(AttributeError):
+        transitions[state].clear()  # type: ignore[attr-defined]
+
+    assert dict(JobLifecycle._TRANSITIONS) == original
+    job = PublisherJob(document_id=str(uuid4()), status=JobStatus.CREATED)
+    with pytest.raises(InvalidJobTransitionError):
+        JobLifecycle().transition(job, JobStatus.COMPLETED)
 
 
 def test_job_transitions_follow_the_required_sequence() -> None:
