@@ -92,6 +92,13 @@ def test_forbidden_job_transitions_raise_typed_error(
         JobService().transition(job, target)
 
 
+def test_non_enum_job_transition_target_raises_typed_error() -> None:
+    job = JobService().create_job(JobRequest(_document()))
+
+    with pytest.raises(InvalidJobTransitionError, match="Unsupported target"):
+        JobService().transition(job, "invalid")  # type: ignore[arg-type]
+
+
 def test_job_request_validation_returns_structured_errors() -> None:
     request = JobRequest(
         document=object(),

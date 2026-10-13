@@ -28,6 +28,10 @@ class JobLifecycle:
         Raises:
             InvalidJobTransitionError: If the requested transition is forbidden.
         """
+        if not isinstance(status, JobStatus):
+            raise InvalidJobTransitionError(
+                f"Unsupported target job status: {status!r}."
+            )
         if status not in self._TRANSITIONS[job.status]:
             raise InvalidJobTransitionError(
                 f"Cannot transition from {job.status.name} to {status.name}."
