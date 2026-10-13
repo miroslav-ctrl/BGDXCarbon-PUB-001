@@ -8,8 +8,17 @@ python -m black --check .
 python -m mypy src
 python -m pytest
 python -m pytest --cov=bgdxpublisher --cov-report=term-missing --cov-fail-under=99
+python -m pytest tests/domain --cov=bgdxpublisher.domain --cov-report=term-missing --cov-fail-under=95
+python -m pytest tests/jobs --cov=bgdxpublisher.jobs --cov-report=term-missing --cov-fail-under=95
+python -m pytest tests/pipeline --cov=bgdxpublisher.pipeline --cov-report=term-missing --cov-fail-under=95
 python -m pip wheel . --no-deps --wheel-dir dist-review
 ```
+
+Publisher core tests cover valid and invalid documents and metadata; job creation,
+permitted and forbidden state transitions; stage ordering, type contracts,
+validation and execution failures, empty pipelines, deterministic results,
+exception causes, and cleanup behavior. The domain, jobs, and pipeline packages
+must each meet at least 95% coverage.
 
 Install the wheel in a fresh virtual environment. From a directory outside the
 repository publish a UTF-8 Markdown sample, inspect the resulting HTML, confirm
@@ -24,3 +33,4 @@ UTF-8 input with or without a leading BOM must render the first Markdown heading
 identically, preserve Serbian characters and leave the source bytes unchanged.
 HTML output remains UTF-8 without a BOM. Manual Windows verification confirmed
 the sample heading, Latin and Cyrillic text, list, bold text and inline code.
+

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add immutable document models, structured validation, publisher job lifecycle,
+  and deterministic sequential pipeline execution with typed stage contracts,
+  failure reporting, cleanup, and safe structured logging.
+
 - Add `publish-pdf` with selectable Unicode text, embedded licensed fonts,
   safe links, print layout, automatic pagination and atomic output writing.
 
