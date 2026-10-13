@@ -16,7 +16,7 @@ from bgdxpublisher.config import ConfigurationService
         (["config", "validate"], "Configuration is valid."),
         (["runtime", "status"], "State: CONFIGURED"),
         (["version"], "Environment: development"),
-        ([], "BGDXCarbon Publisher Suite 1.0.0 started."),
+        ([], "BGDXCarbon Publisher Suite 1.1.0 started."),
     ],
 )
 def test_default_commands_from_unrelated_directory(
@@ -67,7 +67,7 @@ def test_packaged_configuration_works_without_cwd(
     monkeypatch.chdir(tmp_path)
     settings = ConfigurationService().load(environ={})
     assert settings.app.name == "BGDXCarbon Publisher Suite"
-    assert settings.app.version == "1.0.0"
+    assert settings.app.version == "1.1.0"
     assert settings.runtime.environment == "development"
 
 
