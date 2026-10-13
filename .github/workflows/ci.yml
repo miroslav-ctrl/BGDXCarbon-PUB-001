@@ -1,0 +1,214 @@
+name: Publisher CI
+
+on:
+  workflow_call:
+  pull_request:
+    branches: [develop, 'feature/spr-009-docx']
+  push:
+    branches: [develop, 'feature/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Quality (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.13', '3.14']
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install development dependencies
+        run: python -m pip install ".[dev]"
+      - name: Ruff
+        run: python -m ruff check .
+      - name: Black
+        run: python -m black --check .
+      - name: MyPy
+        run: python -m mypy src
+      - name: Tests
+        run: python -m pytest
+      - name: Coverage
+        run: python -m pytest --cov=bgdxpublisher --cov-report=term-missing --cov-fail-under=99
+      - name: Build wheel
+        run: python -m pip wheel . --no-deps --wheel-dir dist-review
+      - name: Test installed wheel outside repository
+        shell: python
+        run: |
+          import os
+          import pathlib
+          import shutil
+          import subprocess
+          import tempfile
+          import venv
+
+          repository = pathlib.Path.cwd()
+          wheel = next(pathlib.Path("dist-review").glob("bgdxpublisher-*.whl")).resolve()
+          with tempfile.TemporaryDirectory() as directory:
+              root = pathlib.Path(directory)
+              venv.EnvBuilder(with_pip=True).create(root / "venv")
+              scripts = root / "venv" / ("Scripts" if os.name == "nt" else "bin")
+              python = scripts / ("python.exe" if os.name == "nt" else "python")
+              cli = scripts / ("bgdxpublisher.exe" if os.name == "nt" else "bgdxpublisher")
+              subprocess.run([str(python), "-m", "pip", "install", str(wheel)], check=True)
+              package_version = subprocess.check_output([str(python), "-c", "from importlib.metadata import version; print(version('bgdxpublisher'))"], cwd=root, text=True).strip()
+              assert package_version == "1.0.0"
+              docx_source = root / "docx-sample.md"
+              shutil.copyfile(repository / "examples" / "docx-sample.md", docx_source)
+              docx_output = root / "sample.docx"
+              docx_command = [str(cli), "publish-docx", str(docx_source), "--output", str(docx_output), "--title", "Izveštaj", "--lang", "sr-Latn"]
+              subprocess.run(docx_command, cwd=root, check=True)
+              import zipfile
+              with zipfile.ZipFile(docx_output) as archive:
+                  assert "Ћирилица" in archive.read("word/document.xml").decode("utf-8")
+                  assert "Izveštaj" in archive.read("docProps/core.xml").decode("utf-8")
+              docx_before = docx_output.read_bytes()
+              assert subprocess.run(docx_command, cwd=root, capture_output=True).returncode == 1
+              assert docx_output.read_bytes() == docx_before
+              subprocess.run([*docx_command, "--overwrite"], cwd=root, check=True)
+              pdf_source = root / "pdf-sample.md"
+              shutil.copyfile(repository / "examples" / "pdf-sample.md", pdf_source)
+              pdf_output = root / "sample.pdf"
+              pdf_command = [str(cli), "publish-pdf", str(pdf_source), "--output", str(pdf_output), "--title", "Izveštaj", "--lang", "sr-Latn"]
+              subprocess.run(pdf_command, cwd=root, check=True)
+              assert pdf_output.read_bytes().startswith(b"%PDF-")
+              # Validate with pypdf in the host test environment, not the runtime wheel.
+              from pypdf import PdfReader
+              pdf_document = PdfReader(pdf_output)
+              assert pdf_document.metadata.title == "Izveštaj"
+              assert pdf_document.trailer["/Root"]["/Lang"] == "sr-Latn"
+              assert "Ћирилица" in "".join(page.extract_text() for page in pdf_document.pages)
+              pdf_before = pdf_output.read_bytes()
+              assert subprocess.run(pdf_command, cwd=root, capture_output=True).returncode == 1
+              assert pdf_output.read_bytes() == pdf_before
+              subprocess.run([*pdf_command, "--overwrite"], cwd=root, check=True)
+              invalid_pdf = subprocess.run([*pdf_command, "--overwrite", "--lang", "en_US"], cwd=root, capture_output=True)
+              assert invalid_pdf.returncode == 2
+              cases = [
+                  (["version"], ["Application: BGDXCarbon Publisher Suite", "Version: 1.0.0", "Python:", "Environment: development"]),
+                  (["doctor"], ["Overall .............. READY"]),
+                  (["config", "validate"], ["Configuration is valid."]),
+                  (["runtime", "status"], ["State: CONFIGURED"]),
+                  ([], ["BGDXCarbon Publisher Suite 1.0.0 started."]),
+              ]
+              for arguments, expected in cases:
+                  result = subprocess.run([str(cli), *arguments], cwd=root, capture_output=True, text=True, check=True)
+                  output = result.stdout + result.stderr
+                  print(output)
+                  for value in expected:
+                      assert value in output, (arguments, value, output)
+              source = root / "sample.md"
+              source.write_text("# Zdravo / Здраво\n\n**Publisher**", encoding="utf-8")
+              output = root / "sample.html"
+              command = [str(cli), "publish", str(source), "--output", str(output)]
+              subprocess.run(command, cwd=root, check=True)
+              html = output.read_text(encoding="utf-8")
+              assert "<h1>Zdravo / Здраво</h1>" in html
+              assert "<strong>Publisher</strong>" in html
+              before = output.read_bytes()
+              refused = subprocess.run(command, cwd=root, capture_output=True, text=True)
+              assert refused.returncode == 1
+              assert output.read_bytes() == before
+
+              example_source = root / "examples"
+              shutil.copytree(repository / "examples" / "documents", example_source)
+              example_output = root / "example-output"
+              subprocess.run([str(cli), "publish-batch", str(example_source), "--output-dir", str(example_output), "--index", "--toc", "--lang", "sr-Latn"], cwd=root, check=True)
+              example_index = (example_output / "index.html").read_text(encoding="utf-8")
+              assert 'href="./notes.html"' in example_index and 'href="./report.html"' in example_index
+              batch_source = root / "documents"
+              batch_source.mkdir()
+              (batch_source / "first.md").write_text("# First", encoding="utf-8")
+              (batch_source / "second.md").write_text("# Second", encoding="utf-8")
+              batch_output = root / "published"
+              batch_command = [str(cli), "publish-batch", str(batch_source), "--output-dir", str(batch_output), "--theme", "dark", "--lang", "sr-Latn", "--toc"]
+              result = subprocess.run(batch_command, cwd=root, capture_output=True, text=True, check=True)
+              assert "2 published, 0 failed" in result.stdout
+              for name in ("first", "second"):
+                  html = (batch_output / f"{name}.html").read_text(encoding="utf-8")
+                  assert f"<title>{name}</title>" in html
+                  assert '<html lang="sr-Latn">' in html
+                  assert '<nav class="toc"' in html and "color-scheme:dark" in html
+              before_batch = (batch_output / "first.html").read_bytes()
+              result = subprocess.run(batch_command, cwd=root, capture_output=True, text=True)
+              assert result.returncode == 1 and "0 published, 2 failed" in result.stdout
+              assert (batch_output / "first.html").read_bytes() == before_batch
+              subprocess.run([*batch_command, "--overwrite"], cwd=root, check=True)
+              for theme in ("light", "dark"):
+                  subprocess.run([*batch_command, "--overwrite", "--index", "--theme", theme], cwd=root, check=True)
+                  index = (batch_output / "index.html").read_text(encoding="utf-8")
+                  assert 'href="./first.html"' in index and 'href="./second.html"' in index
+                  assert '<html lang="sr-Latn">' in index and f"color-scheme:{theme}" in index
+              before_index = (batch_output / "index.html").read_bytes()
+              refused_index = subprocess.run([*batch_command, "--index"], cwd=root, capture_output=True, text=True)
+              assert refused_index.returncode == 1
+              assert (batch_output / "index.html").read_bytes() == before_index
+              (batch_source / "bad.md").write_bytes(b"\xff")
+              partial = subprocess.run([*batch_command, "--overwrite", "--index"], cwd=root, capture_output=True, text=True)
+              assert partial.returncode == 1 and "2 published, 1 failed" in partial.stdout
+              assert 'href="./bad.html"' not in (batch_output / "index.html").read_text(encoding="utf-8")
+              source.write_text("# First\n\n## Ћирилица\n\n## First", encoding="utf-8-sig")
+              for theme in ("light", "dark"):
+                  subprocess.run([*command, "--overwrite", "--theme", theme, "--toc"], cwd=root, check=True)
+                  html = output.read_text(encoding="utf-8")
+                  assert '<nav class="toc"' in html
+                  assert 'href="#section-first-2"' in html
+                  assert '<h2 id="section-first-2">First</h2>' in html
+                  assert '<h2 id="section-ћирилица">Ћирилица</h2>' in html
+              subprocess.run([*command, "--overwrite"], cwd=root, check=True)
+              subprocess.run([*command, "--overwrite", "--title", "Report & review", "--lang", "sr-Latn"], cwd=root, check=True)
+              html = output.read_text(encoding="utf-8")
+              assert "<title>Report &amp; review</title>" in html
+              assert '<html lang="sr-Latn">' in html
+              before = output.read_bytes()
+              invalid = subprocess.run([*command, "--overwrite", "--lang", "en_US"], cwd=root, capture_output=True, text=True)
+              assert invalid.returncode == 2
+              assert output.read_bytes() == before
+              for theme in ("light", "dark"):
+                  subprocess.run([*command, "--overwrite", "--theme", theme, "--title", "Report", "--lang", "en"], cwd=root, check=True)
+                  html = output.read_text(encoding="utf-8")
+                  assert f"color-scheme:{theme}" in html
+                  assert "<title>Report</title>" in html
+                  assert '<html lang="en">' in html
+              before = output.read_bytes()
+              invalid = subprocess.run([*command, "--overwrite", "--theme", "blue"], cwd=root, capture_output=True, text=True)
+              assert invalid.returncode == 2
+              assert output.read_bytes() == before
+
+      - name: Render DOCX acceptance sample
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libreoffice-writer poppler-utils fonts-liberation
+          mkdir -p docx-preview
+          bgdxpublisher publish-docx examples/docx-sample.md --output docx-preview/sample.docx --lang sr-Latn
+          libreoffice -env:UserInstallation=file:///tmp/bgdx-docx-profile --headless --convert-to pdf --outdir docx-preview docx-preview/sample.docx
+          pdftoppm -r 140 -png docx-preview/sample.pdf docx-preview/page
+          mkdir -p pdf-preview
+          bgdxpublisher publish-pdf examples/pdf-sample.md --output pdf-preview/sample.pdf --lang sr-Latn
+          pdftoppm -r 140 -png pdf-preview/sample.pdf pdf-preview/page
+      - name: Upload DOCX visual verification
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
+        uses: actions/upload-artifact@v4
+        with:
+          name: docx-preview
+          path: docx-preview/
+          if-no-files-found: error
+      - name: Upload PDF visual verification
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-preview
+          path: pdf-preview/
+          if-no-files-found: error
+

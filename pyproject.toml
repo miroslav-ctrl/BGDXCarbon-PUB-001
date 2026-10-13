@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=84"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bgdxpublisher"
+version = "1.0.0"
+description = "Standalone HTML publishing from Markdown with batch indexes and themes"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pydantic>=2.13.5,<3",
+    "PyYAML>=6.0.3,<7",
+    "markdown-it-py>=3,<5",
+    "python-docx>=1.2,<2",
+    "reportlab>=4.4,<5",
+]
+
+[project.scripts]
+bgdxpublisher = "bgdxpublisher.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "black>=26.10.0",
+    "mypy>=2.4.0",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.16.10",
+    "pypdf>=6,<7",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"bgdxpublisher.config" = ["default.yaml"]
+"bgdxpublisher.publishing" = ["fonts/*.ttf", "fonts/*.txt", "fonts/*.md"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.black]
+line-length = 88
+target-version = ["py313"]
+
+[tool.mypy]
+python_version = "3.13"
+mypy_path = "src"
+strict = true
+ignore_missing_imports = true
