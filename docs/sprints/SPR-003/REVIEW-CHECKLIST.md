@@ -1,5 +1,14 @@
 # SPR-003 Review Checklist
 
+- [ ] Document identifiers, supported types, timestamps, titles, source references,
+  and deeply immutable metadata are validated.
+- [ ] Document/job validation errors have stable codes and retain structured details.
+- [ ] Job transitions enforce the required sequence and controlled failure path.
+- [ ] Pipeline stage order and input/output contracts are deterministic and explicit.
+- [ ] Pipeline failures propagate with structured results, causes, and cleanup outcomes.
+- [ ] Pipeline logging contains job/stage identifiers and never document content.
+- [ ] Empty pipeline handling and side-effect-free execution are verified.
+
 - [ ] CLI delegates publishing to a registered service.
 - [ ] Immutable request/result contracts and domain errors are reviewed.
 - [ ] Unicode, supported Markdown and unsafe input behaviors are verified.

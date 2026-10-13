@@ -8,8 +8,17 @@ python -m black --check .
 python -m mypy src
 python -m pytest
 python -m pytest --cov=bgdxpublisher --cov-report=term-missing --cov-fail-under=99
+python -m pytest tests/domain tests/jobs tests/pipeline \
+  --cov=bgdxpublisher.domain --cov=bgdxpublisher.jobs --cov=bgdxpublisher.pipeline \
+  --cov-report=term-missing --cov-fail-under=95
 python -m pip wheel . --no-deps --wheel-dir dist-review
 ```
+
+Publisher core tests cover valid and invalid documents and metadata; job creation,
+permitted and forbidden state transitions; stage ordering, type contracts,
+validation and execution failures, empty pipelines, deterministic results,
+exception causes, and cleanup behavior. The domain, jobs, and pipeline packages
+must each meet at least 95% coverage.
 
 Install the wheel in a fresh virtual environment. From a directory outside the
 repository publish a UTF-8 Markdown sample, inspect the resulting HTML, confirm

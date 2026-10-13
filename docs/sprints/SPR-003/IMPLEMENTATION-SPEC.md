@@ -1,5 +1,41 @@
 # SPR-003 Implementation Specification
 
+## Publisher core extension
+
+The repository's existing EAS 1.0 architecture document is not present in the
+reviewed tree. The available SPR-001/SPR-002 specifications establish module
+boundaries: runtime composes configuration, logging, and the typed service
+registry; domain behavior remains in focused packages. The pre-existing SPR-003
+specification defines shipped Markdown-to-HTML behavior. This extension is
+additive and preserves that behavior and the public CLI contract.
+
+`bgdxpublisher.domain` owns frozen `Document` and `DocumentRequest` models,
+`DocumentType`, structured `ValidationIssue`/`ValidationResult` values, and
+document validation. Identifiers are UUIDs; types are `markdown`, `html`, `pdf`,
+and `docx`; metadata accepts finite JSON values only and is recursively frozen.
+Creation timestamps must be timezone-aware and are normalized to UTC.
+
+`bgdxpublisher.jobs` owns frozen job requests and `PublisherJob` models,
+`JobStatus`, `JobLifecycle`, and `JobService`. Lifecycle transitions return a
+new immutable job and follow `CREATED → VALIDATED → QUEUED → RUNNING →
+COMPLETED`, with controlled transitions to `FAILED` from nonterminal states.
+Document and job validators return stable error codes; model/service failures
+retain their structured validation result.
+
+`bgdxpublisher.pipeline` owns the `PipelineStage` protocol, per-run
+`PipelineContext`, `PipelineResult`, and `PipelineEngine`. The engine snapshots
+the declared sequence, validates stage names and connected input/output types,
+then executes stages serially. Contract and stage failures raise
+`PipelineExecutionError` with a failed result, no output, completed-stage names,
+and the original exception as `__cause__`. Context cleanup runs in reverse
+registration order; all cleanup errors are included in the failure result.
+Empty pipelines return the input unchanged.
+
+Services accept the existing standard-library logger, logging job identifiers,
+stage names, status/error codes, and outcomes only. Document values and
+exception messages are not included in pipeline logs. The pipeline performs no
+filesystem, network, database, rendering, or external publishing operations.
+
 ## Contracts
 
 `PublishRequest` and `PublishResult` are frozen dataclasses. `PublishingService`
