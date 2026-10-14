@@ -1,7 +1,7 @@
-# BGDXCarbon HTML Publisher 1.0
+# BGDXCarbon Publisher Suite 1.1
 
-Publish UTF-8 Markdown as standalone HTML, individually or as a batch with an
-index. Outputs include embedded light/dark styling, optional heading navigation,
+Publish UTF-8 Markdown as standalone HTML, editable DOCX, or selectable-text PDF.
+HTML supports individual and batch publication with an index. Outputs include embedded light/dark styling, optional heading navigation,
 and document title/language metadata. Windows and Linux with Python 3.13/3.14
 are covered by CI.
 
@@ -14,7 +14,7 @@ In PowerShell, from the directory containing the downloaded wheel:
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install .\bgdxpublisher-1.0.0-py3-none-any.whl
+python -m pip install .\bgdxpublisher-1.1.0-py3-none-any.whl
 bgdxpublisher version
 bgdxpublisher doctor
 ```
@@ -52,9 +52,9 @@ documents. Successful outputs remain on a partial failure; the command is not
 a batch transaction. Index errors are reported separately from document counts.
 Repeating a batch against existing output requires `--overwrite`.
 
-## DOCX development
+## Publish DOCX
 
-On the development branch, publish an editable Word document:
+Publish an editable Word document:
 
 ```powershell
 bgdxpublisher publish-docx .\document.md --output .\document.docx --title "Izveštaj" --lang sr-Latn
@@ -66,12 +66,11 @@ and fragment links remain visible labels. Raw HTML remains visible text.
 The title is metadata, while visible headings come from Markdown. Output uses
 A4 portrait pages with 2.5 cm margins. Existing output requires `--overwrite`;
 the parent directory must exist. HTML commands are unchanged.
-DOCX batch export and templates are future work. DOCX is not part of the
-published v1.0.0 package; install the development checkout for this command.
+DOCX batch export and templates are future work. DOCX is included in version 1.1.0; the older v1.0.0 package supports HTML only.
 
-## PDF development
+## Publish PDF
 
-The PDF development branch adds direct publication without Word, LibreOffice,
+Publish PDF directly without Word, LibreOffice,
 browser installation or operating-system fonts:
 
 ```powershell
@@ -87,7 +86,15 @@ text, and relative/fragment links remain plain labels. Existing output requires
 `--overwrite`, and the parent directory must exist. The title is metadata only.
 HTML and DOCX commands retain their existing behavior. PDF batch export, custom
 templates, embedded images, contents navigation and PDF/UA tagging are outside
-this foundation sprint. This command is not in the published v1.0.0 package.
+this foundation sprint. PDF is included in version 1.1.0; the older v1.0.0 package supports HTML only.
+
+## Publisher core API
+
+`bgdxpublisher.domain` provides immutable document descriptors and structured
+validation. `bgdxpublisher.jobs` provides immutable jobs and controlled lifecycle
+transitions. `bgdxpublisher.pipeline` executes explicitly typed stages in order,
+reports failures with their causes, and runs registered cleanup in reverse order.
+The core is an in-process API; connecting it to rendering is future work.
 
 ## Commands and diagnostics
 

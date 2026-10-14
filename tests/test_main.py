@@ -16,5 +16,5 @@ def test_module_entry_point_runs_and_uses_structured_logging(
     assert error.value.code == 0
     captured = capsys.readouterr()
     assert json.loads(captured.err)["message"] == (
-        "BGDXCarbon Publisher Suite 1.0.0 started."
+        "BGDXCarbon Publisher Suite 1.1.0 started."
     )

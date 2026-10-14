@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.1.0 — 2026-10-14
+
 - Add immutable document models, structured validation, publisher job lifecycle,
   and deterministic sequential pipeline execution with typed stage contracts,
   failure reporting, cleanup, and safe structured logging.
@@ -34,3 +36,4 @@
 - Added the SPR-002 enterprise CLI commands and runtime diagnostics.
 - Added SPR-003 Markdown-to-HTML publishing with explicit overwrite protection,
   atomic output commits, regression tests and installed-wheel CI checks.
+
