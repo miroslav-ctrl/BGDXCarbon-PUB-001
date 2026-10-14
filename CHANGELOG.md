@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## 1.1.0 — release candidate
+## 1.1.0 — 2026-10-14
 
 - Add immutable document models, structured validation, publisher job lifecycle,
   and deterministic sequential pipeline execution with typed stage contracts,
