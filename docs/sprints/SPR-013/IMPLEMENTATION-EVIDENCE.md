@@ -1,7 +1,7 @@
 # SPR-013 Implementation Evidence
 
-Baseline: develop a3f739c815a08cb3cd37d12ae1cd733a66222bd6. Issue #28 remains open.
-Status: implemented for review; merge and final acceptance closure pending.
+Baseline: develop a3f739c815a08cb3cd37d12ae1cd733a66222bd6. Issue #28 is closed as completed.
+Status: merged and closed; see [closure evidence](CLOSURE.md).
 
 HTML run_publish resolves HtmlPublicationService and adapts its publication result.
 HtmlPublicationError is handled explicitly using structured failure stage and code;
@@ -17,7 +17,7 @@ failure. Existing PDF/DOCX branches and batch/direct legacy APIs remain unchange
 | AC-06–07 | test_shutdown_failure_preserves_primary, test_postcommit_cleanup_failure_retains_output; existing lifecycle and filesystem regressions |
 | AC-08 | Full CLI/publishing regression suite |
 | AC-09 | Extended installed-wheel CI assertions for refusal/missing-source safe diagnostics; existing success/overwrite/metadata checks retained |
-| AC-10 | Local quality/coverage below; four-platform CI remains required |
+| AC-10 | Local quality/coverage below and successful four-platform post-merge CI in CLOSURE.md |
 
 ## Local validation on 2026-10-16
 
@@ -37,4 +37,4 @@ postcommit no-rollback boundary.
 
 Filesystem tests and formatter workers ran outside the restricted sandbox. The
 portable interpreter uses explicit src insertion for tests; CI uses normal pytest
-configuration. No acceptance closure is asserted before review and post-merge CI.
+configuration. Acceptance closed after technical review and post-merge CI; see CLOSURE.md.
