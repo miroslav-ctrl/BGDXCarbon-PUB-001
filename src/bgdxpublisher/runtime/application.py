@@ -6,6 +6,7 @@ from pathlib import Path
 
 from bgdxpublisher.config import ConfigurationService, PublisherSettings
 from bgdxpublisher.container import ServiceRegistry
+from bgdxpublisher.html_pipeline import HtmlPublicationService
 from bgdxpublisher.jobs import JobService
 from bgdxpublisher.logging import LoggerFactory, LoggingService
 from bgdxpublisher.orchestration import JobExecutionService
@@ -81,6 +82,9 @@ class PublisherApplication:
             self.context.services.register(PublisherSettings, settings)
             self._logging = LoggerFactory.create("bgdxpublisher", settings.logging)
             self.context.services.register(LoggingService, self._logging)
+            self.context.services.register(
+                HtmlPublicationService, HtmlPublicationService(self._logging.logger)
+            )
             jobs = JobService(logger=self._logging.logger)
             pipeline = PipelineEngine(logger=self._logging.logger)
             self.context.services.register(JobService, jobs)

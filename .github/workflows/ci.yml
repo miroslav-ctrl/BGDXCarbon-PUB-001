@@ -48,6 +48,8 @@ jobs:
         run: python -m pytest tests/pipeline --cov=bgdxpublisher.pipeline --cov-report=term-missing --cov-fail-under=95
       - name: Orchestration coverage (at least 95%)
         run: python -m pytest tests/orchestration --cov=bgdxpublisher.orchestration --cov-report=term-missing --cov-fail-under=95
+      - name: HTML pipeline coverage (at least 95%)
+        run: python -m pytest tests/html_pipeline --cov=bgdxpublisher.html_pipeline --cov-report=term-missing --cov-fail-under=95
       - name: Build wheel
         run: python -m pip wheel . --no-deps --wheel-dir dist-review
       - name: Test installed wheel outside repository
@@ -74,6 +76,9 @@ jobs:
               smoke = root / "orchestration.py"
               shutil.copyfile(repository / "examples" / "orchestration.py", smoke)
               subprocess.run([str(python), str(smoke)], cwd=root, check=True)
+              html_smoke = root / "html_pipeline.py"
+              shutil.copyfile(repository / "examples" / "html_pipeline.py", html_smoke)
+              subprocess.run([str(python), str(html_smoke)], cwd=root, check=True)
               docx_source = root / "docx-sample.md"
               shutil.copyfile(repository / "examples" / "docx-sample.md", docx_source)
               docx_output = root / "sample.docx"

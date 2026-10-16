@@ -1,6 +1,7 @@
 # SPR-012 Verification
 
-Status: planned; commands are future implementation requirements.
+Status: implemented for review; see [local evidence](IMPLEMENTATION-EVIDENCE.md).
+Four-platform CI, review and post-merge verification remain pending.
 
 Use Python 3.13/3.14 and install .[dev]. Run Ruff, Black, MyPy and all regression tests.
 
