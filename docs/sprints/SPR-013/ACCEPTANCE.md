@@ -1,6 +1,6 @@
 # SPR-013 Acceptance Criteria
 
-Status: pending implementation. Record tested SHA, environment, command and result.
+Status: AC-01–AC-10 verified on merge 8bff0cf3; see [closure evidence](CLOSURE.md).
 
 | ID | Criterion | Evidence |
 | --- | --- | --- |
