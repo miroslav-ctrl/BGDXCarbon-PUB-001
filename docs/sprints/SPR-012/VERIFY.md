@@ -1,7 +1,7 @@
 # SPR-012 Verification
 
-Status: implemented for review; see [local evidence](IMPLEMENTATION-EVIDENCE.md).
-Four-platform CI, review and post-merge verification remain pending.
+Status: verified and closed; see [local evidence](IMPLEMENTATION-EVIDENCE.md).
+Four-platform CI, technical review and post-merge verification are complete; see [closure evidence](CLOSURE.md).
 
 Use Python 3.13/3.14 and install .[dev]. Run Ruff, Black, MyPy and all regression tests.
 

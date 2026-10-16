@@ -1,7 +1,7 @@
 # SPR-012 Implementation Evidence
 
-Baseline: develop f62cf552fcb54967b1f3c16d5000c33cabdfe590. Issue #25 remains open.
-Status: implemented for review; no merge or acceptance closure asserted.
+Baseline: develop f62cf552fcb54967b1f3c16d5000c33cabdfe590. Issue #25 is closed as completed.
+Status: merged and formally closed; see [closure evidence](CLOSURE.md).
 
 New bgdxpublisher.html_pipeline composes validate/read/render/write stages with
 JobExecutionService. Frozen payloads carry validated options, decoded Markdown and
@@ -38,5 +38,5 @@ example executed outside checkout with exit 0. Filesystem tests ran outside the
 restricted sandbox. The portable Python test invocation explicitly inserts src;
 standard CI uses project pytest configuration.
 
-PR CI results, review and exact post-merge verification remain required before
-closing #25. Existing acceptance checklist items remain pending final evidence.
+PR review and exact post-merge CI verification are complete. AC-01–AC-12 passed;
+see CLOSURE.md for final evidence and issue #25 closure.

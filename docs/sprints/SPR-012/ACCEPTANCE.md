@@ -1,6 +1,6 @@
 # SPR-012 Acceptance Criteria
 
-Status: pending implementation. Record tested SHA, environment, command and result for every criterion.
+Status: AC-01–AC-12 verified on merge 1d99a246; see [closure evidence](CLOSURE.md).
 
 | ID | Criterion | Required evidence |
 | --- | --- | --- |
