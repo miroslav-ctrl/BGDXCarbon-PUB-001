@@ -1,6 +1,6 @@
 # SPR-011 Acceptance Criteria
 
-All criteria are pending implementation. Record command, environment, tested commit and result during verification.
+AC-01–AC-13 verified on merge 4baf1e99; see [closure evidence](CLOSURE.md) and implementation mapping.
 
 | ID | Criterion | Required evidence |
 | --- | --- | --- |
