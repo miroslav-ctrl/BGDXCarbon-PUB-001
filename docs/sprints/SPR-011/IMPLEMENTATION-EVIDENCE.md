@@ -1,7 +1,7 @@
 # SPR-011 Implementation Evidence
 
 Implementation baseline: develop 81c5fac0441c1bc621a95252230f8cc8d1157cb5.
-Implementation issue: #22. Status: implemented for review; not merged or closed.
+Implementation issue: #22. Status: merged and closed; see [closure evidence](CLOSURE.md).
 
 ## Changes
 
@@ -24,8 +24,8 @@ creation, transition to QUEUED, stage execution and typed failure handling.
 | AC-09 | test_runtime_default_registration_and_shutdown |
 | AC-10 | examples/orchestration.py copied outside checkout and run against installed wheel; added to existing CI wheel test |
 | AC-11 | Full regression suite |
-| AC-12 | Local checks below; four-platform CI remains to be verified on PR |
-| AC-13 | Pending implementation PR review, authorized merge and post-merge CI |
+| AC-12 | Local checks below and successful four-platform post-merge CI in CLOSURE.md |
+| AC-13 | Technical review, authorized PR #24 merge and successful post-merge CI; see CLOSURE.md |
 
 Tests are in `tests/orchestration/test_execution.py`. Additional coverage verifies
 unexpected dependency exceptions propagate and result envelopes reject invalid
@@ -45,4 +45,4 @@ The local portable interpreter uses an explicit source-path insertion for pytest
 CI uses the normal project configuration on standard Python 3.13/3.14. Windows
 filesystem tests and formatter worker processes ran outside the restricted sandbox.
 
-No acceptance closure is asserted before PR review and post-merge verification.
+Acceptance closed after technical review, authorized merge and post-merge verification; see CLOSURE.md.

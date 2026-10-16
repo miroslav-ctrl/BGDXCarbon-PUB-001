@@ -1,7 +1,7 @@
 # SPR-011 Verification
 
-Status: implemented for review. See [local evidence](IMPLEMENTATION-EVIDENCE.md).
-Four-platform CI and post-merge evidence must be recorded separately.
+Status: verified and closed. See [local evidence](IMPLEMENTATION-EVIDENCE.md)
+and [four-platform post-merge closure](CLOSURE.md).
 
 Use Python 3.13 or 3.14, install .[dev], then run from the repository:
 
