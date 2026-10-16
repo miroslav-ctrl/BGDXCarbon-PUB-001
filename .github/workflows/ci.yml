@@ -46,6 +46,8 @@ jobs:
         run: python -m pytest tests/jobs --cov=bgdxpublisher.jobs --cov-report=term-missing --cov-fail-under=95
       - name: Pipeline coverage (at least 95%)
         run: python -m pytest tests/pipeline --cov=bgdxpublisher.pipeline --cov-report=term-missing --cov-fail-under=95
+      - name: Orchestration coverage (at least 95%)
+        run: python -m pytest tests/orchestration --cov=bgdxpublisher.orchestration --cov-report=term-missing --cov-fail-under=95
       - name: Build wheel
         run: python -m pip wheel . --no-deps --wheel-dir dist-review
       - name: Test installed wheel outside repository
@@ -69,6 +71,9 @@ jobs:
               subprocess.run([str(python), "-m", "pip", "install", str(wheel)], check=True)
               package_version = subprocess.check_output([str(python), "-c", "from importlib.metadata import version; print(version('bgdxpublisher'))"], cwd=root, text=True).strip()
               assert package_version == "1.1.0"
+              smoke = root / "orchestration.py"
+              shutil.copyfile(repository / "examples" / "orchestration.py", smoke)
+              subprocess.run([str(python), str(smoke)], cwd=root, check=True)
               docx_source = root / "docx-sample.md"
               shutil.copyfile(repository / "examples" / "docx-sample.md", docx_source)
               docx_output = root / "sample.docx"

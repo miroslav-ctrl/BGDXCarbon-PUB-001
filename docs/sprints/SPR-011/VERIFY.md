@@ -1,6 +1,7 @@
 # SPR-011 Verification
 
-Status: planned; these commands are requirements, not recorded successful runs.
+Status: implemented for review. See [local evidence](IMPLEMENTATION-EVIDENCE.md).
+Four-platform CI and post-merge evidence must be recorded separately.
 
 Use Python 3.13 or 3.14, install .[dev], then run from the repository:
 
