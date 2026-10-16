@@ -134,6 +134,12 @@ jobs:
               before = output.read_bytes()
               refused = subprocess.run(command, cwd=root, capture_output=True, text=True)
               assert refused.returncode == 1
+              assert "Publication failed: HTML_PUBLICATION_FAILED stage=validate" in refused.stderr
+              assert "Traceback" not in refused.stderr
+              missing = subprocess.run([str(cli), "publish", str(root / "missing.md"), "--output", str(root / "missing.html")], cwd=root, capture_output=True, text=True)
+              assert missing.returncode == 1
+              assert "Publication failed: HTML_PUBLICATION_FAILED stage=validate" in missing.stderr
+              assert "missing.md" not in missing.stderr and "Traceback" not in missing.stderr
               assert output.read_bytes() == before
 
               example_source = root / "examples"

@@ -114,3 +114,9 @@ Default configuration is packaged. `configs/default.yaml` is a sample equivalent
 `--config` accepts a YAML file. Application identity, runtime environment, and
 logging settings are validated; unrecognized settings are rejected. To suppress
 console logging, use a configuration with `logging: {console: false}`.
+
+## HTML pipeline diagnostics
+
+The publish command uses the HTML job pipeline. Successful output remains Published: <path>. Parser errors retain exit code 2 and precise metadata diagnostics. Operational HTML failures return 1 with Publication failed: HTML_PUBLICATION_FAILED stage=<stage>. Stages are validate, read, render, write and cleanup. Check input/options/output permissions for the reported stage. Raw exception messages and document content are not printed by this diagnostic; safe identifier/code logs may also appear on stderr.
+
+A cleanup or runtime shutdown failure after atomic commit can return 1 while the committed file remains. No automatic rollback is performed. DOCX, PDF, batch and the direct legacy PublishingService API retain their routes.
