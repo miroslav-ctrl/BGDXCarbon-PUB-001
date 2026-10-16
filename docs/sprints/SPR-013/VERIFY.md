@@ -1,6 +1,7 @@
 # SPR-013 Verification
 
-Status: planned; these are implementation requirements.
+Status: implemented for review; see [local evidence](IMPLEMENTATION-EVIDENCE.md).
+Four-platform CI, review and post-merge verification remain required.
 
 Install .[dev] on Python 3.13/3.14, then run:
 
