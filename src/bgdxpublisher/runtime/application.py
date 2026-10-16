@@ -4,6 +4,7 @@ from collections.abc import Mapping
 from dataclasses import replace
 from pathlib import Path
 
+from bgdxpublisher.batch_pipeline import BatchHtmlPublicationService
 from bgdxpublisher.config import ConfigurationService, PublisherSettings
 from bgdxpublisher.container import ServiceRegistry
 from bgdxpublisher.html_pipeline import HtmlPublicationService
@@ -82,6 +83,10 @@ class PublisherApplication:
             self.context.services.register(PublisherSettings, settings)
             self._logging = LoggerFactory.create("bgdxpublisher", settings.logging)
             self.context.services.register(LoggingService, self._logging)
+            self.context.services.register(
+                BatchHtmlPublicationService,
+                BatchHtmlPublicationService(self._logging.logger),
+            )
             self.context.services.register(
                 HtmlPublicationService, HtmlPublicationService(self._logging.logger)
             )
