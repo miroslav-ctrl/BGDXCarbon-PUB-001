@@ -34,3 +34,5 @@ identically, preserve Serbian characters and leave the source bytes unchanged.
 HTML output remains UTF-8 without a BOM. Manual Windows verification confirmed
 the sample heading, Latin and Cyrillic text, list, bold text and inline code.
 
+
+Post-merge verification completed on 2026-10-16: all three Copilot findings are resolved. See [SPR-003 and SPR-004 closure evidence](../SPR-004/CLOSURE-SPR-003-SPR-004.md).
