@@ -1,6 +1,6 @@
 # SPR-015 Acceptance Criteria
 
-Status: implemented for review; local verification is recorded in [implementation evidence](IMPLEMENTATION-EVIDENCE.md). Final acceptance and four-environment/post-merge CI remain pending. Local PASS does not close implementation acceptance.
+Status: AC-01 through AC-12 PASS on merged develop `a7ba8c41006d7b1e7cf7c2c37a4855f83cc6ffa8`, verified 2026-10-19. See [closure evidence](CLOSURE.md).
 Record tested SHA, environment, exact commands, results and links per criterion.
 
 | ID | Criterion | Required verification |
@@ -19,3 +19,7 @@ Record tested SHA, environment, exact commands, results and links per criterion.
 | AC-12 | Four-environment quality and installed wheel pass | Ruff, Black, MyPy, full suite, total >=99%, six package gates >=95%, wheel outside checkout success/partial/preflight/index-failure/overwrite scenarios. |
 
 Acceptance requires source review, exact successful pre-merge CI and separately authorized merge followed by exact post-merge CI. Record actual review/authorization timing; do not retrospectively mark historical process complete without evidence. Case-sensitive/symlink tests must execute on Linux; document every Windows skip.
+
+## Verified disposition
+
+All twelve criteria are supported by the test mapping in [IMPLEMENTATION-EVIDENCE.md](IMPLEMENTATION-EVIDENCE.md), the [formal source review](https://github.com/miroslav-ctrl/BGDXCarbon-PUB-001/pull/36#pullrequestreview-5568538062) on head 04a321474a47ca411db4eca8ba95ada37f62c973, and exact successful post-merge CI [39220222386](https://github.com/miroslav-ctrl/BGDXCarbon-PUB-001/actions/runs/39220222386). The review is a disclosed Codex self-review recorded as COMMENT, not independent human APPROVE. The merge is confirmed by GitHub; no separate pre-merge authorization record is asserted. Per-environment results and historical limits are in CLOSURE.md. This closure documentation is submitted for review; no new implementation or merge is performed here.
