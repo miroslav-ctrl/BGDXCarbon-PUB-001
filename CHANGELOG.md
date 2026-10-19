@@ -2,9 +2,16 @@
 
 ## Unreleased
 
+- Route the existing `publish-docx` CLI through the registered DOCX job pipeline.
+  Success output/options remain unchanged; expected operational errors now use
+  `DOCX_PUBLICATION_FAILED stage=<stage>` with exit 1 rather than raw causes.
+  Direct DOCX APIs remain unchanged. Runtime shutdown failures suppress success
+  output, retain committed files and preserve the primary DOCX failure.
+
 - Add a separately registered DOCX job pipeline API with typed stages, immutable
   execution results, safe failure diagnostics and independent per-call jobs.
-  Existing `publish-docx` CLI and direct `DocxPublishingService` keep their routes.
+  Direct `DocxPublishingService` retains its legacy route; CLI integration is
+  listed separately above.
 
 - Route `publish-batch` through the registered batch HTML job pipeline. Preserve
   command options, document/index bytes and success output; expected failures now

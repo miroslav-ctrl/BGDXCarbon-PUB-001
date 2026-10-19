@@ -1,8 +1,8 @@
 # SPR-017 Verification Plan
 
-Status: planned, not executed; proposed new test file absent at baseline.
+Status: implemented for review. Commands below reproduce checks; actual local results are in IMPLEMENTATION-EVIDENCE.md. Runtime precedence tests also live in tests/cli/test_docx_runtime_precedence.py.
 
-After implementation, install .[dev] and run:
+Install .[dev] and run:
 
 ~~~sh
 python -m ruff check .

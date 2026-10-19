@@ -105,6 +105,25 @@ jobs:
               assert subprocess.run(docx_command, cwd=root, capture_output=True).returncode == 1
               assert docx_output.read_bytes() == docx_before
               subprocess.run([*docx_command, "--overwrite"], cwd=root, check=True)
+              docx_before = docx_output.read_bytes()
+              refused_docx = subprocess.run(docx_command, cwd=root, capture_output=True, text=True)
+              assert refused_docx.returncode == 1
+              assert "Publication failed: DOCX_PUBLICATION_FAILED stage=validate" in refused_docx.stderr
+              assert "Traceback" not in refused_docx.stderr and str(docx_source) not in refused_docx.stderr
+              assert docx_output.read_bytes() == docx_before
+              invalid_docx = subprocess.run([*docx_command, "--lang", "en_US"], cwd=root, capture_output=True, text=True)
+              assert invalid_docx.returncode == 2 and docx_output.read_bytes() == docx_before
+              missing_docx = subprocess.run([str(cli), "publish-docx", str(root / "missing.md"), "--output", str(root / "missing.docx")], cwd=root, capture_output=True, text=True)
+              assert missing_docx.returncode == 1
+              assert "Publication failed: DOCX_PUBLICATION_FAILED stage=validate" in missing_docx.stderr
+              assert "missing.md" not in missing_docx.stderr and "Traceback" not in missing_docx.stderr
+              invalid_source = root / "invalid-docx.md"
+              invalid_source.write_bytes(b"\xff")
+              unreadable_docx = subprocess.run([str(cli), "publish-docx", str(invalid_source), "--output", str(root / "invalid.docx")], cwd=root, capture_output=True, text=True)
+              assert unreadable_docx.returncode == 1
+              assert "Publication failed: DOCX_PUBLICATION_FAILED stage=read" in unreadable_docx.stderr
+              assert str(invalid_source) not in unreadable_docx.stderr and "Traceback" not in unreadable_docx.stderr
+              assert not (root / "invalid.docx").exists()
               pdf_source = root / "pdf-sample.md"
               shutil.copyfile(repository / "examples" / "pdf-sample.md", pdf_source)
               pdf_output = root / "sample.pdf"

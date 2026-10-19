@@ -284,32 +284,23 @@ def test_runtime_and_single_operations(tmp_path, monkeypatch):
         app.stop()
 
 
-def test_cli_keeps_legacy_route(tmp_path, monkeypatch, capsys):
-    from bgdxpublisher.cli.app import main
+def test_legacy_direct_api_retains_contract(tmp_path, monkeypatch):
+    from bgdxpublisher.publishing import PublishingError
 
     request = setup(tmp_path)
-    calls = []
-    original = DocxPublishingService.publish
-
-    def publish(self, value):
-        calls.append(value)
-        return original(self, value)
 
     def forbidden(*args):
-        pytest.fail("CLI must retain legacy DOCX route")
+        pytest.fail("legacy API must not redirect to pipeline")
 
     monkeypatch.setattr(DocxPublicationService, "publish", forbidden)
-    monkeypatch.setattr(DocxPublishingService, "publish", publish)
-    args = ["publish-docx", str(request.source), "--output", str(request.output)]
-    assert main(args) == 0
-    assert calls == [request]
-    assert capsys.readouterr().out == f"Published: {request.output}\n"
+    publisher = DocxPublishingService(logging.getLogger("legacy-direct"))
+    result = publisher.publish(request)
+    assert result.output == request.output
+    assert result.bytes_written == len(request.output.read_bytes())
     before = request.output.read_bytes()
-    assert main(args) == 1
+    with pytest.raises(PublishingError, match="Output exists; use --overwrite"):
+        publisher.publish(request)
     assert request.output.read_bytes() == before
-    assert capsys.readouterr().err == (
-        "Publication failed: Output exists; use --overwrite to replace it.\n"
-    )
 
 
 def test_new_api_never_calls_legacy_and_has_fresh_ids(tmp_path, monkeypatch):
