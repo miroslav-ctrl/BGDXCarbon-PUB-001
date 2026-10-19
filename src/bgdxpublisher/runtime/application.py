@@ -12,6 +12,7 @@ from bgdxpublisher.html_pipeline import HtmlPublicationService
 from bgdxpublisher.jobs import JobService
 from bgdxpublisher.logging import LoggerFactory, LoggingService
 from bgdxpublisher.orchestration import JobExecutionService
+from bgdxpublisher.pdf_pipeline import PdfPublicationService
 from bgdxpublisher.pipeline import PipelineEngine
 from bgdxpublisher.publishing import PublishingService
 from bgdxpublisher.publishing.docx import DocxPublishingService
@@ -110,6 +111,9 @@ class PublisherApplication:
             )
             self.context.services.register(
                 PdfPublishingService, PdfPublishingService(self._logging.logger)
+            )
+            self.context.services.register(
+                PdfPublicationService, PdfPublicationService(self._logging.logger)
             )
             self.context.lifecycle.transition(RuntimeState.CONFIGURED)
         except Exception as error:

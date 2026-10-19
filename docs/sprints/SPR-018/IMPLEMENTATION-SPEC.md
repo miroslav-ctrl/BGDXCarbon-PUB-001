@@ -1,6 +1,6 @@
 # SPR-018 Implementation Specification
 
-Status: proposed contracts; no implementation.
+Status: implemented for review; approved contracts retained. See IMPLEMENTATION-EVIDENCE.md.
 
 ## Public API and runtime
 

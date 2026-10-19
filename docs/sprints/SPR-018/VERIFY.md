@@ -1,8 +1,8 @@
 # SPR-018 Verification Plan
 
-Status: proposed; no new commands/tests executed as implementation evidence.
+Status: implemented for review; actual checks are in IMPLEMENTATION-EVIDENCE.md.
 
-Future implementation checks after separate authorization:
+Reproducible checks:
 
 ```sh
 python -m ruff check .

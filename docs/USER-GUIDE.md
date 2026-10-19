@@ -184,3 +184,22 @@ committed files remain; inspect the output directory before retrying and use
 `--overwrite` only when replacement is intended. Directory creation during
 preflight is not transactional. No automatic rollback is promised. The legacy
 direct `publishing.batch.publish_batch` Python API remains unchanged.
+
+### PDF pipeline Python API
+
+The runtime registers `bgdxpublisher.pdf_pipeline.PdfPublicationService` alongside
+legacy `PdfPublishingService`. Call `publish(PdfRequest(...))` to obtain frozen
+`PdfPublicationResult(publication, execution)` with a completed job. Each call
+has independent job/context IDs and validate/read/render/write stages.
+`PdfPublicationError` has fixed string/code `PDF_PUBLICATION_FAILED`; obtain stage
+from `error.result.pipeline_result.failure.stage_name`. Safe new-route logs contain
+codes/stages/IDs; internal causes remain available for debugging. Caller owns
+initialize/start/try-finally-stop; the service does not close the runtime.
+
+Postcommit cleanup may fail with FAILED/stage=cleanup and no successful result
+while retaining the committed PDF; no rollback is promised. Unsupported glyphs,
+font and layout failures are render-stage failures. Existing `publish-pdf` and
+direct `PdfPublishingService` retain their diagnostics and behavior, including
+raw legacy error details; PDF CLI migration is outside this change.
+See `examples/pdf_pipeline.py`; optional output directory retains single/multipage
+samples. PDF pipeline API does not add batch export, templates or dependencies.
