@@ -21,3 +21,10 @@ Start-Process .\example-output\index.html
 
 Use `--overwrite` on subsequent runs to replace generated files explicitly.
 Expected batch count is `2 published, 0 failed`, plus the separate index report.
+
+`pdf_pipeline.py` verifies the registered PDF pipeline API from an installed wheel
+outside checkout: completion/fresh jobs, refusal/overwrite and safe encoding
+failure with retained output. Run `python -I pdf_pipeline.py [output-directory]`;
+an optional directory retains sample.pdf and multipage.pdf for host pypdf and
+visual checks. Its verification uses runtime dependencies only. Existing
+publish-pdf CLI and direct legacy PdfPublishingService retain their routes.

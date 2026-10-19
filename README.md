@@ -94,7 +94,10 @@ this foundation sprint. PDF is included in version 1.1.0; the older v1.0.0 packa
 validation. `bgdxpublisher.jobs` provides immutable jobs and controlled lifecycle
 transitions. `bgdxpublisher.pipeline` executes explicitly typed stages in order,
 reports failures with their causes, and runs registered cleanup in reverse order.
-The core is an in-process API; connecting it to rendering is future work.
+The core is an in-process API. Registered HTML, batch HTML and DOCX pipelines
+serve their existing commands. A separately registered PDF pipeline API is
+available alongside the legacy PDF service; publish-pdf retains its legacy route.
+See examples/pdf_pipeline.py for installed API verification.
 
 ## Commands and diagnostics
 
@@ -110,8 +113,9 @@ No-argument invocation retains runtime startup diagnostics.
 
 ## Scope and output policy
 
-This release is an HTML command-line tool. PDF, DOCX, custom templates, remote
-hosting, and a graphical interface are outside 1.0. Raw HTML is escaped; unsafe
+Version 1.1.0 supports HTML, DOCX and PDF; the historical 1.0 release was HTML-only.
+Custom templates, remote hosting and a graphical interface remain future work.
+Raw HTML is escaped; unsafe
 link schemes are refused; images render as alternative text. External images
 are not embedded. Outputs use no scripts or external stylesheets.
 

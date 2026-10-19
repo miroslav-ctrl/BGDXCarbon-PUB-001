@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add a separately registered PDF publication job pipeline API with immutable
+  results, fresh per-call jobs and safe structured failures. Reuse the existing
+  PDF renderer/fonts and atomic writer; preserve publish-pdf CLI and legacy API.
+  Add independent PDF pipeline coverage and installed-wheel/visual verification.
+
 - Route the existing `publish-docx` CLI through the registered DOCX job pipeline.
   Success output/options remain unchanged; expected operational errors now use
   `DOCX_PUBLICATION_FAILED stage=<stage>` with exit 1 rather than raw causes.

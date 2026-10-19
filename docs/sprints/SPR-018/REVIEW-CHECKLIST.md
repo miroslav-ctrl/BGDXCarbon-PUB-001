@@ -1,8 +1,8 @@
 # SPR-018 Review Checklist
 
-Status: proposed plan; all implementation acceptance pending.
+Status: implemented for review; final review/CI/post-merge acceptance pending. See IMPLEMENTATION-EVIDENCE.md.
 
-- [ ] Plan approved with API-only scope; CLI migration explicitly deferred.
+- [x] Plan approved with API-only scope; CLI migration explicitly deferred.
 - [ ] Then-current develop inspected; separate implementation issue/branch created.
 - [ ] AC-01–AC-12 mapped to exact executed evidence.
 - [ ] Typed consistent envelopes/errors; safe codes/stages and internal causes.
@@ -23,4 +23,4 @@ Status: proposed plan; all implementation acceptance pending.
 - [ ] Exact post-merge CI/acceptance/closure precede implementation issue completion.
 - [ ] No main change, release/tag, version/dependency change or branch deletion.
 
-This submission is documentation only; implementation requires a separate task.
+Implementation prepared under #47. No merge or closure claimed.

@@ -54,6 +54,8 @@ jobs:
         run: python -m pytest tests/batch_pipeline --cov=bgdxpublisher.batch_pipeline --cov-report=term-missing --cov-fail-under=95
       - name: DOCX pipeline coverage (at least 95%)
         run: python -m pytest tests/docx_pipeline --cov=bgdxpublisher.docx_pipeline --cov-report=term-missing --cov-fail-under=95
+      - name: PDF pipeline coverage (at least 95%)
+        run: python -m pytest tests/pdf_pipeline --cov=bgdxpublisher.pdf_pipeline --cov-report=term-missing --cov-fail-under=95
       - name: Build wheel
         run: python -m pip wheel . --no-deps --wheel-dir dist-review
       - name: Test installed wheel outside repository
@@ -92,6 +94,17 @@ jobs:
               docx_pipeline_smoke = root / "docx_pipeline.py"
               shutil.copyfile(repository / "examples" / "docx_pipeline.py", docx_pipeline_smoke)
               subprocess.run([str(python), str(docx_pipeline_smoke)], cwd=root, check=True)
+              pdf_pipeline_smoke = root / "pdf_pipeline.py"
+              shutil.copyfile(repository / "examples" / "pdf_pipeline.py", pdf_pipeline_smoke)
+              pdf_api_output = root / "pdf-api"
+              subprocess.run([str(python), "-I", str(pdf_pipeline_smoke), str(pdf_api_output)], cwd=root, check=True, env={k: v for k, v in os.environ.items() if k != "PYTHONPATH"})
+              from pypdf import PdfReader
+              for name in ("sample", "multipage"):
+                  document = PdfReader(pdf_api_output / f"{name}.pdf")
+                  assert document.metadata.title == "Izveštaj"
+                  assert document.trailer["/Root"]["/Lang"] == "sr-Latn"
+                  assert "Ћирилица" in "".join(p.extract_text() for p in document.pages)
+                  assert len(document.pages) == 1 if name == "sample" else len(document.pages) > 1
               docx_source = root / "docx-sample.md"
               shutil.copyfile(repository / "examples" / "docx-sample.md", docx_source)
               docx_output = root / "sample.docx"
@@ -266,3 +279,17 @@ jobs:
           path: pdf-preview/
           if-no-files-found: error
 
+
+      - name: Render PDF pipeline API acceptance samples
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
+        run: |
+          python -I examples/pdf_pipeline.py pdf-pipeline-preview examples/pdf-sample.md
+          pdftoppm -r 100 -png pdf-pipeline-preview/sample.pdf pdf-pipeline-preview/sample-page
+          pdftoppm -r 100 -png pdf-pipeline-preview/multipage.pdf pdf-pipeline-preview/multipage-page
+      - name: Upload PDF pipeline visual verification
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-pipeline-preview
+          path: pdf-pipeline-preview/
+          if-no-files-found: error

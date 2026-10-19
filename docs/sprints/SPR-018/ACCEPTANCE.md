@@ -1,6 +1,6 @@
 # SPR-018 Acceptance Criteria
 
-Status: all pending. Baseline CI and approved plan are not implementation evidence.
+Status: implemented for review; evidence mapped in IMPLEMENTATION-EVIDENCE.md. Final review, CI, post-merge acceptance and closure pending.
 
 | ID | Criterion | Required evidence |
 | --- | --- | --- |
