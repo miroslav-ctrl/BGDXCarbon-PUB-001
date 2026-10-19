@@ -1,8 +1,8 @@
 # SPR-017 Review Checklist
 
-Status: proposed plan. All implementation checks pending.
+Status: implemented for review; evidence in IMPLEMENTATION-EVIDENCE.md. Final review/CI/closure checks pending.
 
-- [ ] Plan approved, including intentional safe DOCX CLI stderr replacement.
+- [x] Plan approved, including intentional safe DOCX CLI stderr replacement (PR #42).
 - [ ] Current develop inspected; future issue and separate feature branch prepared.
 - [ ] AC-01–AC-12 verified with exact evidence.
 - [ ] Existing parser/run_publish signature and PDF-first precedence retained.
@@ -24,4 +24,4 @@ Status: proposed plan. All implementation checks pending.
 - [ ] Exact post-merge CI, acceptance/closure precede issue closure.
 - [ ] main unchanged; no release or branch deletion.
 
-Planning PR is documentation only. Implementation/merge requires a separate task.
+Implementation prepared under #43. No merge or final acceptance claimed.

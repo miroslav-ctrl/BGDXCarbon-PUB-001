@@ -119,7 +119,7 @@ console logging, use a configuration with `logging: {console: false}`.
 
 The publish command uses the HTML job pipeline. Successful output remains Published: <path>. Parser errors retain exit code 2 and precise metadata diagnostics. Operational HTML failures return 1 with Publication failed: HTML_PUBLICATION_FAILED stage=<stage>. Stages are validate, read, render, write and cleanup. Check input/options/output permissions for the reported stage. Raw exception messages and document content are not printed by this diagnostic; safe identifier/code logs may also appear on stderr.
 
-A cleanup or runtime shutdown failure after atomic commit can return 1 while the committed file remains. No automatic rollback is performed. DOCX, PDF and the direct legacy PublishingService API retain their routes.
+A cleanup or runtime shutdown failure after atomic commit can return 1 while the committed file remains. No automatic rollback is performed. PDF and the direct legacy PublishingService API retain their routes.
 
 ### DOCX pipeline Python API
 
@@ -130,8 +130,29 @@ returns an immutable `DocxPublicationResult` containing `publication` and job
 and a structured failed execution. The new route logs safe codes/stages/IDs;
 internal causes are retained for debugging. A cleanup failure after commit can
 leave a DOCX file while reporting FAILED; no rollback is promised. See
-`examples/docx_pipeline.py`. The `publish-docx` CLI and direct
-`DocxPublishingService` behavior and diagnostics are unchanged.
+`examples/docx_pipeline.py`. Direct `DocxPublishingService` behavior and
+diagnostics are unchanged.
+
+### DOCX CLI diagnostics
+
+`publish-docx` now uses the registered DOCX job pipeline. Options and successful
+stdout remain unchanged: `Published: <output path>` and exit 0, only after runtime
+shutdown succeeds. Expected operational failures return 1 with one primary line:
+`Publication failed: DOCX_PUBLICATION_FAILED stage=<stage>`.
+Stages are `validate`, `read`, `render`, `write` and `cleanup`. Safe job/code logs
+may additionally appear on stderr. Raw paths, document content and cause messages
+are not included in this new publication diagnostic. Check input/options/output
+permissions for the indicated stage. Parser errors retain precise diagnostics and
+exit 2; a valid command naming a nonexistent source is operational exit 1.
+
+If runtime shutdown also fails, `Runtime cleanup failed:` appears first, followed
+by the original publication diagnostic; shutdown does not replace the DOCX failure.
+A shutdown failure after successful publication returns 1 with the existing runtime
+failure diagnostic and no `Published:` stdout. Existing runtime/config error
+formats are unchanged and outside the safe publication-message contract.
+Cleanup/shutdown can fail after a DOCX was committed: the file remains, with no
+rollback. Both direct Python APIs retain their existing contracts. PDF, HTML and
+batch command behavior and PDF-first dispatch precedence are unchanged.
 
 ### Batch pipeline diagnostics
 

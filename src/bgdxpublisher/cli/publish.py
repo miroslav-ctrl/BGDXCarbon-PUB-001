@@ -3,9 +3,10 @@
 import sys
 from pathlib import Path
 
+from bgdxpublisher.docx_pipeline import DocxPublicationError, DocxPublicationService
 from bgdxpublisher.html_pipeline import HtmlPublicationError, HtmlPublicationService
 from bgdxpublisher.publishing import PublishRequest
-from bgdxpublisher.publishing.docx import DocxPublishingService, DocxRequest
+from bgdxpublisher.publishing.docx import DocxRequest
 from bgdxpublisher.publishing.pdf import PdfPublishingService, PdfRequest
 from bgdxpublisher.runtime import (
     PublisherApplication,
@@ -30,6 +31,7 @@ def run_publish(
     application = PublisherApplication(config_path=config_path)
     result = None
     failure: str | None = None
+    docx_route = docx and not pdf
     try:
         application.initialize()
         application.start()
@@ -39,16 +41,16 @@ def run_publish(
                 PdfRequest(source, output, overwrite, title, language)
             )
         elif docx:
-            word_service = application.context.services.resolve(DocxPublishingService)
+            word_service = application.context.services.resolve(DocxPublicationService)
             result = word_service.publish(
                 DocxRequest(source, output, overwrite, title, language)
-            )
+            ).publication
         else:
             service = application.context.services.resolve(HtmlPublicationService)
             result = service.publish(
                 PublishRequest(source, output, overwrite, title, language, theme, toc)
             ).publication
-    except HtmlPublicationError as error:
+    except (HtmlPublicationError, DocxPublicationError) as error:
         detail = error.result.pipeline_result.failure
         assert detail is not None
         failure = f"{error.code} stage={detail.stage_name}"
@@ -56,11 +58,17 @@ def run_publish(
         failure = str(error)
     finally:
         if application.state in (RuntimeState.CONFIGURED, RuntimeState.RUNNING):
+            primary = sys.exception()
             try:
                 application.stop()
-            except RuntimeFoundationError as error:
-                sys.stderr.write(f"Runtime cleanup failed: {error}\n")
-                failure = failure or str(error)
+            except Exception as error:
+                if isinstance(error, RuntimeFoundationError):
+                    sys.stderr.write(f"Runtime cleanup failed: {error}\n")
+                    failure = failure or str(error)
+                elif docx_route and primary is not None:
+                    primary.add_note("An unexpected runtime cleanup failure occurred.")
+                else:
+                    raise
     if failure is not None:
         sys.stderr.write(f"Publication failed: {failure}\n")
         return 1

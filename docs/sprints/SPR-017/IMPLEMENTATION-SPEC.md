@@ -1,6 +1,6 @@
 # SPR-017 Implementation Specification
 
-Status: proposed; no implementation.
+Status: implemented for review; approved contracts retained below. See IMPLEMENTATION-EVIDENCE.md.
 
 ## Dispatch and success
 

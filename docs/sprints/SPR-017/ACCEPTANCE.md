@@ -1,6 +1,6 @@
 # SPR-017 Acceptance Criteria
 
-Status: all pending. A plan or successful baseline CI is not implementation evidence.
+Status: implemented for review; local verification mapped in IMPLEMENTATION-EVIDENCE.md. Final source review, CI/visual and post-merge acceptance remain pending.
 
 | ID | Criterion | Required evidence |
 | --- | --- | --- |
