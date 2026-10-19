@@ -1,8 +1,8 @@
 # SPR-016 Review Checklist
 
-Status: proposed. All implementation checks pending.
+Status: implemented for review. Final review/CI/visual/post-merge acceptance checks remain pending; see IMPLEMENTATION-EVIDENCE.md.
 
-- [ ] Plan approved, including API-only scope and OOXML comparison policy.
+- [x] Plan approved, including API-only scope and OOXML comparison policy (PR #38).
 - [ ] Current develop inspected before implementation; separate feature branch/issue.
 - [ ] AC-01 through AC-12 verified with exact evidence.
 - [ ] New service registered alongside legacy DocxPublishingService.
@@ -22,4 +22,4 @@ Status: proposed. All implementation checks pending.
 - [ ] Exact post-merge CI, acceptance and closure recorded before issue closure.
 - [ ] main unchanged; no release or branch deletion.
 
-Planning PR contains documentation only. No implementation acceptance is claimed.
+Implementation PR contains the new package/registration, tests, workflow/example and documentation. No final acceptance or merge is claimed.

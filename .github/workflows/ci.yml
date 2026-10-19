@@ -52,6 +52,8 @@ jobs:
         run: python -m pytest tests/html_pipeline --cov=bgdxpublisher.html_pipeline --cov-report=term-missing --cov-fail-under=95
       - name: Batch pipeline coverage (at least 95%)
         run: python -m pytest tests/batch_pipeline --cov=bgdxpublisher.batch_pipeline --cov-report=term-missing --cov-fail-under=95
+      - name: DOCX pipeline coverage (at least 95%)
+        run: python -m pytest tests/docx_pipeline --cov=bgdxpublisher.docx_pipeline --cov-report=term-missing --cov-fail-under=95
       - name: Build wheel
         run: python -m pip wheel . --no-deps --wheel-dir dist-review
       - name: Test installed wheel outside repository
@@ -87,6 +89,9 @@ jobs:
               batch_cli_smoke = root / "batch_cli_pipeline.py"
               shutil.copyfile(repository / "examples" / "batch_cli_pipeline.py", batch_cli_smoke)
               subprocess.run([str(python), str(batch_cli_smoke)], cwd=root, check=True)
+              docx_pipeline_smoke = root / "docx_pipeline.py"
+              shutil.copyfile(repository / "examples" / "docx_pipeline.py", docx_pipeline_smoke)
+              subprocess.run([str(python), str(docx_pipeline_smoke)], cwd=root, check=True)
               docx_source = root / "docx-sample.md"
               shutil.copyfile(repository / "examples" / "docx-sample.md", docx_source)
               docx_output = root / "sample.docx"

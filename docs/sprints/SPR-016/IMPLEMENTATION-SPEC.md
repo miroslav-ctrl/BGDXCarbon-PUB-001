@@ -1,6 +1,6 @@
 # SPR-016 Implementation Specification
 
-Status: proposed, not implemented.
+Status: implemented for review. Approved contracts below are retained; see IMPLEMENTATION-EVIDENCE.md.
 
 ## Public contracts and composition
 

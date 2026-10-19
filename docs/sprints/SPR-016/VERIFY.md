@@ -1,8 +1,8 @@
 # SPR-016 Verification Plan
 
-Status: planned, not executed. New package/tests/example do not exist at baseline.
+Status: implemented for review. Commands below describe reproduction; actual local results are recorded in IMPLEMENTATION-EVIDENCE.md.
 
-After future implementation, install .[dev] and run:
+Install .[dev] and run:
 
 ~~~sh
 python -m ruff check .
