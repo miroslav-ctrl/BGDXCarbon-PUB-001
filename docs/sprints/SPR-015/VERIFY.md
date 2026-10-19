@@ -1,6 +1,6 @@
 # SPR-015 Verification Plan
 
-Status: planned commands and scenarios, not executed results.
+Status: implemented for review. Commands below are the reproducible verification procedure; actual local results are in [implementation evidence](IMPLEMENTATION-EVIDENCE.md). Final review and exact post-merge CI remain required.
 
 Install .[dev] with Python 3.13/3.14 and run:
 
@@ -8,7 +8,7 @@ Install .[dev] with Python 3.13/3.14 and run:
 python -m ruff check .
 python -m black --check .
 python -m mypy src
-python -m pytest tests/cli/test_batch.py tests/cli/test_batch_index.py tests/cli/test_batch_pipeline.py
+python -m pytest tests/cli/test_batch.py tests/cli/test_batch_index.py tests/cli/test_batch_cli_pipeline.py
 python -m pytest
 python -m pytest --cov=bgdxpublisher --cov-report=term-missing --cov-fail-under=99
 python -m pytest tests/domain --cov=bgdxpublisher.domain --cov-report=term-missing --cov-fail-under=95
@@ -20,7 +20,7 @@ python -m pytest tests/batch_pipeline --cov=bgdxpublisher.batch_pipeline --cov-r
 python -m pip wheel . --no-deps --wheel-dir dist-review
 ~~~
 
-tests/cli/test_batch_pipeline.py is a proposed future file, absent at planning baseline. Do not report the targeted command as currently passing.
+The new CLI test file is named test_batch_cli_pipeline.py to avoid collision with the existing batch service test module. examples/batch_cli_pipeline.py is copied and executed by the installed-wheel CI step outside checkout.
 
 ## Verification order
 

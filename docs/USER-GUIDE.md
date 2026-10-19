@@ -119,4 +119,35 @@ console logging, use a configuration with `logging: {console: false}`.
 
 The publish command uses the HTML job pipeline. Successful output remains Published: <path>. Parser errors retain exit code 2 and precise metadata diagnostics. Operational HTML failures return 1 with Publication failed: HTML_PUBLICATION_FAILED stage=<stage>. Stages are validate, read, render, write and cleanup. Check input/options/output permissions for the reported stage. Raw exception messages and document content are not printed by this diagnostic; safe identifier/code logs may also appear on stderr.
 
-A cleanup or runtime shutdown failure after atomic commit can return 1 while the committed file remains. No automatic rollback is performed. DOCX, PDF, batch and the direct legacy PublishingService API retain their routes.
+A cleanup or runtime shutdown failure after atomic commit can return 1 while the committed file remains. No automatic rollback is performed. DOCX, PDF and the direct legacy PublishingService API retain their routes.
+
+### Batch pipeline diagnostics
+
+`publish-batch` uses the registered batch HTML job pipeline. Command options and
+successful `Published:`, `Batch complete:` and `Index published:` stdout lines
+are unchanged. Expected failures return 1 and use these stderr diagnostics:
+
+- `Batch publication failed: BATCH_HTML_PREFLIGHT_FAILED` for batch preflight.
+- `Failed: item=<ordinal> HTML_PUBLICATION_FAILED stage=<stage>` for a document.
+  Ordinals start at 1 in deterministic discovery order, including failed items.
+- `Index publication failed: BATCH_INDEX_FAILED` for independent index failure.
+
+Stages are `validate`, `read`, `render`, `write` and `cleanup`. Check the input,
+options and output permissions for that stage. These diagnostics intentionally
+replace raw source paths/exception messages; safe code/job logs may also appear.
+Parser errors, such as missing arguments or invalid language/theme, still return
+2. A valid command naming a nonexistent input directory returns preflight exit 1.
+Existing configuration/runtime diagnostics keep their current format.
+
+Expected document failures continue to the next item. Summary counts include
+documents only; index failure does not add a failed document. An index includes
+COMPLETED jobs only, even if a failed cleanup left a file on disk. An all-failed
+batch may produce a valid empty index and still returns 1.
+
+Batch stdout is buffered until runtime shutdown succeeds. If shutdown fails,
+exit is 1 and no buffered publication/summary/index stdout is emitted; primary
+publication diagnostics and `Runtime cleanup failed:` remain available. Already
+committed files remain; inspect the output directory before retrying and use
+`--overwrite` only when replacement is intended. Directory creation during
+preflight is not transactional. No automatic rollback is promised. The legacy
+direct `publishing.batch.publish_batch` Python API remains unchanged.

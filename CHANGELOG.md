@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Route `publish-batch` through the registered batch HTML job pipeline. Preserve
+  command options, document/index bytes and success output; expected failures now
+  report stable codes and item ordinals instead of source paths/raw causes.
+- Delay batch stdout until runtime shutdown succeeds. Shutdown failure returns 1
+  without success/summary stdout, while committed files and primary diagnostics
+  remain intact. Legacy direct batch API and other commands retain their routes.
+
 ## 1.1.0 — 2026-10-14
 
 - Add immutable document models, structured validation, publisher job lifecycle,
