@@ -1,6 +1,6 @@
 # SPR-016 Acceptance Criteria
 
-Status: implementation prepared for review; see IMPLEMENTATION-EVIDENCE.md. Final acceptance remains pending review, four-environment CI, visual verification and exact post-merge evidence.
+Status: AC-01–AC-12 PASS on merged develop `c98be074d96d1bc95affa86718a91e58f52bb8a1`, verified 2026-10-19. Formal closure record is submitted for review; see [CLOSURE.md](CLOSURE.md).
 
 | ID | Criterion | Required evidence |
 | --- | --- | --- |
@@ -21,3 +21,27 @@ No standalone CLI migration acceptance is included. Parser errors remain exit 2
 and legacy DOCX operational errors exit 1 through the unchanged command route.
 New API failures are exceptions/results, not new CLI stderr contracts.
 Record tested SHA, OS/Python/dependencies, commands, counts/skips, artifacts and URLs.
+
+## Verified criterion mapping
+
+Test names refer to tests/docx_pipeline/test_docx_publication.py unless noted.
+
+| AC | Result and supporting evidence |
+| --- | --- |
+| 01 | PASS: test_equivalence checks immutable/mismatched envelopes; test_stage_failure_chain_and_safe_logs checks typed FAILED/result/cause chain. |
+| 02 | PASS: stage/history assertions, test_new_api_never_calls_legacy_and_has_fresh_ids and cleanup/context isolation. |
+| 03 | PASS: metadata/path cases with forbidden ReadStage, extension, parent, alias, symlink and overwrite checks. |
+| 04–05 | PASS: eight BOM/metadata/empty-or-complex input combinations; all uncompressed OOXML members and member sets equal legacy, no XML normalization; source bytes retained. |
+| 06 | PASS: unchanged renderer and existing tests/publishing/test_docx.py content/link/image regressions; new package member comparison excludes embedded media/macros. |
+| 07 | PASS: race, replace and flush failure injection preserves bytes/temp cleanup; existing shared writer permission regressions retained. |
+| 08 | PASS: metadata validation, encoding/stage/real render/flush and cleanup injection; exact failure stage/cause, retained committed DOCX, cleanup once. |
+| 09 | PASS: captured safe logs, fixed job metadata and raw sentinel/path/content exclusion; legacy diagnostics unchanged. |
+| 10 | PASS: test_runtime_and_single_operations and test_cli_keeps_legacy_route; existing full suite and wheel CLI regressions. |
+| 11 | PASS: copied examples/docx_pipeline.py outside checkout in all four jobs; actual single-page visual inspection scoped precisely in CLOSURE.md. |
+| 12 | PASS: exact post-merge CI 39225799217, seven gates and four jobs; pre-merge formal review and explicit owner merge authorization recorded. |
+
+[CLOSURE.md](CLOSURE.md) records exact SHA/job IDs, per-environment counts, coverage,
+visual artifact/review link and administrative sequence. The formal source review
+is Codex COMMENT, not independent human APPROVE. Issue #39 remains open pending
+acceptance/merge of this closure record. Historical implementation evidence remains
+valid; this record supersedes its pending-review/CI disposition.
