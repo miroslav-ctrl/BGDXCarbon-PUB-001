@@ -10,7 +10,8 @@
 
 - Add a separately registered DOCX job pipeline API with typed stages, immutable
   execution results, safe failure diagnostics and independent per-call jobs.
-  Existing `publish-docx` CLI and direct `DocxPublishingService` keep their routes.
+  Direct `DocxPublishingService` retains its legacy route; CLI integration is
+  listed separately above.
 
 - Route `publish-batch` through the registered batch HTML job pipeline. Preserve
   command options, document/index bytes and success output; expected failures now
