@@ -1,6 +1,6 @@
 # SPR-017 Acceptance Criteria
 
-Status: implemented for review; local verification mapped in IMPLEMENTATION-EVIDENCE.md. Final source review, CI/visual and post-merge acceptance remain pending.
+Status: technical AC-01–AC-12 PASS on merged develop `d39b2904d3189326d01e0b1313f6e6c6bff24382`, verified 2026-10-19. Closure documentation submitted for review; see [CLOSURE.md](CLOSURE.md).
 
 | ID | Criterion | Required evidence |
 | --- | --- | --- |
@@ -21,3 +21,26 @@ Record exact tested SHA, environments, commands, counts/skips, artifact/run link
 and actual results. No source/merge/issue closure acceptance can be inferred from
 planning. Legacy direct API diagnostic preservation and intentional CLI stderr
 replacement are distinct contracts.
+
+## Verified criterion mapping
+
+| AC | Result and exact supporting evidence |
+| --- | --- |
+| 01 | PASS: cli/app.py and run_publish signature unchanged; test_cli_bad_arguments and test_parser_failure_never_initializes_runtime. |
+| 02 | PASS: eight test_docx_routing_and_equivalence cases capture exact request/single call and forbid fallback; test_pdf_first_when_both_flags. |
+| 03 | PASS: exact Published stdout assertions, result.publication adaptation and source review prove success after successful stop only; direct API bytes_written assertions retained. |
+| 04 | PASS: eight UTF-8/BOM × metadata × empty/complex cases compare all uncompressed members and inventory without XML normalization; source bytes unchanged; shared safety/structure regressions retained. |
+| 05 | PASS: test_safe_stage_errors, missing-source validation, postcommit cleanup, safe pipeline logs and real installed CLI read/validate errors; structured code/stage without raw cause. |
+| 06 | PASS: parser invalid/missing arguments exit 2 before runtime; pipeline invalid paths/extension and installed missing/invalid UTF-8 source exit 1. |
+| 07 | PASS: retained pipeline invalid-path/symlink/race/precommit and shared writer protection tests; installed CLI refusal/overwrite preserves bytes. |
+| 08 | PASS: test_postcommit_cleanup_failure_retains_output and test_postcommit_cleanup_and_context_isolation; FAILED stage=cleanup, cleanup once, committed file retained. |
+| 09 | PASS: expected shutdown combinations and init/start lifecycle tests; unexpected DOCX/HTML primary/shutdown matrix; source review confirms cleanup-before-primary order and no false success. |
+| 10 | PASS: unchanged production direct APIs; test_legacy_direct_api_retains_contract, legacy error/bytes tests, new API fresh-job/no-fallback tests; full other-command regressions. |
+| 11 | PASS: all four fresh installed-wheel jobs; actual exact-merge artifact 12177485556/page-1.png inspected as scoped in CLOSURE.md. |
+| 12 | PASS technically: formal review, owner acceptance/merge authorization and exact post-merge CI 39231217588; all four jobs, total 99.90% and seven separate gates pass. Closure-document acceptance/merge remains administrative pending. |
+
+Test paths: tests/cli/test_docx_cli_pipeline.py,
+tests/cli/test_docx_runtime_precedence.py, tests/publishing/test_docx.py and
+tests/docx_pipeline/test_docx_publication.py. [CLOSURE.md](CLOSURE.md) records
+job IDs/counts, limits, visual evidence, review and remaining administrative steps.
+Issue #43 remains open; this record does not claim its completion.
