@@ -63,7 +63,7 @@ def test_index_links_and_metadata(
     before = {p.name: p.read_bytes() for p in output.iterdir()}
     assert main(args) == 1
     assert {p.name: p.read_bytes() for p in output.iterdir()} == before
-    assert "Output exists" in capsys.readouterr().err
+    assert "BATCH_HTML_PREFLIGHT_FAILED" in capsys.readouterr().err
     assert main([*args, "--overwrite"]) == 0
     assert "Index published:" in capsys.readouterr().out
 
@@ -121,6 +121,11 @@ def test_index_reserved_name_preflight(tmp_path: Path, name: str) -> None:
         == 1
     )
     assert not output.exists()
+    with pytest.raises(PublishingError, match="conflicts"):
+        publish_batch(
+            PublishingService(logging.getLogger("legacy-index")),
+            BatchRequest(source, output, overwrite=True, index=True),
+        )
     assert main(["publish-batch", str(source), "--output-dir", str(output)]) == 0
 
 
@@ -154,6 +159,11 @@ def test_index_output_guard(tmp_path: Path, alias: str) -> None:
         == 1
     )
     assert document.read_text() == "# Keep"
+    with pytest.raises(PublishingError):
+        publish_batch(
+            PublishingService(logging.getLogger("legacy-guard")),
+            BatchRequest(source, output, overwrite=True, index=True),
+        )
     if alias != "directory":
         assert index.read_text() == ("# Keep" if alias == "input" else "old")
 
@@ -162,14 +172,14 @@ def test_index_commit_failure_reports_document_results(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     (tmp_path / "a.md").write_text("# A")
-    original = PublishingService._write
+    original = PublishingService.write_bytes
 
-    def broken(output: Path, html: str, overwrite: bool) -> None:
+    def broken(output: Path, content: bytes, overwrite: bool) -> None:
         if output.name == "index.html":
             raise OSError("disk error")
-        original(output, html, overwrite)
+        original(output, content, overwrite)
 
-    monkeypatch.setattr(PublishingService, "_write", staticmethod(broken))
+    monkeypatch.setattr(PublishingService, "write_bytes", staticmethod(broken))
     assert (
         main(
             [
@@ -184,7 +194,8 @@ def test_index_commit_failure_reports_document_results(
     )
     captured = capsys.readouterr()
     assert "1 published, 0 failed" in captured.out
-    assert "Index publication failed:" in captured.err and "disk error" in captured.err
+    assert captured.err.endswith("Index publication failed: BATCH_INDEX_FAILED\n")
+    assert "disk error" not in captured.err
     assert (tmp_path / "out" / "a.html").exists()
     assert not (tmp_path / "out" / "index.html").exists()
 

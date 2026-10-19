@@ -84,6 +84,9 @@ jobs:
               batch_smoke = root / "batch_pipeline.py"
               shutil.copyfile(repository / "examples" / "batch_pipeline.py", batch_smoke)
               subprocess.run([str(python), str(batch_smoke)], cwd=root, check=True)
+              batch_cli_smoke = root / "batch_cli_pipeline.py"
+              shutil.copyfile(repository / "examples" / "batch_cli_pipeline.py", batch_cli_smoke)
+              subprocess.run([str(python), str(batch_cli_smoke)], cwd=root, check=True)
               docx_source = root / "docx-sample.md"
               shutil.copyfile(repository / "examples" / "docx-sample.md", docx_source)
               docx_output = root / "sample.docx"

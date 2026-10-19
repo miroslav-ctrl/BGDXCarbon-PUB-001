@@ -1,8 +1,8 @@
 # SPR-015 Review Checklist
 
-Status: proposed plan. All implementation checks remain pending.
+Status: implementation prepared for review. See IMPLEMENTATION-EVIDENCE.md; implementation review/CI/closure checks remain pending.
 
-- [ ] Plan approved, including safe ordinal diagnostics and shutdown output policy.
+- [x] Plan approved, including safe ordinal diagnostics and shutdown output policy (owner approval and merged plan PR #35).
 - [ ] AC-01 through AC-12 verified with exact evidence in ACCEPTANCE.md.
 - [ ] Existing parser/signature/defaults unchanged.
 - [ ] BatchHtmlPublicationService resolved once; legacy path forbidden in selection tests.
@@ -20,4 +20,4 @@ Status: proposed plan. All implementation checks remain pending.
 - [ ] Final closure recorded before closing the future implementation issue.
 - [ ] main remains unchanged.
 
-Planning PR contains only this directory's documentation and no completed implementation claims.
+Implementation PR includes the adapter, focused regressions, installed-wheel smoke, workflow invocation and documentation. No merge or final acceptance is claimed.

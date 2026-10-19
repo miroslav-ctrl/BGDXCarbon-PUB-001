@@ -1,6 +1,7 @@
 # SPR-015 Implementation Specification
 
-Status: proposed; no implementation.
+Status: implemented for review; the contract below remains the approved design.
+See [implementation evidence](IMPLEMENTATION-EVIDENCE.md) for actual test paths and results.
 
 ## Routing
 
@@ -36,6 +37,6 @@ No deletion, rollback or restoration of committed files. An item cleanup failure
 
 Retain single HTML publish, DOCX/PDF, no-argument runtime and configuration command behavior. Reuse SPR-014 discovery, collisions, aliases, symlinks, race guards, escaping and atomic writer. Avoid touching engine contracts merely to adapt CLI output.
 
-Existing tests/cli/test_batch.py currently assert source filenames in stderr; test_batch_index.py asserts raw Output exists / disk error. Update only CLI-facing expectations to stable codes/ordinals. Keep legacy direct API assertions and coverage intact. Add tests in tests/cli/test_batch_pipeline.py (proposed path) with forbidden legacy-call spies, captured BatchRequest, failure/cleanup injection and repeated invocations. Verify no Markdown/path/sentinel leakage in new route logs/stderr.
+CLI-facing assertions in tests/cli/test_batch.py and test_batch_index.py use stable codes/ordinals instead of source filenames and raw operational messages. Direct legacy API assertions remain; additional direct-API regressions preserve its diagnostic/result contract. New tests are in tests/cli/test_batch_cli_pipeline.py, renamed from the proposed test_batch_pipeline.py to avoid pytest module-name collision with tests/batch_pipeline/test_batch_pipeline.py. They use forbidden legacy-call spies, captured BatchRequest, differential inputs and failure/cleanup injection. Verify no Markdown/path/sentinel leakage in new route logs/stderr.
 
 CI stays Ubuntu/Windows × Python 3.13/3.14, total coverage >=99% and all six existing package thresholds >=95%; no threshold reduction. Extend the existing fresh-wheel outside-checkout step for real publish-batch success, partial failure, preflight failure, independent index failure and overwrite. Use a copied Python smoke script for deterministic index-failure injection against installed code, without changing production APIs for testing.

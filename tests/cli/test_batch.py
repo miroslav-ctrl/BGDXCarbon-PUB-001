@@ -1,11 +1,12 @@
 """Batch behavior and lifecycle verification."""
 
+import logging
 from pathlib import Path
 
 import pytest
 
 from bgdxpublisher.cli.app import main
-from bgdxpublisher.publishing import PublishingService
+from bgdxpublisher.publishing import PublishingError, PublishingService
 from bgdxpublisher.publishing.batch import BatchRequest, publish_batch
 from bgdxpublisher.runtime import (
     PublisherApplication,
@@ -49,7 +50,9 @@ def test_batch_continues_and_preserves_existing_outputs(
     assert sorted(p.name for p in output.iterdir()) == ["b.html", "c.html"]
     captured = capsys.readouterr()
     assert "1 published, 2 failed" in captured.out
-    assert "a.md" in captured.err and "c.md" in captured.err
+    assert "Failed: item=1 HTML_PUBLICATION_FAILED stage=read\n" in captured.err
+    assert "Failed: item=3 HTML_PUBLICATION_FAILED stage=validate\n" in captured.err
+    assert "a.md" not in captured.err and "c.md" not in captured.err
     (source / "a.md").write_text("# Fixed")
     assert main([*args, "--overwrite"]) == 0
     assert "3 published, 0 failed" in capsys.readouterr().out
@@ -87,6 +90,11 @@ def test_batch_preflight(
         assert output.read_text() == "keep"
     else:
         assert not output.exists()
+    with pytest.raises(PublishingError):
+        publish_batch(
+            PublishingService(logging.getLogger("legacy-preflight")),
+            BatchRequest(source, output),
+        )
 
 
 @pytest.mark.parametrize(

@@ -1,6 +1,6 @@
 # SPR-015 Acceptance Criteria
 
-Status: all pending. Planning is not implementation evidence.
+Status: implemented for review; local verification is recorded in [implementation evidence](IMPLEMENTATION-EVIDENCE.md). Final acceptance and four-environment/post-merge CI remain pending. Local PASS does not close implementation acceptance.
 Record tested SHA, environment, exact commands, results and links per criterion.
 
 | ID | Criterion | Required verification |
