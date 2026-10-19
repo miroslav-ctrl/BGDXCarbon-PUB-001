@@ -121,6 +121,18 @@ The publish command uses the HTML job pipeline. Successful output remains Publis
 
 A cleanup or runtime shutdown failure after atomic commit can return 1 while the committed file remains. No automatic rollback is performed. DOCX, PDF and the direct legacy PublishingService API retain their routes.
 
+### DOCX pipeline Python API
+
+For Python integrations, `bgdxpublisher.docx_pipeline.DocxPublicationService`
+is registered alongside the existing DOCX service. Its `publish(DocxRequest)`
+returns an immutable `DocxPublicationResult` containing `publication` and job
+`execution`, or raises `DocxPublicationError` with code `DOCX_PUBLICATION_FAILED`
+and a structured failed execution. The new route logs safe codes/stages/IDs;
+internal causes are retained for debugging. A cleanup failure after commit can
+leave a DOCX file while reporting FAILED; no rollback is promised. See
+`examples/docx_pipeline.py`. The `publish-docx` CLI and direct
+`DocxPublishingService` behavior and diagnostics are unchanged.
+
 ### Batch pipeline diagnostics
 
 `publish-batch` uses the registered batch HTML job pipeline. Command options and

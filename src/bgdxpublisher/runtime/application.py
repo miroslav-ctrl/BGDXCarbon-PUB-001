@@ -7,6 +7,7 @@ from pathlib import Path
 from bgdxpublisher.batch_pipeline import BatchHtmlPublicationService
 from bgdxpublisher.config import ConfigurationService, PublisherSettings
 from bgdxpublisher.container import ServiceRegistry
+from bgdxpublisher.docx_pipeline import DocxPublicationService
 from bgdxpublisher.html_pipeline import HtmlPublicationService
 from bgdxpublisher.jobs import JobService
 from bgdxpublisher.logging import LoggerFactory, LoggingService
@@ -103,6 +104,9 @@ class PublisherApplication:
             )
             self.context.services.register(
                 DocxPublishingService, DocxPublishingService(self._logging.logger)
+            )
+            self.context.services.register(
+                DocxPublicationService, DocxPublicationService(self._logging.logger)
             )
             self.context.services.register(
                 PdfPublishingService, PdfPublishingService(self._logging.logger)

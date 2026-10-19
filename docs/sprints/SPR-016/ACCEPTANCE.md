@@ -1,6 +1,6 @@
 # SPR-016 Acceptance Criteria
 
-Status: all pending. Planning and green baseline CI do not implement these criteria.
+Status: implementation prepared for review; see IMPLEMENTATION-EVIDENCE.md. Final acceptance remains pending review, four-environment CI, visual verification and exact post-merge evidence.
 
 | ID | Criterion | Required evidence |
 | --- | --- | --- |

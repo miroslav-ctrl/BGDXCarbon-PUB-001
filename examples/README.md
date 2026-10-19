@@ -1,5 +1,10 @@
 # Examples
 
+`docx_pipeline.py` verifies the new registered DOCX pipeline API against an
+installed wheel outside checkout. It compares OOXML members with the legacy
+publisher, checks metadata/Unicode and exercises refusal, overwrite and failure
+preservation. The existing `publish-docx` CLI continues using the legacy service.
+
 From the repository root, publish a single document:
 
 ```powershell
