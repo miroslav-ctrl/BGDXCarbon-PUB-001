@@ -27,4 +27,5 @@ outside checkout: completion/fresh jobs, refusal/overwrite and safe encoding
 failure with retained output. Run `python -I pdf_pipeline.py [output-directory]`;
 an optional directory retains sample.pdf and multipage.pdf for host pypdf and
 visual checks. Its verification uses runtime dependencies only. Existing
-publish-pdf CLI and direct legacy PdfPublishingService retain their routes.
+publish-pdf CLI uses the registered PDF pipeline; direct legacy PdfPublishingService
+retains its original contract.

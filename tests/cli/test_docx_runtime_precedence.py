@@ -1,12 +1,14 @@
 """DOCX-specific runtime precedence without altering other dispatch routes."""
 
+from types import SimpleNamespace
+
 import pytest
 
 from bgdxpublisher.cli.publish import run_publish
 from bgdxpublisher.docx_pipeline import DocxPublicationService
 from bgdxpublisher.html_pipeline import HtmlPublicationService
+from bgdxpublisher.pdf_pipeline import PdfPublicationService
 from bgdxpublisher.publishing import PublishResult
-from bgdxpublisher.publishing.pdf import PdfPublishingService
 from bgdxpublisher.runtime import (
     PublisherApplication,
     RuntimeFoundationError,
@@ -56,12 +58,12 @@ def test_pdf_first_when_both_flags(tmp_path, monkeypatch, capsys):
 
     def pdf(self, request):
         calls.append(request)
-        return PublishResult(request.output, 0)
+        return SimpleNamespace(publication=PublishResult(request.output, 0))
 
     def forbidden(*args):
         pytest.fail("DOCX must not override PDF-first precedence")
 
-    monkeypatch.setattr(PdfPublishingService, "publish", pdf)
+    monkeypatch.setattr(PdfPublicationService, "publish", pdf)
     monkeypatch.setattr(DocxPublicationService, "publish", forbidden)
     output = tmp_path / "out.pdf"
     assert (

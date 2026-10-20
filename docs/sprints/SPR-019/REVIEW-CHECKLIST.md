@@ -1,8 +1,8 @@
 # SPR-019 Review Checklist
 
-Status: proposed plan, all implementation acceptance pending.
+Status: implemented for review; final review/CI/post-merge acceptance pending. See IMPLEMENTATION-EVIDENCE.md.
 
-- [ ] Plan approved including intentional safe PDF CLI stderr replacement.
+- [x] Plan approved including intentional safe PDF CLI stderr replacement.
 - [ ] Then-current develop inspected; separate implementation issue/branch.
 - [ ] AC-01–AC-12 mapped to actual exact-SHA evidence.
 - [ ] Parser/signature/defaults and PDF-first both-flags preserved.
@@ -25,4 +25,4 @@ Status: proposed plan, all implementation acceptance pending.
 - [ ] Exact post-merge CI/acceptance/closure before issue completion.
 - [ ] No main change, release/tag, version/dependency change or branch deletion.
 
-This PR is documentation only; implementation requires a separately authorized task.
+Implementation prepared under #51. No merge or closure claimed.
