@@ -36,7 +36,8 @@ Caller owns initialize/start/try-finally-stop; batch service never stops runtime
 ## Preflight and selection
 
 Validate language with existing validator before publication/directory creation.
-Resolve source directory; missing/non-directory source is preflight failure.
+Check the source root for a symbolic link before resolving it; missing/non-directory
+source is preflight failure.
 Reject symbolic-link source root and any immediate .md candidate that is a symlink
 (including dangling links); do not silently follow them. This is explicit new API
 policy; existing HTML batch and single-document policies remain unchanged.
@@ -47,8 +48,9 @@ publication, on every platform. index.md is allowed: this API creates no index.
 
 Map each source stem to <stem>.docx and title=None (single API resolves stem).
 Validate output_dir is not a symlink or existing non-directory. Before any
-publication or mkdir, reject planned output aliases/symlinks to any selected
-input (samefile/hardlink) and output destination directories. Ordinary existing
+publication or mkdir, reject every planned output symbolic link (including
+dangling links, regardless of its target), planned output aliases to any selected
+input (same path/samefile/hardlink), and output destination directories. Ordinary existing
 regular output with overwrite=False is an item validate failure, not batch
 preflight abort; later eligible items still run. Preserve single API checks for
 metadata/title/filesystem. Output in same directory as input is allowed if guards

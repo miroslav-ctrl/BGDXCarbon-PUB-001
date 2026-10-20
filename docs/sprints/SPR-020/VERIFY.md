@@ -19,7 +19,9 @@ Run Ubuntu/Windows Python3.13/3.14; explain skips and execute filesystem cases L
 1. Test immutable request/item/result invariants and derived counts, terminal
    outcomes and mismatch/duplicate/empty rejection.
 2. Spy child/mkdir to forbid work before preflight; missing/file/empty/lang/root
-   symlink/dangling candidate/casefold collision/output alias/symlink/directory.
+   symlink before resolution/dangling candidate/casefold collision/output alias/directory.
+   Include output symlinks to selected input, unrelated target and dangling target;
+   all must fail before mkdir/child calls, with overwrite both false and true.
    Setup mkdir failure must precede child calls; no rollback expectation.
 3. Snapshot source enumeration once, add a file during first child call to ensure
    no rescan; .MD inclusion, subdirectory ignore, stable sort and index.md allowed.
