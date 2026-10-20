@@ -1,6 +1,7 @@
 # SPR-020 Acceptance Criteria
 
-Status: all pending. Baseline/plan CI is not implementation acceptance.
+Status: implementation evidence mapped in VERIFY.md; final formal acceptance and
+closure pending. Baseline/plan CI is not implementation acceptance.
 
 | ID | Criterion | Required evidence |
 | --- | --- | --- |

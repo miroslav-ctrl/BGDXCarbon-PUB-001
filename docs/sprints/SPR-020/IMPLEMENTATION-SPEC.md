@@ -1,6 +1,6 @@
 # SPR-020 Implementation Specification
 
-Status: proposed; no implementation.
+Status: approved contract; implementation submitted for Draft review.
 
 ## Public API and runtime
 

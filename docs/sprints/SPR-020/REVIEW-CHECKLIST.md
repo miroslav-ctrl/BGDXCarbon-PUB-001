@@ -1,9 +1,9 @@
 # SPR-020 Review Checklist
 
-Status: proposed plan; all implementation acceptance pending.
+Status: implementation submitted; formal review/merge/closure pending.
 
-- [ ] Plan approved: API-only, source symlink/preflight/partial-failure policy explicit.
-- [ ] Then-current develop inspected; new implementation issue/feature branch.
+- [x] Plan approved: API-only, source symlink/preflight/partial-failure policy explicit.
+- [x] Then-current develop inspected; new implementation issue/feature branch.
 - [ ] AC-01–AC-12 mapped to exact executed evidence.
 - [ ] Frozen terminal aggregate invariants/derived counts and empty/duplicate guards.
 - [ ] Preflight read-only until all checks pass; mkdir failure before child calls.
@@ -23,4 +23,5 @@ Status: proposed plan; all implementation acceptance pending.
 - [ ] Accepted closure documentation before implementation issue completion.
 - [ ] No main change, CLI addition, release/tag, dependency/version change or branch deletion.
 
-This is planning documentation only. Implementation requires separate authorization.
+Implementation was explicitly authorized after approved plan merge. Final owner
+acceptance, merge and closure require subsequent authorization.
