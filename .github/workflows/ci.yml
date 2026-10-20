@@ -69,6 +69,7 @@ jobs:
           import venv
 
           repository = pathlib.Path.cwd()
+          os.environ.pop("PYTHONPATH", None)
           wheel = next(pathlib.Path("dist-review").glob("bgdxpublisher-*.whl")).resolve()
           with tempfile.TemporaryDirectory() as directory:
               root = pathlib.Path(directory)
@@ -153,6 +154,21 @@ jobs:
               assert subprocess.run(pdf_command, cwd=root, capture_output=True).returncode == 1
               assert pdf_output.read_bytes() == pdf_before
               subprocess.run([*pdf_command, "--overwrite"], cwd=root, check=True)
+              pdf_before = pdf_output.read_bytes()
+              refused_pdf = subprocess.run(pdf_command, cwd=root, capture_output=True, text=True)
+              assert refused_pdf.returncode == 1 and pdf_output.read_bytes() == pdf_before
+              assert "Publication failed: PDF_PUBLICATION_FAILED stage=validate" in refused_pdf.stderr
+              assert str(pdf_source) not in refused_pdf.stderr and "Traceback" not in refused_pdf.stderr
+              for name, content, stage in (("missing", None, "validate"), ("encoding", b"\xff", "read"), ("glyph", "Unsupported 漢".encode("utf-8"), "render"), ("extension", b"# Input", "validate")):
+                  bad_source = root / f"{name}.md"
+                  if content is not None:
+                      bad_source.write_bytes(content)
+                  bad_output = root / (f"{name}.html" if name == "extension" else f"{name}.pdf")
+                  failed = subprocess.run([str(cli), "publish-pdf", str(bad_source), "--output", str(bad_output)], cwd=root, capture_output=True, text=True, env={k: v for k, v in os.environ.items() if k != "PYTHONPATH"})
+                  assert failed.returncode == 1
+                  assert f"Publication failed: PDF_PUBLICATION_FAILED stage={stage}" in failed.stderr
+                  assert str(bad_source) not in failed.stderr and "Traceback" not in failed.stderr and "U+6F22" not in failed.stderr
+                  assert not bad_output.exists()
               invalid_pdf = subprocess.run([*pdf_command, "--overwrite", "--lang", "en_US"], cwd=root, capture_output=True)
               assert invalid_pdf.returncode == 2
               cases = [

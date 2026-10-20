@@ -1,6 +1,6 @@
 # SPR-019 Verification Plan
 
-Status: proposed; commands/tests below are future implementation checks.
+Status: implemented for review; actual local results in IMPLEMENTATION-EVIDENCE.md. Commands reproduce checks.
 
 ```sh
 python -m ruff check .
@@ -12,7 +12,7 @@ python -m pytest --cov=bgdxpublisher --cov-report=term-missing --cov-fail-under=
 python -m pip wheel . --no-deps --wheel-dir dist-review
 ```
 
-New test paths are proposed, not present evidence. Keep all eight independent
+Focused test paths below are implemented; see recorded results. Keep all eight independent
 >=95% package commands in ci.yml; total >=99%, Ubuntu/Windows Python 3.13/3.14.
 No new package/gate/dependency. Explain every skip; execute filesystem cases Linux.
 

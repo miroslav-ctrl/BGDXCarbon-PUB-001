@@ -1,6 +1,6 @@
 # SPR-019 Acceptance Criteria
 
-Status: all pending. Planning/baseline CI is not implementation evidence.
+Status: implemented for review; mapping in IMPLEMENTATION-EVIDENCE.md. Final review/CI/post-merge acceptance and closure pending.
 
 | ID | Criterion | Required evidence |
 | --- | --- | --- |

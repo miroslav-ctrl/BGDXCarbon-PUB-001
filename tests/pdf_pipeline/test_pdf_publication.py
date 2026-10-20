@@ -390,31 +390,26 @@ def test_real_stage_failure_preserves_bytes(tmp_path, monkeypatch, caplog, failu
     assert not list(tmp_path.glob(".bgdx-*.tmp"))
 
 
-def test_cli_retains_legacy_route(tmp_path, monkeypatch, capsys):
-    from bgdxpublisher.cli.app import main
+def test_legacy_direct_diagnostic_and_logging(tmp_path, monkeypatch, caplog):
+    from bgdxpublisher.publishing import PublishingError
 
     request = setup(tmp_path)
-    calls = []
-    original = PdfPublishingService.publish
-
-    def publish(self, value):
-        calls.append(value)
-        return original(self, value)
 
     def forbidden(*args):
-        pytest.fail("CLI must retain legacy PDF route")
+        pytest.fail("legacy direct API must not redirect")
 
-    monkeypatch.setattr(PdfPublishingService, "publish", publish)
     monkeypatch.setattr(PdfPublicationService, "publish", forbidden)
-    args = ["publish-pdf", str(request.source), "--output", str(request.output)]
-    assert main(args) == 0
-    assert calls == [request]
-    assert capsys.readouterr().out == f"Published: {request.output}\n"
-    assert main(args) == 1
-    assert (
-        capsys.readouterr().err
-        == "Publication failed: Output exists; use --overwrite to replace it.\n"
-    )
+    caplog.set_level(logging.INFO, logger="legacy-direct")
+    publisher = PdfPublishingService(logging.getLogger("legacy-direct"))
+    publisher.publish(request)
+    assert f"Published PDF: {request.output}" in caplog.text
+    before = request.output.read_bytes()
+    request.source.write_text("Unsupported 漢", encoding="utf-8")
+    with pytest.raises(PublishingError, match="U\\+6F22") as error:
+        publisher.publish(replace(request, overwrite=True))
+    assert isinstance(error.value.__cause__, ValueError)
+    assert "Unable to publish PDF:" in str(error.value)
+    assert request.output.read_bytes() == before
 
 
 @pytest.mark.parametrize("kind", ["glyph", "control", "font", "layout"])

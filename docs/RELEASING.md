@@ -4,7 +4,7 @@
    Update version assertions in CLI tests and installed-wheel CI.
 2. Review release notes, examples and documentation for HTML, DOCX, PDF and
    publisher core. Confirm in-process HTML/batch/DOCX pipeline command integration
-   and the separate PDF pipeline API; publish-pdf retains its legacy route.
+   and PDF pipeline command integration; verify direct legacy APIs remain intact.
 3. Pass Ruff, Black, MyPy, all tests, total coverage >=99%, and separate domain,
    jobs, pipeline, orchestration, html_pipeline, batch_pipeline, docx_pipeline and
    pdf_pipeline coverage >=95% each (eight independent gates). Verify installed-wheel HTML/DOCX/PDF commands

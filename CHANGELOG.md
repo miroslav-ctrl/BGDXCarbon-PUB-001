@@ -2,9 +2,15 @@
 
 ## Unreleased
 
+- Route existing publish-pdf CLI through the PDF job pipeline. Preserve options,
+  success output and both direct APIs. Expected CLI operational errors now use
+  PDF_PUBLICATION_FAILED stage=<stage>, omitting raw causes/glyph detail. Preserve
+  committed outputs on cleanup/shutdown failure and suppress false success.
+
 - Add a separately registered PDF publication job pipeline API with immutable
   results, fresh per-call jobs and safe structured failures. Reuse the existing
-  PDF renderer/fonts and atomic writer; preserve publish-pdf CLI and legacy API.
+  PDF renderer/fonts and atomic writer; retain the legacy direct API. CLI integration
+  is listed separately above.
   Add independent PDF pipeline coverage and installed-wheel/visual verification.
 
 - Route the existing `publish-docx` CLI through the registered DOCX job pipeline.
