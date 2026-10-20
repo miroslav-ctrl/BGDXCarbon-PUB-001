@@ -1,6 +1,6 @@
 # SPR-019 Acceptance Criteria
 
-Status: implemented for review; mapping in IMPLEMENTATION-EVIDENCE.md. Final review/CI/post-merge acceptance and closure pending.
+Status: technical AC-01–AC-12 PASS on merged develop `30a21a651cf3ed9153bda7d17f624b5210999248`, verified 2026-10-20. Closure documentation submitted for review; see [CLOSURE.md](CLOSURE.md).
 
 | ID | Criterion | Required evidence |
 | --- | --- | --- |
@@ -20,3 +20,23 @@ Status: implemented for review; mapping in IMPLEMENTATION-EVIDENCE.md. Final rev
 Record tested SHA/environments/dependencies/commands/counts/skips, exact logs and
 run/job/artifact/page links and inspection scope. Separate new CLI diagnostic
 compatibility change from preservation of legacy direct API diagnostics.
+
+## Verified criterion mapping
+
+| AC | Result and supporting evidence |
+| --- | --- |
+| 01 | PASS: app.py/signature/defaults unchanged; existing parser tests and test_parser_failure_never_initializes_runtime. |
+| 02 | PASS: twelve test_pdf_routing_and_equivalence cases capture exact request/one call and forbid legacy fallback; updated PDF-first both-flags spy forbids DOCX. |
+| 03–04 | PASS: exact stdout after finally/stop, twelve UTF-8/BOM × metadata × empty/complex/multipage comparisons; page count/order/A4/text/content streams/title/lang/URI rects/targets/fonts/source bytes; direct bytes_written assertions retained. No broad normalization/raw whole-file equality. |
+| 05–06 | PASS: injected stage errors and seven real missing/extension/encoding/glyph/control/font/layout cases; exact primary diagnostics counted separately from safe logs; parser exit 2 and operational stage/exit 1. |
+| 07 | PASS: retained pipeline alias/symlink/race/permissions/precommit tests and actual CLI refusal/overwrite preserving bytes. |
+| 08 | PASS: CLI test_postcommit_cleanup_failure_retains_output plus retained API cleanup once/context isolation/FAILED/no envelope tests. Committed PDF retained; no rollback. |
+| 09 | PASS: twelve PDF both-flags/primary/stop combinations assert exact adapter line count/order/propagation/retained outputs and init/start/stop once; two startup cases; existing DOCX/HTML matrix retained. |
+| 10 | PASS: unchanged direct APIs; retained result/overwrite regression plus test_legacy_direct_diagnostic_and_logging checks raw glyph code/cause/logging without redirection; full other-command tests. |
+| 11 | PASS: actual installed-wheel CLI plus retained API smoke in all jobs; exact-merge migrated-CLI artifact 12244517111/page-1.png inspected; separate API multipage/DOCX generation/checks retained. |
+| 12 | PASS technically: formal review and explicit owner acceptance/merge authorization; exact post-merge CI 39378245669, four jobs, total >=99%/eight independent >=95% gates. Administrative closure-document acceptance/merge/CI pending. |
+
+Primary paths: tests/cli/test_pdf_cli_pipeline.py,
+tests/cli/test_pdf_runtime_precedence.py, tests/publishing/test_pdf.py,
+tests/pdf_pipeline/test_pdf_publication.py and tests/cli/test_docx_runtime_precedence.py.
+Issue #51 remains open pending CLOSURE.md administrative sequence.
