@@ -1,6 +1,7 @@
 # SPR-022 Implementation Specification
 
-Status: proposed contract; no implementation.
+Status: implemented for Draft review; approved contract retained below.
+See [implementation evidence](IMPLEMENTATION-EVIDENCE.md).
 
 ## Public models and runtime composition
 

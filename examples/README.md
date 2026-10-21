@@ -38,3 +38,12 @@ failure/preflight/parser diagnostics and injected runtime-stop behavior. Run
 `python -I docx_batch_cli_pipeline.py [output-directory]` from an installed wheel;
 optional directory retains two distinct CLI-generated DOCX visual samples.
 These development additions target accepted release1.2.0; no publication implied.
+
+`pdf_batch_pipeline.py` verifies the registered batch PDF API from an installed
+wheel outside checkout using runtime dependencies only. Run `python -I
+pdf_batch_pipeline.py [output-directory]`; optional output retains one single-page
+and one multipage batch-generated PDF plus individual API equivalents.
+`pdf_batch_verify.py OUTPUT` is a host/dev-only pypdf semantic verifier for those
+outputs, including complete decoded content/resources, metadata/lang/links/fonts.
+It is not a runtime dependency or CLI command. Existing PDF/DOCX/HTML examples
+remain. Batch PDF CLI is reserved for SPR-023; release1.2.0 is not yet published.

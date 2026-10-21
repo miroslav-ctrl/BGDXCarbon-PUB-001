@@ -279,3 +279,51 @@ retain immutable item executions/explicit paths and derived counts; preflight
 error preserves internal cause. Caller owns initialize/start/finally-stop. The
 CLI reuses this API; direct single/batch/legacy publishing APIs are unchanged.
 See examples/docx_batch_pipeline.py (API) and docx_batch_cli_pipeline.py (CLI).
+
+## Batch PDF Python API (development)
+
+```python
+from pathlib import Path
+from bgdxpublisher.pdf_batch_pipeline import BatchPdfPublicationService, BatchPdfRequest
+from bgdxpublisher.runtime import PublisherApplication
+
+app = PublisherApplication()
+app.initialize()
+app.start()
+try:
+    service = app.context.services.resolve(BatchPdfPublicationService)
+    result = service.publish(BatchPdfRequest(Path("documents"), Path("pdf-output"), language="sr-Latn"))
+    print(result.success_count, result.failure_count)
+finally:
+    app.stop()
+```
+
+No batch PDF CLI in this sprint. API request is immutable: source_dir/output_dir,
+overwriteFalse/languageund defaults, no title/index/theme/TOC option. index.md is
+allowed. Each filename stem becomes title metadata, with existing PDF formatting,
+Latin/Cyrillic/embedded-font support and automatic pagination. Unsupported glyphs
+fail at render, invalid UTF-8 at read, refused output at validate; typed item
+failures continue to later sources and all-failed attempts return terminal results.
+
+Same guarded batch policy as DOCX: only immediate regular case-insensitive .md,
+fixed sorted snapshot/no recursive scan; reject source-root/candidate symlinks
+including dangling links, output-root symlink/non-dir, every planned output
+symlink (both overwrite modes), selected-input alias/hardlink/destination directory,
+empty selection and casefold stem collisions before mkdir/children. Same input/
+output directory allowed if guards pass. Ordinary existing regular output refusal
+is an item failure, so other eligible files run. Directory setup may partially
+create directories; no rollback or arbitrary concurrent filesystem isolation.
+
+Expected preflight raises BatchPdfPublicationError with fixed string/code
+BATCH_PDF_PREFLIGHT_FAILED and inspectable internal cause; no child attempted.
+Items retain safe structured execution/failure metadata. PDF_PUBLICATION_FAILED is
+the single typed publication-error code, not a replacement pipeline failure code.
+Explicit result paths are caller data; new safe logs omit raw input/name/content/
+cause/glyph detail. Legacy and single API diagnostics remain unchanged.
+
+Postcommit registered cleanup yields FAILED/stage=cleanup/outputNone; file remains,
+count failed, next item runs. Writer cleanup remains write stage. Unexpected
+external child errors propagate/stop later calls, keeping earlier commits. Each
+file is atomic independently; no deletion/restore/batch transaction. Batch service
+never starts/stops runtime; caller owns lifecycle. General runtime startup/stop
+semantics and all existing CLI/API contracts remain unchanged.

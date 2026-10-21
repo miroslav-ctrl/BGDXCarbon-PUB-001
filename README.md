@@ -85,9 +85,10 @@ Cyrillic support. Unsupported glyphs fail with their Unicode code point instead
 of being silently replaced. Images become alternative text; raw HTML is literal
 text, and relative/fragment links remain plain labels. Existing output requires
 `--overwrite`, and the parent directory must exist. The title is metadata only.
-HTML and DOCX commands retain their existing behavior. PDF batch export, custom
-templates, embedded images, contents navigation and PDF/UA tagging are outside
-this foundation sprint. PDF is included in version 1.1.0; the older v1.0.0 package supports HTML only.
+HTML and DOCX commands retain their existing behavior. The development branch
+includes a batch PDF Python API; batch PDF CLI remains future SPR-023 work.
+Custom templates, embedded images, contents navigation and PDF/UA tagging remain
+outside this foundation scope. PDF is included in version 1.1.0; the older v1.0.0 package supports HTML only.
 
 ## Publisher core API
 
@@ -95,8 +96,9 @@ this foundation sprint. PDF is included in version 1.1.0; the older v1.0.0 packa
 validation. `bgdxpublisher.jobs` provides immutable jobs and controlled lifecycle
 transitions. `bgdxpublisher.pipeline` executes explicitly typed stages in order,
 reports failures with their causes, and runs registered cleanup in reverse order.
-The core is an in-process API. Registered HTML, batch HTML, DOCX, batch DOCX and PDF pipelines
-serve their existing commands. Direct legacy services remain available with their
+The core is an in-process API. Registered HTML, batch HTML, DOCX, batch DOCX, PDF and batch PDF pipelines
+serve existing commands where provided; batch PDF currently has an API only.
+Direct legacy services remain available with their
 original contracts; publish-pdf operational failures use safe code/stage diagnostics.
 See examples/pdf_pipeline.py for installed API verification.
 
@@ -144,3 +146,18 @@ failure exit1; parser error exit2. Runtime shutdown failure suppresses buffered
 Published/summary lines while retaining committed files; there is no rollback.
 See the usage guide for source/output symlink and alias policy. Existing commands
 and direct APIs retain their contracts. This does not publish release1.2.0.
+
+## Batch PDF API (development, planned for 1.2.0)
+
+Resolve `BatchPdfPublicationService` from an initialized/started runtime, then call
+`publish(BatchPdfRequest(source_dir, output_dir, overwrite=False, language="und"))`.
+Caller owns finally-stop. See examples/pdf_batch_pipeline.py for a complete
+installed API example. No new batch PDF command is provided in this sprint.
+
+The API freezes immediate .md inputs in stable order, validates all source/output
+symlinks/aliases/collisions before mkdir/child publication, and reuses the registered
+single PDF pipeline. Expected item failures continue, including unsupported glyphs;
+results expose ordered immutable terminal executions and derived counts. Safe
+preflight error is BATCH_PDF_PREFLIGHT_FAILED; per-item structured stage details
+remain available. Each output is independently atomic; failed cleanup can retain
+committed files and there is no batch rollback. Existing direct APIs/CLI unchanged.
