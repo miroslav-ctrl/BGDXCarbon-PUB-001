@@ -1,21 +1,21 @@
 # SPR-021 Acceptance Criteria
 
-Status: implementation evidence submitted; formal acceptance/merge/closure pending.
-See [executed evidence mapping](IMPLEMENTATION-EVIDENCE.md). Plan CI is not
-implementation evidence.
+Status: technical implementation acceptance verified on merge
+`285d6ac5de8deb55105d96ed96f7dec3574b52d5`; see [final evidence](CLOSURE.md).
+Final closure-document acceptance/merge and issue completion remain pending.
 
-| ID | Required behavior | Required evidence |
+| ID | Required behavior | Verified evidence / disposition |
 | --- | --- | --- |
-| AC-01 | Thin new publish-docx-batch parser/dispatch | Exact options/defaults/help/required arguments, language validation and unsupported flags before runtime; one runtime/service/publish/exact request; no rescan/fallback. |
-| AC-02 | Successful terminal projection | Deterministic item order, one Published line per COMPLETED, exact summary/counts, buffered stdout only after successful stop, exit0. |
-| AC-03 | Mixed/all failure projection | Ordinals count all items; safe DOCX_PUBLICATION_FAILED stage lines, exact counts/summary/exit1, no Published for cleanup FAILED. |
-| AC-04 | Safe preflight and diagnostic boundaries | Exact BATCH_DOCX_PREFLIGHT_FAILED line/exit1/no stdout, cause not traversed/stringified; content/path/name sentinels absent from safe diagnostics; argparse/runtime detail boundaries explicit. |
-| AC-05 | Preserve API/filesystem/rendering | Direct BatchDocxPublicationService/DocxPublicationService/legacy API unchanged; actual batch selection/refusal/overwrite/aliases/dangling/collision policies; whole OOXML fidelity and source preservation. |
-| AC-06 | Runtime shutdown and primary precedence | Full body/stop matrix from spec, startup state gates, stop once; expected stop suppresses all buffered stdout, preserves existing diagnostics; unexpected primary+safe note preserved, handled errors do not count as active primary; committed files retained. |
-| AC-07 | Installed distribution and existing commands | Fresh wheel outside checkout/no source PYTHONPATH, actual new executable success/failure/parser/config; deterministic injected cleanup checks; all existing API/CLI smoke unchanged. |
-| AC-08 | Actual CLI visual acceptance | >=2 differently formatted actual batch CLI DOCX outputs, render/inspect all pages, exact SHA/run/artifact/digest/page scope; retain API/single previews. |
-| AC-09 | Quality and current documentation | Four matrix jobs, total>=99%, nine existing>=95% gates, Ruff/Black/MyPy; user docs/examples/changelog/release-guide aligned without version/dependency bump or historical release rewrite. |
-| AC-10 | Formal review and final closure | Approved plan and separate implementation authorization, reviewed exact-head CI/owner acceptance, separately authorized merge/post-merge CI, accepted closure before issue completion; no main change/release. |
+| AC-01 | Thin new publish-docx-batch parser/dispatch | PASS: exact new subparser/defaults/help/config/lang/required args, abbreviations rejected before runtime; one registered batch call/exact request, no rescan/fallback. |
+| AC-02 | Successful terminal projection | PASS: ordered Completed-only Published lines, exact derived summary/counts, buffered stdout emitted after successful stop, exit0 on all success. |
+| AC-03 | Mixed/all failure projection | PASS: mixed/all failures exit1, ordinal counts all predecessors; exact safe per-item stage lines and summary; cleanup FAILED never Published. |
+| AC-04 | Safe preflight and diagnostic boundaries | PASS: exact safe preflight code/no stdout/cause stringification; sentinel protection with actual INFO logs. Argparse/runtime/config details remain explicitly separate. |
+| AC-05 | Preserve API/filesystem/rendering | PASS: direct APIs/old CLI/core unchanged; selection/refusal/overwrite/aliases/dangling/collisions and full uncompressed OOXML fidelity/source preservation tested. |
+| AC-06 | Runtime shutdown and primary precedence | PASS: 18 body/stop combinations, startup states/stop once/constructor propagation/real unexpected child retained commit; exact stream order and primary identity/safe note, no rollback. |
+| AC-07 | Installed distribution and existing commands | PASS: exact-merge fresh installed-wheel actual command/config/metadata/errors and injected shutdown checks; all existing installed CLI/API checks retained. |
+| AC-08 | Actual CLI visual acceptance | PASS: exact-merge CLI artifact12334309696, verified ZIP digest; all2pages of2distinct actual CLI DOCX outputs inspected; other previews retained, scope in CLOSURE.md. |
+| AC-09 | Quality and current documentation | PASS: four exact-merge jobs,total99.91%,nine>=95% gates; static/build checks and user docs/examples/changelog/release guide alignment; no version/dependency bump/history rewrite. |
+| AC-10 | Formal review and final closure | Technical PASS: approved plan/authorization/formal review/owner acceptance/implementation merge/exact CI complete. Final closure-document review/acceptance/merge/post-merge CI and issue#59 completion PENDING. |
 
 Record exact commits/environments/commands/dependencies/counts/skips/run/jobs and
-actual manual inspection scope. No implementation issue completed by this plan.
+actual manual inspection scope. Issue #59 stays open pending administrative closure.
