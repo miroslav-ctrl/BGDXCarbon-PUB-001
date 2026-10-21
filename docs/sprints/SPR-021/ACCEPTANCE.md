@@ -1,6 +1,8 @@
 # SPR-021 Acceptance Criteria
 
-Status: all implementation criteria PENDING. Plan CI is not implementation evidence.
+Status: implementation evidence submitted; formal acceptance/merge/closure pending.
+See [executed evidence mapping](IMPLEMENTATION-EVIDENCE.md). Plan CI is not
+implementation evidence.
 
 | ID | Required behavior | Required evidence |
 | --- | --- | --- |

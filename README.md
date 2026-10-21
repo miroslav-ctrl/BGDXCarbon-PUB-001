@@ -66,7 +66,8 @@ and fragment links remain visible labels. Raw HTML remains visible text.
 The title is metadata, while visible headings come from Markdown. Output uses
 A4 portrait pages with 2.5 cm margins. Existing output requires `--overwrite`;
 the parent directory must exist. HTML commands are unchanged.
-DOCX batch export and templates are future work. DOCX is included in version 1.1.0; the older v1.0.0 package supports HTML only.
+The development branch includes `publish-docx-batch` and its registered Python API;
+custom templates remain future work. DOCX is included in version 1.1.0; the older v1.0.0 package supports HTML only.
 
 ## Publish PDF
 
@@ -94,7 +95,7 @@ this foundation sprint. PDF is included in version 1.1.0; the older v1.0.0 packa
 validation. `bgdxpublisher.jobs` provides immutable jobs and controlled lifecycle
 transitions. `bgdxpublisher.pipeline` executes explicitly typed stages in order,
 reports failures with their causes, and runs registered cleanup in reverse order.
-The core is an in-process API. Registered HTML, batch HTML, DOCX and PDF pipelines
+The core is an in-process API. Registered HTML, batch HTML, DOCX, batch DOCX and PDF pipelines
 serve their existing commands. Direct legacy services remain available with their
 original contracts; publish-pdf operational failures use safe code/stage diagnostics.
 See examples/pdf_pipeline.py for installed API verification.
@@ -127,3 +128,19 @@ links for atomic no-overwrite publication. Output symlinks are refused.
 
 See [the usage guide](docs/USER-GUIDE.md), [examples](examples/README.md),
 [release notes](RELEASE-NOTES.md), and [release process](docs/RELEASING.md).
+
+## Batch DOCX (development, planned for 1.2.0)
+
+```powershell
+bgdxpublisher publish-docx-batch .\documents --output-dir .\word-output --lang sr-Latn
+```
+
+Selects immediate .md files in stable order and creates the output directory.
+Use --overwrite explicitly to replace files; --config PATH selects configuration.
+No title/theme/TOC/index options. Expected item failures continue and report safe
+ordinal/stage diagnostics; summary counts only completed/failed documents.
+Exit0 means all documents and runtime shutdown succeeded; operational/partial
+failure exit1; parser error exit2. Runtime shutdown failure suppresses buffered
+Published/summary lines while retaining committed files; there is no rollback.
+See the usage guide for source/output symlink and alias policy. Existing commands
+and direct APIs retain their contracts. This does not publish release1.2.0.

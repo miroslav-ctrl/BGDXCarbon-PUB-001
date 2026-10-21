@@ -14,6 +14,7 @@ from bgdxpublisher.runtime import PublisherApplication, RuntimeFoundationError
 from .batch import run_batch
 from .config import run_config_validate
 from .doctor import run_doctor
+from .docx_batch import run_docx_batch
 from .publish import run_publish
 from .runtime import run_runtime_status
 from .version import run_version
@@ -84,6 +85,22 @@ def build_parser() -> argparse.ArgumentParser:
             args.title,
             args.lang,
             docx=True,
+        )
+    )
+
+    docx_batch_parser = commands.add_parser(
+        "publish-docx-batch", help="Publish a directory as DOCX.", allow_abbrev=False
+    )
+    docx_batch_parser.add_argument("source", type=Path)
+    docx_batch_parser.add_argument("--output-dir", type=Path, required=True)
+    docx_batch_parser.add_argument("--overwrite", action="store_true")
+    docx_batch_parser.add_argument("--config", type=Path, default=None)
+    docx_batch_parser.add_argument(
+        "--lang", type=_metadata_argument(validate_language), default="und"
+    )
+    docx_batch_parser.set_defaults(
+        handler=lambda args: run_docx_batch(
+            args.source, args.output_dir, args.overwrite, args.config, args.lang
         )
     )
 

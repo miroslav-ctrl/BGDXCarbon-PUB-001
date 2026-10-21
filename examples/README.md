@@ -29,3 +29,12 @@ an optional directory retains sample.pdf and multipage.pdf for host pypdf and
 visual checks. Its verification uses runtime dependencies only. Existing
 publish-pdf CLI uses the registered PDF pipeline; direct legacy PdfPublishingService
 retains its original contract.
+
+`docx_batch_pipeline.py` verifies the registered batch DOCX API; the development
+command `publish-docx-batch` reuses it without changing direct API contracts.
+`docx_batch_cli_pipeline.py` verifies the actual installed executable outside
+checkout: config/metadata/Unicode/OOXML fidelity, refusal/overwrite/mixed/all
+failure/preflight/parser diagnostics and injected runtime-stop behavior. Run
+`python -I docx_batch_cli_pipeline.py [output-directory]` from an installed wheel;
+optional directory retains two distinct CLI-generated DOCX visual samples.
+These development additions target accepted release1.2.0; no publication implied.
