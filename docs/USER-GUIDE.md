@@ -1,4 +1,4 @@
-# HTML Publisher usage guide
+# Publisher Suite usage guide
 
 ## Source documents
 
@@ -73,7 +73,8 @@ restart; separate them with a paragraph or another block to create a new list.
 
 HTTP(S) and mailto links are active. Relative and fragment links are visible
 labels without a destination. Images become text; raw HTML stays literal.
-DOCX has a fixed print layout without `--theme`, `--toc` or batch/index options.
+DOCX has a fixed print layout without `--theme`, `--toc` or index options.
+The separate development command `publish-docx-batch` handles directories.
 Code retains indentation and uses a monospace font, without syntax highlighting.
 The command uses the same configuration and exit codes as HTML publishing.
 
@@ -229,3 +230,52 @@ programming exceptions, not safe operational exit-1 diagnostics. Pipeline cleanu
 failure reports stage=cleanup; internal writer errors remain write. Cleanup/stop
 failure may retain an already committed PDF: no rollback is promised. Other command
 contracts and PDF-first precedence remain unchanged.
+
+## Batch DOCX CLI and direct API (development)
+
+```powershell
+bgdxpublisher publish-docx-batch .\documents --output-dir .\word-output --lang sr-Latn --config .\config.yaml
+```
+
+Only immediate regular .md/.MD files, sorted by case-folded name then name;
+subdirectories ignored, index.md allowed. --output-dir is required; --overwrite
+is false and --lang is und by default. There is no --output abbreviation, title,
+theme, TOC, index or recursion option. Invalid/missing arguments and unsupported
+options exit2 before runtime. Output directories are created after preflight.
+
+Source root and .md candidates must not be symlinks (including dangling links).
+Output directory and every planned output symlink, directory destination,
+selected-input aliases/hardlinks, empty input and case-insensitive stem collisions
+are preflight errors. Ordinary existing regular output refusal is an item error,
+so later eligible files still run. No directory rollback or isolation from
+arbitrary concurrent filesystem changes is promised. Hard links are required for
+atomic no-overwrite commits. Source and previous files survive refused/precommit
+writes; each file commits independently.
+
+Each completed item prints Published: <output>; after successful runtime stop,
+Batch complete: N published, M failed. Paths are intentional success output.
+Failed items report Failed: item=<1-based selection ordinal>
+DOCX_PUBLICATION_FAILED stage=<validate/read/render/write/cleanup> on stderr.
+Preflight reports Batch publication failed: BATCH_DOCX_PREFLIGHT_FAILED, with no
+stdout or synthetic counts. Safe logs may accompany these reports. Raw path/name/
+content/cause is omitted from these publication diagnostics. Argparse and runtime/
+configuration messages retain their detailed formats outside that guarantee.
+
+All completed plus successful shutdown exits0; mixed/all expected failures exit1,
+with summary and only completed-item Published lines. Engine cleanup failure
+counts failed even if file remains. Runtime cleanup failure prints Runtime cleanup
+failed: <runtime error>, suppresses ALL buffered Published/summary stdout and
+returns1 when no unexpected primary is propagating. Prior item/preflight diagnostics
+remain; no duplicate primary. No committed output is removed or restored.
+
+Unexpected external exceptions propagate after finally-stop, not as a false
+batch result. Active unexpected primary survives unexpected stop with the fixed
+note An unexpected runtime cleanup failure occurred.; otherwise unexpected stop
+propagates itself, including after handled preflight/failed-item results.
+
+Python callers can resolve BatchDocxPublicationService and publish
+BatchDocxRequest(source_dir,output_dir,overwrite=False,language="und"). Results
+retain immutable item executions/explicit paths and derived counts; preflight
+error preserves internal cause. Caller owns initialize/start/finally-stop. The
+CLI reuses this API; direct single/batch/legacy publishing APIs are unchanged.
+See examples/docx_batch_pipeline.py (API) and docx_batch_cli_pipeline.py (CLI).

@@ -100,6 +100,9 @@ jobs:
               docx_batch_smoke = root / "docx_batch_pipeline.py"
               shutil.copyfile(repository / "examples" / "docx_batch_pipeline.py", docx_batch_smoke)
               subprocess.run([str(python), "-I", str(docx_batch_smoke)], cwd=root, check=True)
+              docx_batch_cli_smoke = root / "docx_batch_cli_pipeline.py"
+              shutil.copyfile(repository / "examples" / "docx_batch_cli_pipeline.py", docx_batch_cli_smoke)
+              subprocess.run([str(python), "-I", str(docx_batch_cli_smoke)], cwd=root, check=True)
               pdf_pipeline_smoke = root / "pdf_pipeline.py"
               shutil.copyfile(repository / "examples" / "pdf_pipeline.py", pdf_pipeline_smoke)
               pdf_api_output = root / "pdf-api"
@@ -331,4 +334,22 @@ jobs:
         with:
           name: docx-batch-preview
           path: docx-batch-preview/
+          if-no-files-found: error
+
+      - name: Render batch DOCX CLI acceptance samples
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
+        run: |
+          python -I examples/docx_batch_cli_pipeline.py docx-batch-cli-preview
+          for document in docx-batch-cli-preview/published/*.docx; do
+            libreoffice -env:UserInstallation=file:///tmp/bgdx-batch-cli-profile --headless --convert-to pdf --outdir docx-batch-cli-preview "$document"
+          done
+          for document in docx-batch-cli-preview/*.pdf; do
+            pdftoppm -r 100 -png "$document" "${document%.pdf}-page"
+          done
+      - name: Upload batch DOCX CLI visual verification
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
+        uses: actions/upload-artifact@v4
+        with:
+          name: docx-batch-cli-preview
+          path: docx-batch-cli-preview/
           if-no-files-found: error

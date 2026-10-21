@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Add publish-docx-batch over the registered batch DOCX API: deterministic
+  directory selection, immutable independent outcomes, safe ordinal/stage and
+  preflight diagnostics, explicit overwrite and buffered success/summary output.
+  Runtime cleanup failure suppresses success reports without deleting committed
+  files; primary unexpected exceptions retain precedence. Existing CLI/direct
+  APIs remain unchanged. Add installed-wheel/CLI visual checks and align user
+  documentation/release guide. Planned for1.2.0; no version bump/publication here.
+
+
 - Route existing publish-pdf CLI through the PDF job pipeline. Preserve options,
   success output and both direct APIs. Expected CLI operational errors now use
   PDF_PUBLICATION_FAILED stage=<stage>, omitting raw causes/glyph detail. Preserve

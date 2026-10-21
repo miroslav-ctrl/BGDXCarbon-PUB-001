@@ -1,6 +1,7 @@
 # SPR-021 Implementation Specification
 
-Status: proposed contract; documentation only.
+Status: implemented for Draft review; approved contract retained below.
+See [implementation evidence](IMPLEMENTATION-EVIDENCE.md).
 
 ## AC-01: command and dispatch
 
