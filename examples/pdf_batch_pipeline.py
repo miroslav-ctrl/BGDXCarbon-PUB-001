@@ -43,7 +43,7 @@ def verify(root: Path) -> None:
     before = {p: p.read_bytes() for p in source.iterdir()}
     config = root / "config.yaml"
     config.write_text(
-        "app:\n  name: Test\n  version: 1.1.0\n"
+        "app:\n  name: Test\n  version: 1.2.0\n"
         "logging:\n  level: CRITICAL\n  console: false\n",
         encoding="utf-8",
     )

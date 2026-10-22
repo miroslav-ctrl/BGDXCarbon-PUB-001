@@ -1,0 +1,2 @@
+# Preserve the published release-note bytes identically on every build host.
+docs/releases/1.1.0.md text eol=lf
