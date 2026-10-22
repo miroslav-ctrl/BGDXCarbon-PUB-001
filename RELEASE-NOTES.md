@@ -1,4 +1,4 @@
-# BGDXCarbon Publisher Suite 1.2.0
+# BGDXCarbon Publisher Suite 1.2.0 — 2026-10-22
 
 Complete single and batch Markdown publishing through CLI and Python APIs.
 

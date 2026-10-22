@@ -3,7 +3,9 @@
 Status: candidate formal review/owner-authorized merge completed via PR #70.
 Exact merged commit91f63e981feacd23bdff288e1064944386ebed56; CI39747742484
 attempt2 SUCCESS. RC-01 through RC-09 technical gates PASS; publication execution
-remains pending under [separate request](PUBLICATION-REQUEST.md).
+was separately authorized on 2026-10-22 under the
+[publication request](PUBLICATION-REQUEST.md); tag/assets/download verification
+remain execution gates.
 
 | ID | Requirement | Evidence required |
 | --- | --- | --- |
@@ -19,6 +21,7 @@ remains pending under [separate request](PUBLICATION-REQUEST.md).
 | RC-10 | No premature publication | Target version unused at preparation, no main/merge/tag/release/upload; separate owner exact-head acceptance/merge/publication authorizations remain required. |
 
 Candidate formal review/owner-authorized merge and exact post-merge CI: COMPLETE.
-Publication authorization/assets/download verification: PENDING and separate.
+Publication authorization: GRANTED on 2026-10-22.
+Final-source CI, tag/assets/download verification: execution gates; see the finalization PR.
 See the publication request for chronology and exact execution evidence.
 Automated Codex COMMENT is disclosed self-review, not independent human APPROVE.

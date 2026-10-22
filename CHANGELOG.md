@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.0 — release candidate (not published)
+## 1.2.0 — 2026-10-22
 
 - Complete single-document and batch CLI/API coverage for HTML, DOCX and PDF.
   New commands: publish-docx-batch and publish-pdf-batch; new registered DOCX/PDF
@@ -18,7 +18,7 @@
   CLI/direct API fidelity, packaged configuration/fonts/licenses/checksums and
   all retained DOCX/PDF preview artifacts.
 - Synchronize package/runtime/default configuration identity to 1.2.0 and update
-  user documentation/examples. Candidate preparation creates no release or tag.
+  user documentation/examples. Release assets are distributed through GitHub.
 
 ## 1.1.0 — 2026-10-14
 
