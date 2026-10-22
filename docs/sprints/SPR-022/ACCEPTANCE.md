@@ -1,8 +1,13 @@
 # SPR-022 Acceptance Criteria
 
-Status: implementation evidence submitted; final formal acceptance/merge/closure pending.
-See [implementation mapping](IMPLEMENTATION-EVIDENCE.md); baseline/plan CI does not
-substitute implementation proof.
+Status: technical implementation acceptance verified on merge
+`7d636e8224277ae4f3e84e116f5554fcd536ab39`; see [final evidence](CLOSURE.md).
+AC-01 through AC-11 PASS against exact-merge tests, installed distribution and
+all-page visual evidence. AC-12 quality/documentation and implementation review/
+owner authorization/merge/CI portions PASS; final closure-document review,
+acceptance, authorized documentation merge/CI and issue #63 completion PENDING.
+Historical [implementation mapping](IMPLEMENTATION-EVIDENCE.md) retains original
+submission results; baseline/plan CI does not substitute implementation proof.
 
 | ID | Criterion | Required evidence |
 | --- | --- | --- |
