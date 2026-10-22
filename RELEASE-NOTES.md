@@ -1,8 +1,6 @@
-# BGDXCarbon Publisher Suite 1.2.0 — release candidate
+# BGDXCarbon Publisher Suite 1.2.0
 
-Not published. This branch prepares package identity 1.2.0 for review; it does not
-create a tag, GitHub release or PyPI upload. The current published release remains
-v1.1.0 until separately authorized publication.
+Complete single and batch Markdown publishing through CLI and Python APIs.
 
 ## Included capabilities
 
@@ -26,11 +24,12 @@ errors stop subsequent work and retain earlier commits. No whole-batch rollback.
 
 ## Installation and evidence
 
-Python 3.13+; verified CI targets Windows/Linux and Python 3.13/3.14. Candidate
-package, runtime and both default configuration versions are 1.2.0. Planned
+Python 3.13+; verified CI targets Windows/Linux and Python 3.13/3.14. Package,
+runtime and both default configuration versions are 1.2.0.
 GitHub assets: bgdxpublisher-1.2.0-py3-none-any.whl,
-bgdxpublisher-1.2.0.tar.gz and SHA256SUMS.txt. Candidate artifacts/checksums and
-acceptance are linked from [candidate record](docs/releases/1.2.0/CANDIDATE.md).
+bgdxpublisher-1.2.0.tar.gz and SHA256SUMS.txt. Acceptance and publication
+provenance are linked from the
+[publication request](docs/releases/1.2.0/PUBLICATION-REQUEST.md).
 No PyPI, installer or hosting publication is included.
 
 ## Limits

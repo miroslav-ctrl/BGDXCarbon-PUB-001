@@ -39,3 +39,8 @@ Download candidate-distributions artifacts for each platform/Python and verify
 SHA256SUMS.txt. Archive checksums identify that build; different timestamps may
 produce different archive hashes across builds, so use exact artifact provenance.
 A successful candidate CI is not authorization to merge, tag or publish.
+
+The current1.2.0 publication proposal is in
+[PUBLICATION-REQUEST.md](releases/1.2.0/PUBLICATION-REQUEST.md). It records the
+accepted candidate, exact post-merge CI, staged notes and remaining authorization/
+date/tag/public-asset/download gates. A request PR is not publication permission.

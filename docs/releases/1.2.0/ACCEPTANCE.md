@@ -1,7 +1,9 @@
 # Release 1.2.0 Candidate Acceptance
 
-Status: candidate submitted for Draft review. Execution details and exact-head CI
-are recorded in the PR evidence; owner acceptance remains PENDING.
+Status: candidate formal review/owner-authorized merge completed via PR #70.
+Exact merged commit91f63e981feacd23bdff288e1064944386ebed56; CI39747742484
+attempt2 SUCCESS. RC-01 through RC-09 technical gates PASS; publication execution
+remains pending under [separate request](PUBLICATION-REQUEST.md).
 
 | ID | Requirement | Evidence required |
 | --- | --- | --- |
@@ -16,6 +18,7 @@ are recorded in the PR evidence; owner acceptance remains PENDING.
 | RC-09 | Cross-format samples | HTML/index/theme/navigation checks; DOCX OOXML/PDF semantic comparisons and all candidate acceptance preview pages actually opened with exact run/artifact/digest/page scope. |
 | RC-10 | No premature publication | Target version unused at preparation, no main/merge/tag/release/upload; separate owner exact-head acceptance/merge/publication authorizations remain required. |
 
-Final formal review/owner acceptance: PENDING. Authorized merge and its exact CI:
-PENDING. Published assets/download verification: PENDING and outside preparation.
+Candidate formal review/owner-authorized merge and exact post-merge CI: COMPLETE.
+Publication authorization/assets/download verification: PENDING and separate.
+See the publication request for chronology and exact execution evidence.
 Automated Codex COMMENT is disclosed self-review, not independent human APPROVE.
