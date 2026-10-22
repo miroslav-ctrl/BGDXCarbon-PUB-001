@@ -198,3 +198,7 @@ direct APIs are unchanged. Release 1.2.0 is not published by this change.
 See [candidate evidence](docs/releases/1.2.0/CANDIDATE.md) for closed sprint
 references, packaging/CI checks and acceptance boundaries. Preparation creates
 no release/tag and does not change main.
+
+The [publication request](docs/releases/1.2.0/PUBLICATION-REQUEST.md) stages the
+GitHub release text and execution/asset-verification checklist. Opening or
+merging that request does not publish the release; tag creation remains separate.
