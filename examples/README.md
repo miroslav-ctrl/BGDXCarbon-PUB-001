@@ -1,6 +1,6 @@
 # Examples
 
-`docx_pipeline.py` verifies the new registered DOCX pipeline API against an
+`docx_pipeline.py` verifies the registered DOCX pipeline API against an
 installed wheel outside checkout. It compares OOXML members with the legacy
 publisher, checks metadata/Unicode and exercises refusal, overwrite and failure
 preservation. The existing `publish-docx` CLI uses the registered DOCX pipeline;
@@ -30,14 +30,14 @@ visual checks. Its verification uses runtime dependencies only. Existing
 publish-pdf CLI uses the registered PDF pipeline; direct legacy PdfPublishingService
 retains its original contract.
 
-`docx_batch_pipeline.py` verifies the registered batch DOCX API; the development
+`docx_batch_pipeline.py` verifies the registered batch DOCX API; the candidate
 command `publish-docx-batch` reuses it without changing direct API contracts.
 `docx_batch_cli_pipeline.py` verifies the actual installed executable outside
 checkout: config/metadata/Unicode/OOXML fidelity, refusal/overwrite/mixed/all
 failure/preflight/parser diagnostics and injected runtime-stop behavior. Run
 `python -I docx_batch_cli_pipeline.py [output-directory]` from an installed wheel;
 optional directory retains two distinct CLI-generated DOCX visual samples.
-These development additions target accepted release1.2.0; no publication implied.
+These commands are included in the unpublished 1.2.0 candidate.
 
 `pdf_batch_pipeline.py` verifies the registered batch PDF API from an installed
 wheel outside checkout using runtime dependencies only. Run `python -I
@@ -46,7 +46,7 @@ and one multipage batch-generated PDF plus individual API equivalents.
 `pdf_batch_verify.py OUTPUT` is a host/dev-only pypdf semantic verifier for those
 outputs, including complete decoded content/resources, metadata/lang/links/fonts.
 It is not a runtime dependency or CLI command. Existing PDF/DOCX/HTML examples
-remain. Batch PDF CLI is reserved for SPR-023; release1.2.0 is not yet published.
+remain. Batch PDF CLI is implemented by SPR-023; release 1.2.0 is not yet published.
 
 `pdf_batch_cli_pipeline.py` verifies the actual installed publish-pdf-batch command
 outside checkout (success/mixed/all/refusal/overwrite/read/glyph/preflight/parser,

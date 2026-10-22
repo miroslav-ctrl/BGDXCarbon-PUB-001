@@ -1,60 +1,24 @@
 # Changelog
 
-## Unreleased
+## 1.2.0 — release candidate (not published)
 
-- Add publish-pdf-batch over the registered batch PDF API with deterministic
-  independent outcomes, safe per-item/preflight reports and buffered success
-  output after runtime shutdown. Preserve primary exceptions and committed files
-  on cleanup failure, without rollback. Retain existing commands/direct APIs and
-  all ten gates; add installed CLI/host semantic and distinct multipage visuals.
-  Planned for1.2.0; no version/dependency bump or release publication.
-
-- Add batch PDF pipeline API with immutable terminal outcomes/derived counts,
-  deterministic guarded source snapshot, safe preflight and typed child failure
-  continuation through registered single PDF service. Retain committed files on
-  cleanup failure/no batch rollback. Add tenth independent coverage gate, fresh
-  installed API/host PDF semantic checks and single/multipage batch previews.
-  Existing CLI/direct APIs/renderer/fonts/writer unchanged; no batch PDF CLI,
-  dependency/version bump or release publication. Planned for1.2.0.
-
-
-- Add publish-docx-batch over the registered batch DOCX API: deterministic
-  directory selection, immutable independent outcomes, safe ordinal/stage and
-  preflight diagnostics, explicit overwrite and buffered success/summary output.
-  Runtime cleanup failure suppresses success reports without deleting committed
-  files; primary unexpected exceptions retain precedence. Existing CLI/direct
-  APIs remain unchanged. Add installed-wheel/CLI visual checks and align user
-  documentation/release guide. Planned for1.2.0; no version bump/publication here.
-
-
-- Route existing publish-pdf CLI through the PDF job pipeline. Preserve options,
-  success output and both direct APIs. Expected CLI operational errors now use
-  PDF_PUBLICATION_FAILED stage=<stage>, omitting raw causes/glyph detail. Preserve
-  committed outputs on cleanup/shutdown failure and suppress false success.
-
-- Add a separately registered PDF publication job pipeline API with immutable
-  results, fresh per-call jobs and safe structured failures. Reuse the existing
-  PDF renderer/fonts and atomic writer; retain the legacy direct API. CLI integration
-  is listed separately above.
-  Add independent PDF pipeline coverage and installed-wheel/visual verification.
-
-- Route the existing `publish-docx` CLI through the registered DOCX job pipeline.
-  Success output/options remain unchanged; expected operational errors now use
-  `DOCX_PUBLICATION_FAILED stage=<stage>` with exit 1 rather than raw causes.
-  Direct DOCX APIs remain unchanged. Runtime shutdown failures suppress success
-  output, retain committed files and preserve the primary DOCX failure.
-
-- Add a separately registered DOCX job pipeline API with typed stages, immutable
-  execution results, safe failure diagnostics and independent per-call jobs.
-  Direct `DocxPublishingService` retains its legacy route; CLI integration is
-  listed separately above.
-
-- Route `publish-batch` through the registered batch HTML job pipeline. Preserve
-  command options, document/index bytes and success output; expected failures now
-  report stable codes and item ordinals instead of source paths/raw causes.
-- Delay batch stdout until runtime shutdown succeeds. Shutdown failure returns 1
-  without success/summary stdout, while committed files and primary diagnostics
-  remain intact. Legacy direct batch API and other commands retain their routes.
+- Complete single-document and batch CLI/API coverage for HTML, DOCX and PDF.
+  New commands: publish-docx-batch and publish-pdf-batch; new registered DOCX/PDF
+  single and batch pipeline services. Existing command options and direct legacy
+  APIs remain supported; HTML index/theme/navigation behavior is preserved.
+- Connect publication commands to typed job orchestration with fresh per-call
+  contexts, immutable terminal outcomes and derived batch counts.
+- Use safe code/stage/ordinal reports for expected operational failures;
+  deterministic guarded batch preflight and independent atomic commits. Expected
+  item failures continue; unexpected external failures stop later attempts.
+- Buffer publication success reports until runtime shutdown succeeds. Preserve
+  primary exceptions and committed files on cleanup failure; no batch rollback.
+- Retain total coverage>=99% and ten independent package>=95% gates across
+  Windows/Linux Python 3.13/3.14. Verify actual installed wheel and source archive,
+  CLI/direct API fidelity, packaged configuration/fonts/licenses/checksums and
+  all retained DOCX/PDF preview artifacts.
+- Synchronize package/runtime/default configuration identity to 1.2.0 and update
+  user documentation/examples. Candidate preparation creates no release or tag.
 
 ## 1.1.0 — 2026-10-14
 

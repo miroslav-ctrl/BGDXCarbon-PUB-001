@@ -1,29 +1,47 @@
-# BGDXCarbon Publisher Suite 1.1.0
+# BGDXCarbon Publisher Suite 1.2.0 — release candidate
 
-Adds DOCX and PDF publishing and a typed publisher core to the existing HTML CLI.
+Not published. This branch prepares package identity 1.2.0 for review; it does not
+create a tag, GitHub release or PyPI upload. The current published release remains
+v1.1.0 until separately authorized publication.
 
-- `publish-docx`: editable Word documents with Unicode, metadata, headings,
-  inline formatting, lists, quotations, code and safe external links.
-- `publish-pdf`: selectable Latin/Cyrillic text, embedded licensed DejaVu fonts,
-  A4 layout, automatic pagination, metadata and safe external links.
-- Immutable document models, structured validation and controlled job lifecycle.
-- Deterministic sequential pipelines with typed stage contracts, callable stage
-  validation, failure causes, reverse-order cleanup and safe structured logs.
-- Independent coverage gates of at least 95% for domain, jobs and pipeline.
+## Included capabilities
 
-Existing HTML, batch, index, theme, table-of-contents and diagnostics commands
-remain available. Binary outputs use atomic writes and explicit `--overwrite`.
-The publisher core is an in-process API and does not yet orchestrate rendering.
+Markdown-to-HTML, editable DOCX and selectable-text PDF, each with single and
+batch command-line and Python pipeline APIs. Commands:
 
-Python 3.13+ is required. CI covers Windows/Linux and Python 3.13/3.14.
-Package, runtime and default configuration versions are synchronized to 1.1.0.
-Install the release wheel with `python -m pip install PATH_TO_WHEEL`.
-GitHub release assets are the wheel, source distribution and SHA256SUMS.txt.
-No PyPI publication is included.
+- publish / publish-batch (HTML), including existing light/dark styling,
+  heading navigation and optional batch index.
+- publish-docx / publish-docx-batch (DOCX).
+- publish-pdf / publish-pdf-batch (PDF).
 
-Limits: no DOCX/PDF batch export, custom templates, embedded document images,
-recursive scans, hosting or graphical UI. PDF has no contents navigation or
-PDF/UA tagging. Unsupported PDF glyphs fail explicitly. New publication without
-overwrite requires filesystem hard-link support. HTML batch publication retains
-successful files after individual failures. Language validation uses a subset
-of BCP 47 rather than registry-based validation.
+Registered pipelines share typed job orchestration, immutable terminal outcomes,
+fresh contexts and safe stage-aware diagnostics. Existing direct legacy API
+contracts remain available. Batch selection is immediate/nonrecursive and
+stable; expected document failures continue with accurate counts. Each output
+commits independently with explicit overwrite protection.
+
+Success stdout is delayed until runtime shutdown succeeds. Failed postcommit
+cleanup can leave a valid file while reporting failure; unexpected external
+errors stop subsequent work and retain earlier commits. No whole-batch rollback.
+
+## Installation and evidence
+
+Python 3.13+; verified CI targets Windows/Linux and Python 3.13/3.14. Candidate
+package, runtime and both default configuration versions are 1.2.0. Planned
+GitHub assets: bgdxpublisher-1.2.0-py3-none-any.whl,
+bgdxpublisher-1.2.0.tar.gz and SHA256SUMS.txt. Candidate artifacts/checksums and
+acceptance are linked from [candidate record](docs/releases/1.2.0/CANDIDATE.md).
+No PyPI, installer or hosting publication is included.
+
+## Limits
+
+UTF-8 Markdown input; supported language-tag subset. DOCX/PDF images become alt
+text; no binary-format templates, indexes/TOC or PDF/UA claim. PDF embeds bundled
+licensed DejaVu fonts; unsupported glyphs fail explicitly (safe render-stage CLI
+report; legacy direct API retains code-point diagnostics). Atomic no-overwrite
+requires hard-link support; filesystem/symlink/alias policies are documented in
+the usage guide. No recursive scan, parallel queue, rollback, GUI/cloud editor,
+remote hosting, accounts or new distribution channel.
+
+Published [1.1.0 notes](docs/releases/1.1.0.md) are preserved verbatim as history;
+existing v1.0.0/v1.1.0 tags/assets are unchanged.

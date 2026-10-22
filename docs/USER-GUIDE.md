@@ -1,4 +1,7 @@
-# Publisher Suite usage guide
+# Publisher Suite 1.2.0 candidate usage guide
+
+This document describes the unpublished 1.2.0 candidate. See
+[installation](../README.md#install) and [candidate acceptance](releases/1.2.0/CANDIDATE.md).
 
 ## Source documents
 
@@ -55,10 +58,10 @@ The application cannot guarantee isolation from concurrently changed directories
 or machine power loss. Keep source files separately backed up. Existing files
 are replaced only when overwrite is explicitly requested.
 
-## Word output on the development branch
+## Word output
 
-Install the updated checkout with `python -m pip install -e ".[dev]"` to include
-the new DOCX dependency. The v1.0.0 release package contains only HTML commands.
+Install the candidate wheel or use `python -m pip install -e ".[dev]"` for an
+editable checkout; DOCX dependencies are included. The v1.0.0 release package contains only HTML commands.
 
 ```powershell
 bgdxpublisher publish-docx .\examples\docx-sample.md --output .\sample.docx --title "Izveštaj" --lang sr-Latn
@@ -74,11 +77,11 @@ restart; separate them with a paragraph or another block to create a new list.
 HTTP(S) and mailto links are active. Relative and fragment links are visible
 labels without a destination. Images become text; raw HTML stays literal.
 DOCX has a fixed print layout without `--theme`, `--toc` or index options.
-The separate development command `publish-docx-batch` handles directories.
+The candidate command `publish-docx-batch` handles directories.
 Code retains indentation and uses a monospace font, without syntax highlighting.
 The command uses the same configuration and exit codes as HTML publishing.
 
-## PDF output on the development branch
+## PDF output
 
 After installing the updated checkout with `python -m pip install -e ".[dev]"`:
 
@@ -90,8 +93,9 @@ This command renders Markdown directly, without converting the DOCX or HTML
 outputs. ReportLab and licensed DejaVu fonts are packaged with the application;
 publication does not install applications, fetch images or use machine fonts.
 The PDF contains selectable text with embedded font subsets and Unicode maps.
-Supported glyphs include Serbian Latin and Cyrillic. An unsupported character
-reports its Unicode code point and leaves the previous output intact.
+Supported glyphs include Serbian Latin and Cyrillic. An unsupported character gives the safe PDF_PUBLICATION_FAILED stage=render CLI
+report and leaves previous output intact. Direct legacy API errors retain
+code-point details.
 
 PDF supports CommonMark headings, paragraphs, emphasis, ordered and bullet lists,
 quotes, inline/fenced/indented code and HTTP(S)/mailto links. Relative/fragment
@@ -107,7 +111,7 @@ command has no batch/index options; use publish-pdf-batch for directories. Metad
 claim. Invalid CLI arguments return 2; publication or runtime failure returns 1.
 
 Published v1.0.0 assets remain unchanged. Single PDF publishing is included in
-v1.1.0; the batch PDF API/CLI are development additions planned for1.2.0.
+v1.1.0; the batch PDF API/CLI are included in the unpublished 1.2.0 candidate.
 
 ## Configuration
 
@@ -231,7 +235,7 @@ failure reports stage=cleanup; internal writer errors remain write. Cleanup/stop
 failure may retain an already committed PDF: no rollback is promised. Other command
 contracts and PDF-first precedence remain unchanged.
 
-## Batch DOCX CLI and direct API (development)
+## Batch DOCX CLI and direct API (1.2.0 candidate)
 
 ```powershell
 bgdxpublisher publish-docx-batch .\documents --output-dir .\word-output --lang sr-Latn --config .\config.yaml
@@ -280,7 +284,7 @@ error preserves internal cause. Caller owns initialize/start/finally-stop. The
 CLI reuses this API; direct single/batch/legacy publishing APIs are unchanged.
 See examples/docx_batch_pipeline.py (API) and docx_batch_cli_pipeline.py (CLI).
 
-## Batch PDF Python API (development)
+## Batch PDF Python API (1.2.0 candidate)
 
 ```python
 from pathlib import Path
@@ -328,7 +332,7 @@ file is atomic independently; no deletion/restore/batch transaction. Batch servi
 never starts/stops runtime; caller owns lifecycle. General runtime startup/stop
 semantics and all existing CLI/API contracts remain unchanged.
 
-## Batch PDF CLI and direct API (development)
+## Batch PDF CLI and direct API (1.2.0 candidate)
 
 ```powershell
 bgdxpublisher publish-pdf-batch .\documents --output-dir .\pdf-output --lang sr-Latn --config .\config.yaml
