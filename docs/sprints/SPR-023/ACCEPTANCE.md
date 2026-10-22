@@ -1,8 +1,11 @@
 # SPR-023 Acceptance Criteria
 
-Status: implementation evidence submitted; exact-head hosted CI/actual visual
-inspection and formal review recorded separately in PR. See
-[implementation mapping](IMPLEMENTATION-EVIDENCE.md). Final closure pending.
+Status: technical implementation acceptance verified on merge
+`e74d343e3ebe4fd4aa9b44405a75ee74f74f798f`; see [final evidence](CLOSURE.md).
+AC-01 through AC-09 PASS. AC-10 implementation review/owner authorization/merge/
+exact CI complete; final closure-document review/owner acceptance, authorized
+closure merge/exact CI and issue #67 completion remain PENDING. Historical
+[implementation evidence](IMPLEMENTATION-EVIDENCE.md) retains submission results.
 
 | ID | Required behavior | Evidence required |
 | --- | --- | --- |
