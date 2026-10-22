@@ -1,6 +1,8 @@
 # SPR-023 Acceptance Criteria
 
-Status: plan only; no implementation proof claimed.
+Status: implementation evidence submitted; exact-head hosted CI/actual visual
+inspection and formal review recorded separately in PR. See
+[implementation mapping](IMPLEMENTATION-EVIDENCE.md). Final closure pending.
 
 | ID | Required behavior | Evidence required |
 | --- | --- | --- |

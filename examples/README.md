@@ -47,3 +47,12 @@ and one multipage batch-generated PDF plus individual API equivalents.
 outputs, including complete decoded content/resources, metadata/lang/links/fonts.
 It is not a runtime dependency or CLI command. Existing PDF/DOCX/HTML examples
 remain. Batch PDF CLI is reserved for SPR-023; release1.2.0 is not yet published.
+
+`pdf_batch_cli_pipeline.py` verifies the actual installed publish-pdf-batch command
+outside checkout (success/mixed/all/refusal/overwrite/read/glyph/preflight/parser,
+configuration and injected runtime-stop failures). Run `python -I
+pdf_batch_cli_pipeline.py OUTPUT` from an installed wheel. It retains sample.pdf
+and multipage.pdf from the CLI plus direct batch API equivalents in individual/.
+Run `python pdf_batch_verify.py OUTPUT` in the host/dev environment for full PDF
+semantic comparison; pypdf is not a runtime dependency. Distinct CLI preview
+artifacts render every acceptance sample page for inspection. No release is made.

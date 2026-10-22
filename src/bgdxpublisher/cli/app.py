@@ -15,6 +15,7 @@ from .batch import run_batch
 from .config import run_config_validate
 from .doctor import run_doctor
 from .docx_batch import run_docx_batch
+from .pdf_batch import run_pdf_batch
 from .publish import run_publish
 from .runtime import run_runtime_status
 from .version import run_version
@@ -100,6 +101,22 @@ def build_parser() -> argparse.ArgumentParser:
     )
     docx_batch_parser.set_defaults(
         handler=lambda args: run_docx_batch(
+            args.source, args.output_dir, args.overwrite, args.config, args.lang
+        )
+    )
+
+    pdf_batch_parser = commands.add_parser(
+        "publish-pdf-batch", help="Publish a directory as PDF.", allow_abbrev=False
+    )
+    pdf_batch_parser.add_argument("source", type=Path)
+    pdf_batch_parser.add_argument("--output-dir", type=Path, required=True)
+    pdf_batch_parser.add_argument("--overwrite", action="store_true")
+    pdf_batch_parser.add_argument("--config", type=Path, default=None)
+    pdf_batch_parser.add_argument(
+        "--lang", type=_metadata_argument(validate_language), default="und"
+    )
+    pdf_batch_parser.set_defaults(
+        handler=lambda args: run_pdf_batch(
             args.source, args.output_dir, args.overwrite, args.config, args.lang
         )
     )

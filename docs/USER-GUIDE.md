@@ -102,12 +102,12 @@ Pagination is automatic; headings stay with following content when space allows.
 
 Use a `.pdf` output path with an existing parent directory; repeat with
 `--overwrite` to replace it. Title and language are PDF metadata. The layout is
-A4 portrait with 2.5 cm margins, without dark themes, contents or batch/index
-options. Metadata language and selectable Unicode are not a PDF/UA conformance
+A4 portrait with 2.5 cm margins, without dark themes or contents. The single
+command has no batch/index options; use publish-pdf-batch for directories. Metadata language and selectable Unicode are not a PDF/UA conformance
 claim. Invalid CLI arguments return 2; publication or runtime failure returns 1.
 
-The published v1.0.0 assets remain unchanged. PDF is currently a development
-feature based on the DOCX sprint; follow the PR dependency before merging.
+Published v1.0.0 assets remain unchanged. Single PDF publishing is included in
+v1.1.0; the batch PDF API/CLI are development additions planned for1.2.0.
 
 ## Configuration
 
@@ -298,7 +298,7 @@ finally:
     app.stop()
 ```
 
-No batch PDF CLI in this sprint. API request is immutable: source_dir/output_dir,
+The publish-pdf-batch CLI reuses this API. API request is immutable: source_dir/output_dir,
 overwriteFalse/languageund defaults, no title/index/theme/TOC option. index.md is
 allowed. Each filename stem becomes title metadata, with existing PDF formatting,
 Latin/Cyrillic/embedded-font support and automatic pagination. Unsupported glyphs
@@ -327,3 +327,57 @@ external child errors propagate/stop later calls, keeping earlier commits. Each
 file is atomic independently; no deletion/restore/batch transaction. Batch service
 never starts/stops runtime; caller owns lifecycle. General runtime startup/stop
 semantics and all existing CLI/API contracts remain unchanged.
+
+## Batch PDF CLI and direct API (development)
+
+```powershell
+bgdxpublisher publish-pdf-batch .\documents --output-dir .\pdf-output --lang sr-Latn --config .\config.yaml
+```
+
+Only immediate regular .md/.MD files, sorted by case-folded name then name;
+subdirectories ignored, index.md allowed. --output-dir is required; --overwrite
+is false and --lang is und by default. There is no --output abbreviation, title,
+theme, TOC, index or recursion option. Invalid/missing arguments and unsupported
+options exit2 before runtime. Output directories are created after preflight.
+
+Source root and .md candidates must not be symlinks (including dangling links).
+Output directory and every planned output symlink, directory destination,
+selected-input aliases/hardlinks, empty input and case-insensitive stem collisions
+are preflight errors. Ordinary existing regular output refusal is an item error,
+so later eligible files still run. No directory rollback or isolation from
+arbitrary concurrent filesystem changes is promised. Hard links are required for
+atomic no-overwrite commits. Source and previous files survive refused/precommit
+writes; each file commits independently.
+
+Each completed item prints Published: <output>; after successful runtime stop,
+Batch complete: N published, M failed. Paths are intentional success output.
+Failed items report Failed: item=<1-based selection ordinal>
+PDF_PUBLICATION_FAILED stage=<validate/read/render/write/cleanup> on stderr.
+Preflight reports Batch publication failed: BATCH_PDF_PREFLIGHT_FAILED, with no
+stdout or synthetic counts. Safe logs may accompany these reports. Raw path/name/
+content/cause is omitted from these publication diagnostics. Argparse and runtime/
+configuration messages retain their detailed formats outside that guarantee.
+
+All completed plus successful shutdown exits0; mixed/all expected failures exit1,
+with summary and only completed-item Published lines. Engine cleanup failure
+counts failed even if file remains. Runtime cleanup failure prints Runtime cleanup
+failed: <runtime error>, suppresses ALL buffered Published/summary stdout and
+returns1 when no unexpected primary is propagating. Prior item/preflight diagnostics
+remain; no duplicate primary. No committed output is removed or restored.
+
+Unexpected external exceptions propagate after finally-stop, not as a false
+batch result. Active unexpected primary survives unexpected stop with the fixed
+note An unexpected runtime cleanup failure occurred.; otherwise unexpected stop
+propagates itself, including after handled preflight/failed-item results.
+
+Python callers can resolve BatchPdfPublicationService and publish
+BatchPdfRequest(source_dir,output_dir,overwrite=False,language="und"). Results
+retain immutable item executions/explicit paths and derived counts; preflight
+error preserves internal cause. Caller owns initialize/start/finally-stop. The
+CLI reuses this API; direct single/batch/legacy publishing APIs are unchanged.
+See examples/pdf_batch_pipeline.py (API) and pdf_batch_cli_pipeline.py (CLI).
+
+PDF rendering/glyph limitations remain those of the existing PDF API. Unsupported
+glyph failures use the safe render-stage CLI report; direct legacy diagnostics
+retain their established details. See pdf_batch_verify.py for host-only semantic
+comparison and the documented narrow volatile date/ID exclusions.

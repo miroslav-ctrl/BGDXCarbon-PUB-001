@@ -112,6 +112,11 @@ jobs:
               # pypdf remains host/dev-only, not a new runtime dependency.
               import runpy
               runpy.run_path(str(repository / "examples" / "pdf_batch_verify.py"))["verify"](pdf_batch_output)
+              pdf_batch_cli_smoke = root / "pdf_batch_cli_pipeline.py"
+              shutil.copyfile(repository / "examples" / "pdf_batch_cli_pipeline.py", pdf_batch_cli_smoke)
+              pdf_batch_cli_output = root / "pdf-batch-cli"
+              subprocess.run([str(python), "-I", str(pdf_batch_cli_smoke), str(pdf_batch_cli_output)], cwd=root, check=True, env={k: v for k, v in os.environ.items() if k != "PYTHONPATH"})
+              runpy.run_path(str(repository / "examples" / "pdf_batch_verify.py"))["verify"](pdf_batch_cli_output)
               pdf_pipeline_smoke = root / "pdf_pipeline.py"
               shutil.copyfile(repository / "examples" / "pdf_pipeline.py", pdf_pipeline_smoke)
               pdf_api_output = root / "pdf-api"
@@ -377,4 +382,20 @@ jobs:
         with:
           name: pdf-batch-preview
           path: pdf-batch-preview/
+          if-no-files-found: error
+
+      - name: Render batch PDF CLI acceptance samples
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
+        run: |
+          python -I examples/pdf_batch_cli_pipeline.py pdf-batch-cli-preview
+          python examples/pdf_batch_verify.py pdf-batch-cli-preview
+          for document in pdf-batch-cli-preview/published/*.pdf; do
+            pdftoppm -r 90 -png "$document" "pdf-batch-cli-preview/$(basename "${document%.pdf}")-page"
+          done
+      - name: Upload batch PDF CLI visual verification
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-batch-cli-preview
+          path: pdf-batch-cli-preview/
           if-no-files-found: error

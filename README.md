@@ -86,7 +86,7 @@ of being silently replaced. Images become alternative text; raw HTML is literal
 text, and relative/fragment links remain plain labels. Existing output requires
 `--overwrite`, and the parent directory must exist. The title is metadata only.
 HTML and DOCX commands retain their existing behavior. The development branch
-includes a batch PDF Python API; batch PDF CLI remains future SPR-023 work.
+includes a batch PDF Python API and the publish-pdf-batch command.
 Custom templates, embedded images, contents navigation and PDF/UA tagging remain
 outside this foundation scope. PDF is included in version 1.1.0; the older v1.0.0 package supports HTML only.
 
@@ -97,7 +97,7 @@ validation. `bgdxpublisher.jobs` provides immutable jobs and controlled lifecycl
 transitions. `bgdxpublisher.pipeline` executes explicitly typed stages in order,
 reports failures with their causes, and runs registered cleanup in reverse order.
 The core is an in-process API. Registered HTML, batch HTML, DOCX, batch DOCX, PDF and batch PDF pipelines
-serve existing commands where provided; batch PDF currently has an API only.
+serve the single and batch commands for all three formats.
 Direct legacy services remain available with their
 original contracts; publish-pdf operational failures use safe code/stage diagnostics.
 See examples/pdf_pipeline.py for installed API verification.
@@ -152,7 +152,7 @@ and direct APIs retain their contracts. This does not publish release1.2.0.
 Resolve `BatchPdfPublicationService` from an initialized/started runtime, then call
 `publish(BatchPdfRequest(source_dir, output_dir, overwrite=False, language="und"))`.
 Caller owns finally-stop. See examples/pdf_batch_pipeline.py for a complete
-installed API example. No new batch PDF command is provided in this sprint.
+installed API example. The development command publish-pdf-batch reuses this API.
 
 The API freezes immediate .md inputs in stable order, validates all source/output
 symlinks/aliases/collisions before mkdir/child publication, and reuses the registered
@@ -161,3 +161,19 @@ results expose ordered immutable terminal executions and derived counts. Safe
 preflight error is BATCH_PDF_PREFLIGHT_FAILED; per-item structured stage details
 remain available. Each output is independently atomic; failed cleanup can retain
 committed files and there is no batch rollback. Existing direct APIs/CLI unchanged.
+
+## Batch PDF CLI (development, planned for 1.2.0)
+
+```powershell
+bgdxpublisher publish-pdf-batch .\documents --output-dir .\pdf-output --lang sr-Latn
+```
+
+Uses the existing registered batch PDF API, stable immediate .md selection and
+independent atomic outputs. --output-dir is required; --overwrite and --config
+are optional. No title/theme/TOC/index/recursion options or abbreviations.
+Expected failed items report safe ordinal/PDF_PUBLICATION_FAILED/stage diagnostics;
+preflight reports BATCH_PDF_PREFLIGHT_FAILED without counts. Success lines and
+summary are buffered until runtime shutdown succeeds. Exit0 means all succeeded,
+exit1 means expected partial/publication/runtime failure, parser errors exit2.
+Committed files remain on cleanup failure; no rollback. Existing commands and
+direct APIs are unchanged. Release1.2.0 is not published by this change.
