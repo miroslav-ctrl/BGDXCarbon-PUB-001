@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Add publish-pdf-batch over the registered batch PDF API with deterministic
+  independent outcomes, safe per-item/preflight reports and buffered success
+  output after runtime shutdown. Preserve primary exceptions and committed files
+  on cleanup failure, without rollback. Retain existing commands/direct APIs and
+  all ten gates; add installed CLI/host semantic and distinct multipage visuals.
+  Planned for1.2.0; no version/dependency bump or release publication.
+
 - Add batch PDF pipeline API with immutable terminal outcomes/derived counts,
   deterministic guarded source snapshot, safe preflight and typed child failure
   continuation through registered single PDF service. Retain committed files on

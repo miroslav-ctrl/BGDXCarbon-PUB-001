@@ -1,6 +1,7 @@
 # SPR-023 Implementation Specification
 
-Status: proposed plan; owner authorized planning, implementation and merge in this task.
+Status: implemented for review; owner authorized planning, implementation and merge in this task.
+See [implementation evidence](IMPLEMENTATION-EVIDENCE.md).
 Plan and implementation CI/reviews are separate execution gates.
 
 ## AC-01: command and dispatch
@@ -120,7 +121,7 @@ under the established SPR-022 contract. Runtime-only example must not import pyp
 Keep actual installed existing CLI/API tests and semantic checks.
 Distinct CLI-generated pdf-batch-cli-preview via actual publish-pdf-batch with
 >=2 different documents (Latin/Cyrillic/formatting), including a multipage PDF; render all output pages and
-actually inspect every page. Retain existing batch API and single PDF/PDF previews.
+actually inspect every page. Retain existing batch API and single DOCX/PDF previews.
 No assumption that mere artifact upload establishes manual visual acceptance.
 
 CI remains Ubuntu/Windows Python3.13/3.14, total>=99%, all ten existing package
