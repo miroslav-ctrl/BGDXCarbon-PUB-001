@@ -1,6 +1,8 @@
 # SPR-022 Acceptance Criteria
 
-Status: all implementation criteria PENDING. Baseline/plan CI is not implementation acceptance.
+Status: implementation evidence submitted; final formal acceptance/merge/closure pending.
+See [implementation mapping](IMPLEMENTATION-EVIDENCE.md); baseline/plan CI does not
+substitute implementation proof.
 
 | ID | Criterion | Required evidence |
 | --- | --- | --- |

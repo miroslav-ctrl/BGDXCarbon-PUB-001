@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Add batch PDF pipeline API with immutable terminal outcomes/derived counts,
+  deterministic guarded source snapshot, safe preflight and typed child failure
+  continuation through registered single PDF service. Retain committed files on
+  cleanup failure/no batch rollback. Add tenth independent coverage gate, fresh
+  installed API/host PDF semantic checks and single/multipage batch previews.
+  Existing CLI/direct APIs/renderer/fonts/writer unchanged; no batch PDF CLI,
+  dependency/version bump or release publication. Planned for1.2.0.
+
+
 - Add publish-docx-batch over the registered batch DOCX API: deterministic
   directory selection, immutable independent outcomes, safe ordinal/stage and
   preflight diagnostics, explicit overwrite and buffered success/summary output.
