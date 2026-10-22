@@ -1,4 +1,4 @@
-# BGDXCarbon Publisher Suite 1.2.0 candidate
+# BGDXCarbon Publisher Suite 1.2.0
 
 Publish UTF-8 Markdown as standalone HTML, editable DOCX, or selectable-text PDF.
 All three formats support single and batch CLI/API publication. HTML includes
@@ -8,10 +8,11 @@ are covered by CI.
 
 ## Install
 
-This branch is an unpublished 1.2.0 candidate; published v1.1.0 remains available
-from [GitHub Releases](https://github.com/miroslav-ctrl/BGDXCarbon-PUB-001/releases).
-Python 3.13 or newer is required. Obtain the candidate wheel and SHA256SUMS.txt
-from this candidate PR's CI artifacts; verify its checksum before installing.
+Release 1.2.0 is dated 2026-10-22. Download its wheel and SHA256SUMS.txt
+from [GitHub release v1.2.0](https://github.com/miroslav-ctrl/BGDXCarbon-PUB-001/releases/tag/v1.2.0).
+Python 3.13 or newer is required. Verify the wheel checksum before installing.
+Publication is complete only after the assets and downloaded-package checks
+recorded in the [publication request](docs/releases/1.2.0/PUBLICATION-REQUEST.md) succeed.
 In PowerShell, from the directory containing the downloaded wheel and checksums.
 Compare the displayed hash with its SHA256SUMS entry before the install command:
 
@@ -72,7 +73,7 @@ and fragment links remain visible labels. Raw HTML remains visible text.
 The title is metadata, while visible headings come from Markdown. Output uses
 A4 portrait pages with 2.5 cm margins. Existing output requires `--overwrite`;
 the parent directory must exist. HTML commands are unchanged.
-The 1.2.0 candidate includes `publish-docx-batch` and its registered Python API;
+Version 1.2.0 includes `publish-docx-batch` and its registered Python API;
 custom templates remain future work. DOCX is included in version 1.1.0; the older v1.0.0 package supports HTML only.
 
 ## Publish PDF
@@ -91,7 +92,7 @@ Cyrillic support. Unsupported glyphs fail with a safe render-stage CLI diagnosti
 of silent replacement; legacy direct API errors retain Unicode code-point detail. Images become alternative text; raw HTML is literal
 text, and relative/fragment links remain plain labels. Existing output requires
 `--overwrite`, and the parent directory must exist. The title is metadata only.
-HTML and DOCX commands retain their existing behavior. The 1.2.0 candidate
+HTML and DOCX commands retain their existing behavior. Version 1.2.0
 includes a batch PDF Python API and the publish-pdf-batch command.
 Custom templates, embedded images, contents navigation and PDF/UA tagging remain
 outside this foundation scope. PDF is included in version 1.1.0; the older v1.0.0 package supports HTML only.
@@ -124,7 +125,7 @@ No-argument invocation retains runtime startup diagnostics.
 
 ## Scope and output policy
 
-Version 1.2.0 candidate completes single/batch CLI/API coverage for HTML, DOCX and
+Version 1.2.0 completes single/batch CLI/API coverage for HTML, DOCX and
 PDF; published 1.1.0 added single DOCX/PDF, and 1.0 was HTML-only.
 Custom templates, remote hosting and a graphical interface remain future work.
 Raw HTML is escaped; unsafe
@@ -140,7 +141,7 @@ links for atomic no-overwrite publication. Output symlinks are refused.
 See [the usage guide](docs/USER-GUIDE.md), [examples](examples/README.md),
 [release notes](RELEASE-NOTES.md), and [release process](docs/RELEASING.md).
 
-## Batch DOCX (1.2.0 candidate)
+## Batch DOCX (1.2.0)
 
 ```powershell
 bgdxpublisher publish-docx-batch .\documents --output-dir .\word-output --lang sr-Latn
@@ -154,14 +155,14 @@ Exit0 means all documents and runtime shutdown succeeded; operational/partial
 failure exit1; parser error exit2. Runtime shutdown failure suppresses buffered
 Published/summary lines while retaining committed files; there is no rollback.
 See the usage guide for source/output symlink and alias policy. Existing commands
-and direct APIs retain their contracts. This does not publish release 1.2.0.
+and direct APIs retain their contracts.
 
-## Batch PDF API (1.2.0 candidate)
+## Batch PDF API (1.2.0)
 
 Resolve `BatchPdfPublicationService` from an initialized/started runtime, then call
 `publish(BatchPdfRequest(source_dir, output_dir, overwrite=False, language="und"))`.
 Caller owns finally-stop. See examples/pdf_batch_pipeline.py for a complete
-installed API example. The candidate command publish-pdf-batch reuses this API.
+installed API example. The command publish-pdf-batch reuses this API.
 
 The API freezes immediate .md inputs in stable order, validates all source/output
 symlinks/aliases/collisions before mkdir/child publication, and reuses the registered
@@ -171,7 +172,7 @@ preflight error is BATCH_PDF_PREFLIGHT_FAILED; per-item structured stage details
 remain available. Each output is independently atomic; failed cleanup can retain
 committed files and there is no batch rollback. Existing direct APIs/CLI unchanged.
 
-## Batch PDF CLI (1.2.0 candidate)
+## Batch PDF CLI (1.2.0)
 
 ```powershell
 bgdxpublisher publish-pdf-batch .\documents --output-dir .\pdf-output --lang sr-Latn

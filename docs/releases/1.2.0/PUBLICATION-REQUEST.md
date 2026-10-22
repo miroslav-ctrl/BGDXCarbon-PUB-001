@@ -1,8 +1,11 @@
 # Request to publish BGDXCarbon Publisher Suite 1.2.0
 
-Status: Draft request only, 2026-10-22. Publication NOT authorized or executed.
-Opening/reviewing/merging this request is not permission to push a tag or publish.
-No main change is proposed. Current published release remains v1.1.0.
+Status: publication explicitly authorized by the owner on 2026-10-22 after
+acceptance and merge of PR #71. Authorization covers final documentation, CI,
+tag v1.2.0, stable GitHub release and downloaded-package verification. Main is excluded.
+The request merge alone did not authorize publication; the later owner instruction did.
+Execution is in progress; final source/run/asset evidence will be recorded on the
+finalization PR and release before publication is declared complete.
 
 ## Proposed publication
 
@@ -18,7 +21,8 @@ release workflow. The candidate wording is preserved in
 [immutable candidate notes](https://github.com/miroslav-ctrl/BGDXCarbon-PUB-001/blob/91f63e981feacd23bdff288e1064944386ebed56/RELEASE-NOTES.md); published1.1.0 notes remain
 unchanged in [history](../1.1.0.md). Candidate-notes Git SHA256:
 `fbe9942714dd63ed723558d8a9214589a81d2e28983eaed92c214aaff30b27b0`. The request does not assert that 1.2.0 has
-already shipped. Current README/changelog retain unpublished-candidate status.
+already shipped. README/changelog date/status are finalized under the later
+publication authorization, before tagging.
 
 ## Accepted candidate and integration proof
 
@@ -64,12 +68,16 @@ outside the publication path; no branch deletion is part of this request.
 - [x] Candidate formally reviewed, owner-authorized merge and exact merge CI PASS.
 - [x] All required feature sprints completed; scope unchanged.
 - [x] Staged release text and preserved candidate/published notes prepared.
-- [ ] Exact request-head CI and final request review accepted by owner.
-- [ ] Separately authorized request merge and exact post-merge CI.
+- [x] Exact request-head CI and final request review accepted by owner.
+- [x] Separately authorized request merge and exact post-merge CI.
 - [ ] Explicit authorization to publish v1.2.0 and approved final source SHA.
-- [ ] Actual date/status finalized and verified before tag creation.
+- [x] Actual date/status finalized before tag creation; final-head CI must pass.
 - [ ] Tag/release workflow, three public assets and checksums verified.
 - [ ] Downloaded wheel/sdist fresh-install acceptance and final release evidence.
 
-Public release authorization: PENDING. Tag: NOT created. GitHub release: NOT
-created. Main remains `9883eca15ef4642db6513efa4fa3610158312f27`.
+Public release authorization: GRANTED explicitly by the owner, 2026-10-22.
+Request PR #71 merged at `a62d6cb957b99e38b52533286f707bccd181b413`;
+[post-merge CI39761654310](https://github.com/miroslav-ctrl/BGDXCarbon-PUB-001/actions/runs/39761654310) SUCCESS, all four environments, attempt1.
+The final source SHA and tag/release/asset verification are execution evidence,
+recorded on the finalization PR to avoid changing the tagged source afterward.
+Main remains `9883eca15ef4642db6513efa4fa3610158312f27`.
