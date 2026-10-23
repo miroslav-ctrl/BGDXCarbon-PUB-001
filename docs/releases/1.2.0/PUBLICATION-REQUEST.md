@@ -4,7 +4,7 @@ Status: publication explicitly authorized by the owner on 2026-10-22 after
 acceptance and merge of PR #71. Authorization covers final documentation, CI,
 tag v1.2.0, stable GitHub release and downloaded-package verification. Main is excluded.
 The request merge alone did not authorize publication; the later owner instruction did.
-Execution completed2026-10-22. [Final acceptance/closure](CLOSURE.md) records the
+Execution completed 2026-10-22. [Final acceptance/closure](CLOSURE.md) records the
 exact published source, successful CI and verified actual public packages.
 The proposed procedure below is retained as the accepted execution contract.
 
@@ -82,7 +82,6 @@ Request PR #71 merged at `a62d6cb957b99e38b52533286f707bccd181b413`;
 The final source SHA and tag/release/asset verification are execution evidence,
 recorded on the finalization PR to avoid changing the tagged source afterward.
 Main remains `9883eca15ef4642db6513efa4fa3610158312f27`.
-
 
 Final disposition: all execution gates COMPLETE. Final source
 `0747358001e88e399d141e132d0e8b38ec42f194`, stable v1.2.0 release and actual
