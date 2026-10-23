@@ -2,8 +2,8 @@
 
 Status: candidate formally reviewed and owner-authorized merge completed in
 PR #70 at `91f63e981feacd23bdff288e1064944386ebed56`; exact merge CI39747742484
-attempt2 SUCCESS. Publication remains pending; see
-[publication request](PUBLICATION-REQUEST.md). Original preparation record below
+attempt2 SUCCESS. Publication completed 2026-10-22; see
+[final acceptance/closure](CLOSURE.md) and [publication request](PUBLICATION-REQUEST.md). Original preparation record below
 retains its historical baseline/pending dispositions. Candidate release-note
 text is preserved in [candidate notes](https://github.com/miroslav-ctrl/BGDXCarbon-PUB-001/blob/91f63e981feacd23bdff288e1064944386ebed56/RELEASE-NOTES.md).
 
