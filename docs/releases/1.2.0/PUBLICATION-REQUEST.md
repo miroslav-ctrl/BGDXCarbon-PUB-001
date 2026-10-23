@@ -4,8 +4,9 @@ Status: publication explicitly authorized by the owner on 2026-10-22 after
 acceptance and merge of PR #71. Authorization covers final documentation, CI,
 tag v1.2.0, stable GitHub release and downloaded-package verification. Main is excluded.
 The request merge alone did not authorize publication; the later owner instruction did.
-Execution is in progress; final source/run/asset evidence will be recorded on the
-finalization PR and release before publication is declared complete.
+Execution completed2026-10-22. [Final acceptance/closure](CLOSURE.md) records the
+exact published source, successful CI and verified actual public packages.
+The proposed procedure below is retained as the accepted execution contract.
 
 ## Proposed publication
 
@@ -70,10 +71,10 @@ outside the publication path; no branch deletion is part of this request.
 - [x] Staged release text and preserved candidate/published notes prepared.
 - [x] Exact request-head CI and final request review accepted by owner.
 - [x] Separately authorized request merge and exact post-merge CI.
-- [ ] Explicit authorization to publish v1.2.0 and approved final source SHA.
-- [x] Actual date/status finalized before tag creation; final-head CI must pass.
-- [ ] Tag/release workflow, three public assets and checksums verified.
-- [ ] Downloaded wheel/sdist fresh-install acceptance and final release evidence.
+- [x] Explicit authorization to publish v1.2.0 and approved final source SHA.
+- [x] Actual date/status finalized and final-source CI passed before tag creation.
+- [x] Tag/release workflow, three public assets and checksums verified.
+- [x] Downloaded wheel/sdist fresh-install acceptance and final release evidence.
 
 Public release authorization: GRANTED explicitly by the owner, 2026-10-22.
 Request PR #71 merged at `a62d6cb957b99e38b52533286f707bccd181b413`;
@@ -81,3 +82,9 @@ Request PR #71 merged at `a62d6cb957b99e38b52533286f707bccd181b413`;
 The final source SHA and tag/release/asset verification are execution evidence,
 recorded on the finalization PR to avoid changing the tagged source afterward.
 Main remains `9883eca15ef4642db6513efa4fa3610158312f27`.
+
+
+Final disposition: all execution gates COMPLETE. Final source
+`0747358001e88e399d141e132d0e8b38ec42f194`, stable v1.2.0 release and actual
+downloaded-package checks are recorded in [CLOSURE.md](CLOSURE.md). This subsequent
+documentation integration does not alter the published tag or assets.

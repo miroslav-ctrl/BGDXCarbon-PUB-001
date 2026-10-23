@@ -200,6 +200,7 @@ See [candidate evidence](docs/releases/1.2.0/CANDIDATE.md) for closed sprint
 references, packaging/CI checks and acceptance boundaries. Preparation creates
 no release/tag and does not change main.
 
-The [publication request](docs/releases/1.2.0/PUBLICATION-REQUEST.md) stages the
-GitHub release text and execution/asset-verification checklist. Opening or
-merging that request does not publish the release; tag creation remains separate.
+Release1.2.0 publication and public-package verification are complete. See the
+[final acceptance/closure evidence](docs/releases/1.2.0/CLOSURE.md) for exact
+source, CI and asset checksums. The [publication request](docs/releases/1.2.0/PUBLICATION-REQUEST.md)
+retains the accepted execution contract and completed checklist.
